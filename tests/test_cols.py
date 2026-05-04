@@ -59,7 +59,7 @@ async def get_cells(ds, db_name, sheet_id):
     return [
         (r["row_idx"], r["col_idx"], r["raw_value"])
         for r in await db.execute(
-            "SELECT row_idx, col_idx, raw_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? ORDER BY col_idx, row_idx",
             [sheet_id],
         )
@@ -71,7 +71,7 @@ async def get_column_metadata(ds, db_name, sheet_id):
     return [
         (r["col_idx"], r["name"], r["width"])
         for r in await db.execute(
-            "SELECT col_idx, name, width FROM datasette_sheets_column "
+            "SELECT col_idx, name, width FROM _datasette_sheets_column "
             "WHERE sheet_id = ? ORDER BY col_idx",
             [sheet_id],
         )
@@ -187,7 +187,7 @@ async def test_delete_on_missing_sheet_returns_404():
 
 
 # ---------------------------------------------------------------------------
-# Column metadata (datasette_sheets_column) shift
+# Column metadata (_datasette_sheets_column) shift
 # ---------------------------------------------------------------------------
 
 
@@ -377,7 +377,7 @@ async def test_formulas_recalculate_after_column_delete():
     db = ds.get_database(db_name)
     pre = (
         await db.execute(
-            "SELECT computed_value FROM datasette_sheets_cell "
+            "SELECT computed_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? AND row_idx = 0 AND col_idx = 3",
             [sheet_id],
         )
@@ -397,7 +397,7 @@ async def test_formulas_recalculate_after_column_delete():
         (r["col_idx"], r["raw_value"])
         for r in (
             await db.execute(
-                "SELECT col_idx, raw_value FROM datasette_sheets_cell "
+                "SELECT col_idx, raw_value FROM _datasette_sheets_cell "
                 "WHERE sheet_id = ? AND row_idx = 0 ORDER BY col_idx",
                 [sheet_id],
             )
@@ -432,7 +432,7 @@ async def test_delete_column_rewrites_whole_column_ref_to_ref():
     db = ds.get_database(db_name)
     pre = (
         await db.execute(
-            "SELECT computed_value FROM datasette_sheets_cell "
+            "SELECT computed_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? AND row_idx = 0 AND col_idx = 2",
             [sheet_id],
         )
@@ -448,7 +448,7 @@ async def test_delete_column_rewrites_whole_column_ref_to_ref():
     # The formula (was C1, now B1) has its B:B ref rewritten.
     row = (
         await db.execute(
-            "SELECT raw_value FROM datasette_sheets_cell "
+            "SELECT raw_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? AND row_idx = 0 AND col_idx = 1",
             [sheet_id],
         )
@@ -479,7 +479,7 @@ async def test_delete_column_single_cell_ref_becomes_ref():
     db = ds.get_database(db_name)
     row = (
         await db.execute(
-            "SELECT raw_value FROM datasette_sheets_cell "
+            "SELECT raw_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? AND row_idx = 0 AND col_idx = 1",
             [sheet_id],
         )
@@ -514,7 +514,7 @@ async def test_delete_column_shifts_surviving_refs_leftward():
     # which points to what used to be D1 (value 42).
     row = (
         await db.execute(
-            "SELECT raw_value, computed_value FROM datasette_sheets_cell "
+            "SELECT raw_value, computed_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? AND row_idx = 0 AND col_idx = 3",
             [sheet_id],
         )
@@ -547,7 +547,7 @@ async def test_delete_column_trims_ranges_that_span_deletion():
     db = ds.get_database(db_name)
     row = (
         await db.execute(
-            "SELECT raw_value, computed_value FROM datasette_sheets_cell "
+            "SELECT raw_value, computed_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? AND row_idx = 0 AND col_idx = 2",
             [sheet_id],
         )
@@ -577,7 +577,7 @@ async def test_delete_column_leaves_untouched_refs_alone():
     db = ds.get_database(db_name)
     row = (
         await db.execute(
-            "SELECT raw_value, computed_value FROM datasette_sheets_cell "
+            "SELECT raw_value, computed_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? AND row_idx = 0 AND col_idx = 1",
             [sheet_id],
         )
@@ -596,7 +596,7 @@ async def test_sheet_updated_at_advances_on_delete():
     db = ds.get_database(db_name)
     before = (
         await db.execute(
-            "SELECT updated_at FROM datasette_sheets_sheet WHERE id = ?",
+            "SELECT updated_at FROM _datasette_sheets_sheet WHERE id = ?",
             [sheet_id],
         )
     ).first()["updated_at"]
@@ -611,7 +611,7 @@ async def test_sheet_updated_at_advances_on_delete():
     )
     after = (
         await db.execute(
-            "SELECT updated_at FROM datasette_sheets_sheet WHERE id = ?",
+            "SELECT updated_at FROM _datasette_sheets_sheet WHERE id = ?",
             [sheet_id],
         )
     ).first()["updated_at"]
@@ -832,7 +832,7 @@ async def test_col_delete_rewrites_named_range_pointing_at_deleted_col():
     db = ds.get_database(db_name)
     rows = list(
         await db.execute(
-            "SELECT name, definition FROM datasette_sheets_named_range "
+            "SELECT name, definition FROM _datasette_sheets_named_range "
             "WHERE sheet_id = ?",
             [sheet_id],
         )
@@ -861,7 +861,7 @@ async def test_col_delete_rewrites_whole_col_named_range_to_shift_left():
     db = ds.get_database(db_name)
     row = (
         await db.execute(
-            "SELECT definition FROM datasette_sheets_named_range "
+            "SELECT definition FROM _datasette_sheets_named_range "
             "WHERE sheet_id = ? AND name = ?",
             [sheet_id, "Prices"],
         )
@@ -887,7 +887,7 @@ async def test_col_delete_leaves_literal_named_range_untouched():
     db = ds.get_database(db_name)
     row = (
         await db.execute(
-            "SELECT definition FROM datasette_sheets_named_range "
+            "SELECT definition FROM _datasette_sheets_named_range "
             "WHERE sheet_id = ? AND name = ?",
             [sheet_id, "TaxRate"],
         )

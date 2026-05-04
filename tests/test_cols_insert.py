@@ -160,7 +160,7 @@ async def test_insert_on_missing_sheet_returns_404():
 
 
 # ---------------------------------------------------------------------------
-# Column metadata (datasette_sheets_column) shift
+# Column metadata (_datasette_sheets_column) shift
 # ---------------------------------------------------------------------------
 
 
@@ -297,7 +297,7 @@ async def test_formulas_recalculate_after_column_insert():
     db = ds.get_database(db_name)
     pre = (
         await db.execute(
-            "SELECT computed_value FROM datasette_sheets_cell "
+            "SELECT computed_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? AND row_idx = 0 AND col_idx = 2",
             [sheet_id],
         )
@@ -314,7 +314,7 @@ async def test_formulas_recalculate_after_column_insert():
         for r in (
             await db.execute(
                 "SELECT col_idx, raw_value, computed_value "
-                "FROM datasette_sheets_cell "
+                "FROM _datasette_sheets_cell "
                 "WHERE sheet_id = ? AND row_idx = 0 ORDER BY col_idx",
                 [sheet_id],
             )
@@ -352,7 +352,7 @@ async def test_insert_column_grows_straddled_range():
     db = ds.get_database(db_name)
     row = (
         await db.execute(
-            "SELECT raw_value, computed_value FROM datasette_sheets_cell "
+            "SELECT raw_value, computed_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? AND row_idx = 1 AND col_idx = 0",
             [sheet_id],
         )
@@ -436,7 +436,7 @@ async def test_col_insert_shifts_named_range_pointing_past_insertion():
     db = ds.get_database(db_name)
     row = (
         await db.execute(
-            "SELECT definition FROM datasette_sheets_named_range "
+            "SELECT definition FROM _datasette_sheets_named_range "
             "WHERE sheet_id = ? AND name = ?",
             [sheet_id, "Anchor"],
         )
@@ -464,7 +464,7 @@ async def test_col_insert_grows_whole_col_named_range_straddling_insertion():
     db = ds.get_database(db_name)
     row = (
         await db.execute(
-            "SELECT definition FROM datasette_sheets_named_range "
+            "SELECT definition FROM _datasette_sheets_named_range "
             "WHERE sheet_id = ? AND name = ?",
             [sheet_id, "Block"],
         )

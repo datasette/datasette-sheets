@@ -293,7 +293,7 @@ async def test_view_update_trigger_writes_cells():
     # Verify the underlying cell was rewritten
     cell = (
         await db.execute(
-            "SELECT raw_value FROM datasette_sheets_cell WHERE sheet_id = ? AND row_idx = 1 AND col_idx = 6",
+            "SELECT raw_value FROM _datasette_sheets_cell WHERE sheet_id = ? AND row_idx = 1 AND col_idx = 6",
             [sheet_id],
         )
     ).first()
@@ -320,7 +320,7 @@ async def test_view_insert_trigger_appends_row():
     cells = [
         dict(r)
         for r in await db.execute(
-            "SELECT col_idx, raw_value FROM datasette_sheets_cell WHERE sheet_id = ? AND row_idx = 3 ORDER BY col_idx",
+            "SELECT col_idx, raw_value FROM _datasette_sheets_cell WHERE sheet_id = ? AND row_idx = 3 ORDER BY col_idx",
             [sheet_id],
         )
     ]
@@ -345,7 +345,7 @@ async def test_view_delete_trigger_removes_row():
     # Brian's cells are gone from the underlying table
     remaining = (
         await db.execute(
-            "SELECT COUNT(*) AS n FROM datasette_sheets_cell WHERE sheet_id = ? AND row_idx = 2",
+            "SELECT COUNT(*) AS n FROM _datasette_sheets_cell WHERE sheet_id = ? AND row_idx = 2",
             [sheet_id],
         )
     ).first()["n"]
@@ -404,7 +404,7 @@ async def test_view_delete_mode_clear_leaves_gap():
     rows = [
         dict(r)
         for r in await db.execute(
-            "SELECT row_idx, col_idx, raw_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? AND row_idx >= 1 ORDER BY row_idx, col_idx",
             [sheet_id],
         )
@@ -444,7 +444,7 @@ async def test_view_delete_mode_shift_closes_gap():
     rows = [
         dict(r)
         for r in await db.execute(
-            "SELECT row_idx, col_idx, raw_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? AND row_idx >= 1 ORDER BY row_idx, col_idx",
             [sheet_id],
         )
@@ -515,7 +515,7 @@ async def test_view_update_trigger_survives_weird_column_headers():
 
     # Underlying cell table still intact
     assert (
-        await db.execute("SELECT COUNT(*) AS n FROM datasette_sheets_cell")
+        await db.execute("SELECT COUNT(*) AS n FROM _datasette_sheets_cell")
     ).first()["n"] > 0
 
 
@@ -544,7 +544,7 @@ async def test_view_delete_drops_triggers():
 
 # ---------------------------------------------------------------------------
 # View-bound parity (att c85nqtm3) — col/row delete + insert update the
-# datasette_sheets_view registry's [min_col, max_col] / [min_row, max_row]
+# _datasette_sheets_view registry's [min_col, max_col] / [min_row, max_row]
 # the same way move_columns already does.
 # ---------------------------------------------------------------------------
 
@@ -553,7 +553,7 @@ async def _view_bounds(ds, db_name, sheet_id, view_name):
     db = ds.get_database(db_name)
     row = (
         await db.execute(
-            "SELECT min_row, min_col, max_row, max_col FROM datasette_sheets_view "
+            "SELECT min_row, min_col, max_row, max_col FROM _datasette_sheets_view "
             "WHERE sheet_id = ? AND view_name = ?",
             [sheet_id, view_name],
         )

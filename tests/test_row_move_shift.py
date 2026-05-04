@@ -35,7 +35,7 @@ def seed(
 ):
     """Insert (row_idx, col_idx, raw_value) triples."""
     conn.executemany(
-        "INSERT INTO datasette_sheets_cell (sheet_id, row_idx, col_idx, raw_value) "
+        "INSERT INTO _datasette_sheets_cell (sheet_id, row_idx, col_idx, raw_value) "
         "VALUES (?, ?, ?, ?)",
         [(sheet, r, c, v) for (r, c, v) in cells],
     )
@@ -45,7 +45,7 @@ def current(conn: sqlite3.Connection, sheet: str = "s") -> list[tuple[int, int, 
     return [
         (r, c, v)
         for (r, c, v) in conn.execute(
-            "SELECT row_idx, col_idx, raw_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? ORDER BY row_idx, col_idx",
             [sheet],
         )
@@ -192,7 +192,7 @@ class TestScrambledInsertOrder:
     def test_scrambled_up_move(self, conn):
         for r in [4, 0, 3, 1, 2]:
             conn.execute(
-                "INSERT INTO datasette_sheets_cell "
+                "INSERT INTO _datasette_sheets_cell "
                 "(sheet_id, row_idx, col_idx, raw_value) VALUES (?, ?, ?, ?)",
                 ["s", r, 0, f"r{r}"],
             )
@@ -208,7 +208,7 @@ class TestScrambledInsertOrder:
     def test_scrambled_down_move(self, conn):
         for r in [3, 1, 4, 0, 2]:
             conn.execute(
-                "INSERT INTO datasette_sheets_cell "
+                "INSERT INTO _datasette_sheets_cell "
                 "(sheet_id, row_idx, col_idx, raw_value) VALUES (?, ?, ?, ?)",
                 ["s", r, 0, f"r{r}"],
             )

@@ -77,7 +77,7 @@ async def get_cells(ds, db_name, sheet_id):
     return [
         (r["row_idx"], r["col_idx"], r["raw_value"], r["computed_value"])
         for r in await db.execute(
-            "SELECT row_idx, col_idx, raw_value, computed_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value, computed_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? ORDER BY col_idx, row_idx",
             [sheet_id],
         )
@@ -89,7 +89,7 @@ async def get_columns(ds, db_name, sheet_id):
     return [
         (r["col_idx"], r["name"], r["width"], r["format_json"])
         for r in await db.execute(
-            "SELECT col_idx, name, width, format_json FROM datasette_sheets_column "
+            "SELECT col_idx, name, width, format_json FROM _datasette_sheets_column "
             "WHERE sheet_id = ? ORDER BY col_idx",
             [sheet_id],
         )
@@ -267,7 +267,7 @@ async def test_cell_format_json_follows_data():
 
     rows = list(
         await ds.get_database(db_name).execute(
-            "SELECT row_idx, col_idx, raw_value, format_json FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value, format_json FROM _datasette_sheets_cell "
             "WHERE sheet_id = ?",
             [sheet_id],
         )
@@ -295,7 +295,7 @@ async def test_single_cell_ref_follows_data():
     rows = {
         (r["row_idx"], r["col_idx"]): (r["raw_value"], r["computed_value"])
         for r in await ds.get_database(db_name).execute(
-            "SELECT row_idx, col_idx, raw_value, computed_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value, computed_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ?",
             [sheet_id],
         )
@@ -322,7 +322,7 @@ async def test_whole_col_ref_follows():
     rows = {
         (r["row_idx"], r["col_idx"]): (r["raw_value"], r["computed_value"])
         for r in await ds.get_database(db_name).execute(
-            "SELECT row_idx, col_idx, raw_value, computed_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value, computed_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ?",
             [sheet_id],
         )
@@ -352,7 +352,7 @@ async def test_bounded_range_stays_positional():
     rows = {
         (r["row_idx"], r["col_idx"]): r["raw_value"]
         for r in await ds.get_database(db_name).execute(
-            "SELECT row_idx, col_idx, raw_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ?",
             [sheet_id],
         )
@@ -371,7 +371,7 @@ async def test_absolute_marker_preserved():
     rows = {
         (r["row_idx"], r["col_idx"]): r["raw_value"]
         for r in await ds.get_database(db_name).execute(
-            "SELECT row_idx, col_idx, raw_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ?",
             [sheet_id],
         )
@@ -422,7 +422,7 @@ async def test_named_range_definition_rewrites():
     defs = {
         r["name"]: r["definition"]
         for r in await ds.get_database(db_name).execute(
-            "SELECT name, definition FROM datasette_sheets_named_range "
+            "SELECT name, definition FROM _datasette_sheets_named_range "
             "WHERE sheet_id = ?",
             [sheet_id],
         )
@@ -453,7 +453,7 @@ async def test_named_bounded_range_follows_block_move():
 
     row = (
         await ds.get_database(db_name).execute(
-            "SELECT definition FROM datasette_sheets_named_range "
+            "SELECT definition FROM _datasette_sheets_named_range "
             "WHERE sheet_id = ? AND name = ?",
             [sheet_id, "Region"],
         )
@@ -500,7 +500,7 @@ async def test_view_min_max_col_update():
 
     view_row = (
         await ds.get_database(db_name).execute(
-            "SELECT min_col, max_col FROM datasette_sheets_view "
+            "SELECT min_col, max_col FROM _datasette_sheets_view "
             "WHERE sheet_id = ? AND view_name = ?",
             [sheet_id, "v_de"],
         )

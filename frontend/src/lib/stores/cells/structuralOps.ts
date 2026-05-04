@@ -88,7 +88,7 @@ function shiftCells(plan: ShiftPlan): void {
 /** Pack column widths leftward, dropping any column whose index is
  *  in ``deletedSet``. Tail columns the packer doesn't reach fall back
  *  to the default width — matches the server's
- *  ``datasette_sheets_column`` table behaviour. */
+ *  ``_datasette_sheets_column`` table behaviour. */
 function shiftColumnWidthsForDelete(deletedSet: Set<number>): void {
   columnWidths.update((current) => {
     const nextWidths: Record<string, number> = Object.fromEntries(
@@ -136,7 +136,7 @@ function shiftColumnWidthsForInsertion(at: number, count: number): void {
  *   - ``columnWidths`` gets the same shift so the grid doesn't
  *     visually split between the (already-shifted) cells and
  *     stale width metadata. The server's ``delete_columns`` does
- *     this on the ``datasette_sheets_column`` table; this matches.
+ *     this on the ``_datasette_sheets_column`` table; this matches.
  */
 export function deleteColsLocally(deletedCols: number[]): void {
   const deletedSet = new Set(deletedCols);

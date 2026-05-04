@@ -1,7 +1,7 @@
 /**
  * Filter store.
  *
- * Mirrors the server's per-sheet ``datasette_sheets_filter`` row.
+ * Mirrors the server's per-sheet ``_datasette_sheets_filter`` row.
  * One filter per sheet (UNIQUE(sheet_id) at the SQL level), so the
  * store value is ``FilterMeta | null``. On sheet open the row (if
  * any) is fetched and pushed into ``sheetFilter``; SSE events

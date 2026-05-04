@@ -1,7 +1,7 @@
 /**
  * Named-range state for the active sheet.
  *
- * Mirrors the server's ``datasette_sheets_named_range`` table. On
+ * Mirrors the server's ``_datasette_sheets_named_range`` table. On
  * sheet load the list is fetched and pushed into the WASM engine via
  * ``setEngineNames`` so local recalc resolves name references the
  * same way the server does.

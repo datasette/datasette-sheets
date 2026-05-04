@@ -396,8 +396,8 @@ class SheetDB:
         """Delete whole columns and shift every subsequent column left.
 
         Mirrors :meth:`delete_rows` but operates on ``col_idx``. Two tables
-        are affected: ``datasette_sheets_cell`` (per-cell data) and
-        ``datasette_sheets_column`` (per-column UI metadata — widths,
+        are affected: ``_datasette_sheets_cell`` (per-cell data) and
+        ``_datasette_sheets_column`` (per-column UI metadata — widths,
         names, formats). Both get the same two-pass negative-buffer shift
         so scrambled rowid scan order can't trip
         ``UNIQUE(sheet_id, row_idx, col_idx)`` /
@@ -472,7 +472,7 @@ class SheetDB:
           3. Update view-registry ``min_col`` / ``max_col`` for any view
              whose range intersects the affected band.
           4. Two-pass negative-buffer shift on cells.
-          5. Same shift on ``datasette_sheets_column`` metadata so
+          5. Same shift on ``_datasette_sheets_column`` metadata so
              names/widths/formats follow the data.
 
         Raises ``ValueError`` on invalid input
@@ -597,7 +597,7 @@ class SheetDB:
           3. Update view-registry ``min_row`` / ``max_row`` for any
              view whose row range intersects the affected band.
           4. Two-pass negative-buffer shift on cells. NO row-meta
-             table to shift (datasette_sheets_cell is the only
+             table to shift (_datasette_sheets_cell is the only
              persisted-per-row state).
 
         Raises ``ValueError`` on invalid input.
@@ -678,7 +678,7 @@ class SheetDB:
         Mirrors :meth:`delete_columns` but without the DELETE phase —
         blank columns materialise by their absence from the tables.
         Uses the same two-pass negative-buffer ``col_idx`` shift on
-        both ``datasette_sheets_cell`` and ``datasette_sheets_column``
+        both ``_datasette_sheets_cell`` and ``_datasette_sheets_column``
         to dodge ``UNIQUE(sheet_id, row_idx, col_idx)`` /
         ``UNIQUE(sheet_id, col_idx)`` collisions mid-statement when
         SQLite's rowid scan order disagrees with the PK order.
@@ -1372,7 +1372,7 @@ def _lookup_rule_anywhere(conn, rule_id: int) -> tuple[int, str] | None:
     write is rejected — a stale ``dropdownRuleId`` against a
     just-deleted rule is the most common cause)."""
     row = conn.execute(
-        "select multi, options_json from datasette_sheets_dropdown_rule where id = ?",
+        "select multi, options_json from _datasette_sheets_dropdown_rule where id = ?",
         [rule_id],
     ).fetchone()
     return row

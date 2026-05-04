@@ -2,8 +2,8 @@
 :meth:`SheetDB.delete_columns`.
 
 Mirrors :mod:`tests.test_row_shift` but on ``col_idx``. The real
-method shifts both ``datasette_sheets_cell`` and
-``datasette_sheets_column`` via the same two-pass negative-buffer
+method shifts both ``_datasette_sheets_cell`` and
+``_datasette_sheets_column`` via the same two-pass negative-buffer
 pattern; these tests exercise the cell-table shift in isolation
 via the codegened helpers. The integration suite
 (:mod:`tests.test_cols`) covers the column-table shift + HTTP
@@ -33,7 +33,7 @@ def conn():
 def seed(conn: sqlite3.Connection, cells: list[tuple[int, int, str]], sheet: str = "s"):
     """Insert (row_idx, col_idx, raw_value) triples."""
     conn.executemany(
-        "INSERT INTO datasette_sheets_cell (sheet_id, row_idx, col_idx, raw_value) "
+        "INSERT INTO _datasette_sheets_cell (sheet_id, row_idx, col_idx, raw_value) "
         "VALUES (?, ?, ?, ?)",
         [(sheet, r, c, v) for (r, c, v) in cells],
     )
@@ -43,7 +43,7 @@ def current(conn: sqlite3.Connection, sheet: str = "s") -> list[tuple[int, int, 
     return [
         (r, c, v)
         for (r, c, v) in conn.execute(
-            "SELECT row_idx, col_idx, raw_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? ORDER BY col_idx, row_idx",
             [sheet],
         )
@@ -172,7 +172,7 @@ def test_scrambled_insert_order_does_not_collide(conn):
     rowid, not PK order. Insert cells out of order and confirm the shift
     still lands them correctly."""
     conn.executemany(
-        "INSERT INTO datasette_sheets_cell (sheet_id, row_idx, col_idx, raw_value) "
+        "INSERT INTO _datasette_sheets_cell (sheet_id, row_idx, col_idx, raw_value) "
         "VALUES (?, ?, ?, ?)",
         [
             ("s", 0, 5, "c5"),

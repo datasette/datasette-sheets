@@ -30,7 +30,7 @@ IDENTIFIER_RE = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
 # append `_insert`/`_update`/`_delete` without blowing past SQLite's comfort
 # zone. We verify the user-facing cap in validate_view_name.
 VIEW_NAME_MAX = 63
-RESERVED_VIEW_PREFIXES = ("datasette_sheets_", "sqlite_")
+RESERVED_VIEW_PREFIXES = ("_datasette_sheets_", "sqlite_")
 ROW_COL = "_sheet_row"
 
 # Internal helpers ------------------------------------------------------------
@@ -190,7 +190,7 @@ def build_view_sql(spec: ViewSpec) -> str:
     for i, col_idx in enumerate(range(spec.min_col, spec.max_col + 1)):
         alias = _ident(spec.column_aliases[i])
         select_parts.append(
-            f"(SELECT {value_expr} FROM datasette_sheets_cell c "
+            f"(SELECT {value_expr} FROM _datasette_sheets_cell c "
             f"WHERE c.sheet_id = {sheet_lit} AND c.row_idx = r.row_idx "
             f"AND c.col_idx = {col_idx}) AS {alias}"
         )
@@ -200,7 +200,7 @@ def build_view_sql(spec: ViewSpec) -> str:
     return (
         f"CREATE VIEW {_ident(spec.view_name)} AS\n"
         f"WITH rows AS (\n"
-        f"  SELECT DISTINCT row_idx FROM datasette_sheets_cell\n"
+        f"  SELECT DISTINCT row_idx FROM _datasette_sheets_cell\n"
         f"  WHERE sheet_id = {sheet_lit}\n"
         f"    AND row_idx >= {spec.data_start_row} AND row_idx <= {spec.max_row}\n"
         f"    AND col_idx >= {spec.min_col} AND col_idx <= {spec.max_col}\n"
@@ -218,7 +218,7 @@ def build_update_trigger_sql(spec: ViewSpec) -> str:
     for i, col_idx in enumerate(range(spec.min_col, spec.max_col + 1)):
         alias = _ident(spec.column_aliases[i])
         stmts.append(
-            f"INSERT INTO datasette_sheets_cell "
+            f"INSERT INTO _datasette_sheets_cell "
             f"(sheet_id, row_idx, col_idx, raw_value, computed_value, updated_at) "
             f"VALUES ({sheet_lit}, OLD.{row_col}, {col_idx}, "
             f"COALESCE(NEW.{alias}, ''), COALESCE(NEW.{alias}, ''), {_NOW_EXPR}) "
@@ -238,7 +238,7 @@ def build_delete_trigger_sql(spec: ViewSpec) -> str:
     sheet_lit = _sheet_literal(spec.sheet_id)
     row_col = _ident(ROW_COL)
     clear_stmt = (
-        f"DELETE FROM datasette_sheets_cell "
+        f"DELETE FROM _datasette_sheets_cell "
         f"WHERE sheet_id = {sheet_lit} "
         f"AND row_idx = OLD.{row_col} "
         f"AND col_idx BETWEEN {spec.min_col} AND {spec.max_col};"
@@ -252,14 +252,14 @@ def build_delete_trigger_sql(spec: ViewSpec) -> str:
         # See SheetDB.delete_rows + tests/test_row_shift.py for the
         # detailed regression.
         shift_pass_1 = (
-            f"UPDATE datasette_sheets_cell "
+            f"UPDATE _datasette_sheets_cell "
             f"SET row_idx = -(row_idx + 1) "
             f"WHERE sheet_id = {sheet_lit} "
             f"AND row_idx > OLD.{row_col} AND row_idx <= {spec.max_row} "
             f"AND col_idx BETWEEN {spec.min_col} AND {spec.max_col};"
         )
         shift_pass_2 = (
-            f"UPDATE datasette_sheets_cell "
+            f"UPDATE _datasette_sheets_cell "
             f"SET row_idx = -row_idx - 2, updated_at = {_NOW_EXPR} "
             f"WHERE sheet_id = {sheet_lit} "
             f"AND row_idx < 0 "
@@ -279,11 +279,11 @@ def build_insert_trigger_sql(spec: ViewSpec) -> str:
     sheet_lit = _sheet_literal(spec.sheet_id)
     next_row_expr = (
         f"(SELECT COALESCE(MAX(row_idx), {spec.data_start_row - 1}) + 1 "
-        f"FROM datasette_sheets_cell WHERE sheet_id = {sheet_lit} "
+        f"FROM _datasette_sheets_cell WHERE sheet_id = {sheet_lit} "
         f"AND row_idx >= {spec.data_start_row})"
     )
     same_row_expr = (
-        f"(SELECT MAX(row_idx) FROM datasette_sheets_cell "
+        f"(SELECT MAX(row_idx) FROM _datasette_sheets_cell "
         f"WHERE sheet_id = {sheet_lit} AND row_idx >= {spec.data_start_row})"
     )
     stmts: list[str] = []
@@ -293,7 +293,7 @@ def build_insert_trigger_sql(spec: ViewSpec) -> str:
         # it back via MAX so every inserted value lands in the same row.
         row_expr = next_row_expr if i == 0 else same_row_expr
         stmts.append(
-            f"INSERT INTO datasette_sheets_cell "
+            f"INSERT INTO _datasette_sheets_cell "
             f"(sheet_id, row_idx, col_idx, raw_value, computed_value, updated_at) "
             f"VALUES ({sheet_lit}, {row_expr}, {col_idx}, "
             f"COALESCE(NEW.{alias}, ''), COALESCE(NEW.{alias}, ''), {_NOW_EXPR});"

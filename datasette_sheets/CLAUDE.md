@@ -131,7 +131,7 @@ get the fresh row back in one round-trip:
 
 ```sql
 -- name: insertWorkbook :row
-insert into datasette_sheets_workbook (id, name, created_by)
+insert into _datasette_sheets_workbook (id, name, created_by)
 values ($workbook_id::text, $name::text, :created_by)
 returning id, name, created_at, updated_at, created_by, sort_order;
 ```
@@ -145,7 +145,7 @@ so "set to NULL" and "leave alone" stay distinguishable.
 
 ```sql
 -- name: updateWorkbook :row
-update datasette_sheets_workbook
+update _datasette_sheets_workbook
 set name = case when $name_do_update::boolean then $name::text else name end,
     sort_order = case when $sort_order_do_update::boolean then $sort_order::integer else sort_order end,
     updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')
@@ -257,7 +257,7 @@ grammar in Python — the grammar is owned in one place
 ### Pre-existing bugs I know about but haven't fixed
 
 - `delete_workbook` / `delete_sheet` don't clean rows from
-  `datasette_sheets_view` (the registry). Separate from the SQL view
+  `_datasette_sheets_view` (the registry). Separate from the SQL view
   DDL cleanup. Noted in `queries.sql`; fix in its own slice.
 
 ## SSE Endpoint

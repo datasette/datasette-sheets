@@ -3,8 +3,8 @@
 
 Mirrors :mod:`tests.test_col_shift` but on the move pair
 (``moveCellColsToBuffer`` / ``moveCellColsFromBuffer``). The real
-method shifts both ``datasette_sheets_cell`` and
-``datasette_sheets_column`` via the same two-pass negative-buffer
+method shifts both ``_datasette_sheets_cell`` and
+``_datasette_sheets_column`` via the same two-pass negative-buffer
 pattern; these tests exercise the cell-table shift in isolation via
 the codegened helpers. The integration suite
 (:mod:`tests.test_col_move`) covers the column-table shift, formula
@@ -52,7 +52,7 @@ def seed(
 ):
     """Insert (row_idx, col_idx, raw_value) triples."""
     conn.executemany(
-        "INSERT INTO datasette_sheets_cell (sheet_id, row_idx, col_idx, raw_value) "
+        "INSERT INTO _datasette_sheets_cell (sheet_id, row_idx, col_idx, raw_value) "
         "VALUES (?, ?, ?, ?)",
         [(sheet, r, c, v) for (r, c, v) in cells],
     )
@@ -62,7 +62,7 @@ def current(conn: sqlite3.Connection, sheet: str = "s") -> list[tuple[int, int, 
     return [
         (r, c, v)
         for (r, c, v) in conn.execute(
-            "SELECT row_idx, col_idx, raw_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? ORDER BY col_idx, row_idx",
             [sheet],
         )
@@ -213,7 +213,7 @@ class TestScrambledInsertOrder:
         # Insert cols in scrambled order: 4, 0, 3, 1, 2.
         for c in [4, 0, 3, 1, 2]:
             conn.execute(
-                "INSERT INTO datasette_sheets_cell "
+                "INSERT INTO _datasette_sheets_cell "
                 "(sheet_id, row_idx, col_idx, raw_value) VALUES (?, ?, ?, ?)",
                 ["s", 0, c, f"c{c}"],
             )
@@ -229,7 +229,7 @@ class TestScrambledInsertOrder:
     def test_scrambled_right_move(self, conn):
         for c in [3, 1, 4, 0, 2]:
             conn.execute(
-                "INSERT INTO datasette_sheets_cell "
+                "INSERT INTO _datasette_sheets_cell "
                 "(sheet_id, row_idx, col_idx, raw_value) VALUES (?, ?, ?, ?)",
                 ["s", 0, c, f"c{c}"],
             )
@@ -270,10 +270,10 @@ def test_other_sheet_untouched(conn):
 
 def test_column_meta_shift_mirror(conn):
     """The column-meta helpers run the same shape against
-    ``datasette_sheets_column``. Sanity-check that they preserve
+    ``_datasette_sheets_column``. Sanity-check that they preserve
     name and width while swapping col_idx the same way."""
     conn.executemany(
-        "INSERT INTO datasette_sheets_column "
+        "INSERT INTO _datasette_sheets_column "
         "(sheet_id, col_idx, name, width) VALUES (?, ?, ?, ?)",
         [("s", c, f"col{c}", 100 + c) for c in range(5)],
     )
@@ -292,7 +292,7 @@ def test_column_meta_shift_mirror(conn):
     )
     rows = list(
         conn.execute(
-            "SELECT col_idx, name, width FROM datasette_sheets_column "
+            "SELECT col_idx, name, width FROM _datasette_sheets_column "
             "WHERE sheet_id = ? ORDER BY col_idx",
             ["s"],
         )

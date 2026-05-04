@@ -68,7 +68,7 @@ class TestValidateViewName:
             ("a-b", "dash"),
             ("drop table", "space"),
             ("a" * (VIEW_NAME_MAX + 1), "too long"),
-            ("datasette_sheets_x", "reserved prefix"),
+            ("_datasette_sheets_x", "reserved prefix"),
             ("sqlite_master", "reserved prefix"),
             ("a'); DROP TABLE x; --", "injection"),
             ("a]bc", "bracket"),
@@ -269,7 +269,7 @@ class TestBuildUpdateTrigger:
             "CREATE TRIGGER [students_update] INSTEAD OF UPDATE ON [students]"
         )
         # One statement per column
-        assert sql.count("INSERT INTO datasette_sheets_cell") == 2
+        assert sql.count("INSERT INTO _datasette_sheets_cell") == 2
         # ON CONFLICT upserts
         assert sql.count("ON CONFLICT(sheet_id, row_idx, col_idx)") == 2
         # Uses OLD._sheet_row to locate the row
@@ -288,7 +288,7 @@ class TestBuildDeleteTrigger:
         assert sql.startswith(
             "CREATE TRIGGER [students_delete] INSTEAD OF DELETE ON [students]"
         )
-        assert "DELETE FROM datasette_sheets_cell" in sql
+        assert "DELETE FROM _datasette_sheets_cell" in sql
         assert "row_idx = OLD.[_sheet_row]" in sql
         assert "col_idx BETWEEN 5 AND 6" in sql
         assert f"sheet_id = {GOOD_SHEET_ID}" in sql
@@ -297,7 +297,7 @@ class TestBuildDeleteTrigger:
         sql = build_delete_trigger_sql(
             make_spec(enable_delete=True, delete_mode="clear")
         )
-        assert "UPDATE datasette_sheets_cell" not in sql
+        assert "UPDATE _datasette_sheets_cell" not in sql
         assert "SET row_idx = row_idx - 1" not in sql
 
     def test_shift_mode_emits_shift_update(self):
@@ -305,7 +305,7 @@ class TestBuildDeleteTrigger:
             make_spec(enable_delete=True, delete_mode="shift")
         )
         # Still does the initial DELETE
-        assert "DELETE FROM datasette_sheets_cell" in sql
+        assert "DELETE FROM _datasette_sheets_cell" in sql
         # Two-pass shift through negative buffer — avoids mid-UPDATE PK
         # collisions when cells were inserted in scrambled rowid order.
         assert "SET row_idx = -(row_idx + 1)" in sql
@@ -328,7 +328,7 @@ class TestBuildInsertTrigger:
             "CREATE TRIGGER [students_insert] INSTEAD OF INSERT ON [students]"
         )
         # One INSERT per column
-        assert sql.count("INSERT INTO datasette_sheets_cell") == 2
+        assert sql.count("INSERT INTO _datasette_sheets_cell") == 2
         # First column picks fresh row_idx; later columns reuse it via MAX
         assert "COALESCE(MAX(row_idx)" in sql
         assert sql.count("SELECT MAX(row_idx)") >= 1
@@ -368,7 +368,7 @@ def sqlite_conn():
     conn = sqlite3.connect(":memory:")
     conn.executescript(
         """
-        CREATE TABLE datasette_sheets_cell (
+        CREATE TABLE _datasette_sheets_cell (
             sheet_id INTEGER NOT NULL,
             row_idx INTEGER NOT NULL,
             col_idx INTEGER NOT NULL,
@@ -445,7 +445,7 @@ class TestGeneratedSqlCompiles:
         """
         sqlite_conn.executescript(
             """
-            INSERT INTO datasette_sheets_cell (sheet_id, row_idx, col_idx, raw_value)
+            INSERT INTO _datasette_sheets_cell (sheet_id, row_idx, col_idx, raw_value)
             VALUES
                 ('s', 0, 0, 'r0c0'), ('s', 0, 1, 'r0c1'),
                 ('s', 1, 0, 'r1c0'), ('s', 1, 1, 'r1c1'),
@@ -456,14 +456,14 @@ class TestGeneratedSqlCompiles:
         )
         # Delete row 2 and shift rows 3..4 up.
         sqlite_conn.execute(
-            "DELETE FROM datasette_sheets_cell WHERE sheet_id='s' AND row_idx = 2"
+            "DELETE FROM _datasette_sheets_cell WHERE sheet_id='s' AND row_idx = 2"
         )
         sqlite_conn.execute(
-            "UPDATE datasette_sheets_cell SET row_idx = row_idx - 1 "
+            "UPDATE _datasette_sheets_cell SET row_idx = row_idx - 1 "
             "WHERE sheet_id='s' AND row_idx > 2"
         )
         rows = sqlite_conn.execute(
-            "SELECT row_idx, col_idx, raw_value FROM datasette_sheets_cell ORDER BY row_idx, col_idx"
+            "SELECT row_idx, col_idx, raw_value FROM _datasette_sheets_cell ORDER BY row_idx, col_idx"
         ).fetchall()
         assert rows == [
             (0, 0, "r0c0"),

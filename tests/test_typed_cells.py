@@ -62,7 +62,7 @@ async def cell_row(ds, db_name, sheet_id, row_idx, col_idx):
     row = (
         await db.execute(
             "SELECT computed_value, computed_value_kind "
-            "FROM datasette_sheets_cell "
+            "FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? AND row_idx = ? AND col_idx = ?",
             [sheet_id, row_idx, col_idx],
         )
@@ -185,7 +185,7 @@ async def test_force_string_write_survives_recalc():
     row = (
         await db.execute(
             "SELECT typed_kind, typed_data, computed_value, computed_value_kind "
-            "FROM datasette_sheets_cell "
+            "FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? AND row_idx = 0 AND col_idx = 0",
             [sheet_id],
         )
@@ -230,7 +230,7 @@ async def test_string_override_cleared_by_subsequent_raw_write():
     db = ds.get_database(db_name)
     row = (
         await db.execute(
-            "SELECT typed_kind, typed_data FROM datasette_sheets_cell "
+            "SELECT typed_kind, typed_data FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? AND row_idx = 0 AND col_idx = 0",
             [sheet_id],
         )

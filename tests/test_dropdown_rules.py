@@ -295,7 +295,7 @@ async def test_workbook_delete_cleans_up_dropdown_rules():
     db = ds.get_database(db_name)
     row = (
         await db.execute(
-            "SELECT count(*) FROM datasette_sheets_dropdown_rule "
+            "SELECT count(*) FROM _datasette_sheets_dropdown_rule "
             "WHERE workbook_id = ?",
             [wb_id],
         )

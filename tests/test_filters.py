@@ -153,7 +153,7 @@ async def test_sheet_delete_cascades_filter():
     # Sanity check the row exists.
     def count(conn):
         return conn.execute(
-            "select count(*) from datasette_sheets_filter where sheet_id = ?",
+            "select count(*) from _datasette_sheets_filter where sheet_id = ?",
             [sheet_id],
         ).fetchone()[0]
 
@@ -195,7 +195,7 @@ async def test_workbook_delete_cascades_filter():
     assert resp.status_code == 200
 
     def count(conn):
-        return conn.execute("select count(*) from datasette_sheets_filter").fetchone()[
+        return conn.execute("select count(*) from _datasette_sheets_filter").fetchone()[
             0
         ]
 

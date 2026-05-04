@@ -4,13 +4,13 @@
     {
       "name": "listWorkbooks",
       "result_type": "Rows",
-      "sql": "select\n    id,\n    name,\n    created_at,\n    updated_at,\n    created_by,\n    sort_order\nfrom datasette_sheets_workbook\norder by sort_order, created_at;",
+      "sql": "select\n    id,\n    name,\n    created_at,\n    updated_at,\n    created_by,\n    sort_order\nfrom _datasette_sheets_workbook\norder by sort_order, created_at;",
       "parameters": [],
       "columns": [
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -18,7 +18,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": false
@@ -26,7 +26,7 @@
         {
           "name": "created_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "created_at",
           "decltype": "TEXT",
           "nullable": false
@@ -34,7 +34,7 @@
         {
           "name": "updated_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "updated_at",
           "decltype": "TEXT",
           "nullable": false
@@ -42,7 +42,7 @@
         {
           "name": "created_by",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "created_by",
           "decltype": "TEXT",
           "nullable": true
@@ -50,7 +50,7 @@
         {
           "name": "sort_order",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "sort_order",
           "decltype": "INTEGER",
           "nullable": false
@@ -61,7 +61,7 @@
     {
       "name": "getWorkbook",
       "result_type": "Row",
-      "sql": "select\n    id,\n    name,\n    created_at,\n    updated_at,\n    created_by,\n    sort_order\nfrom datasette_sheets_workbook\nwhere id = $workbook_id::integer;",
+      "sql": "select\n    id,\n    name,\n    created_at,\n    updated_at,\n    created_by,\n    sort_order\nfrom _datasette_sheets_workbook\nwhere id = $workbook_id::integer;",
       "parameters": [
         {
           "full_name": "$workbook_id::integer",
@@ -74,7 +74,7 @@
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -82,7 +82,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": false
@@ -90,7 +90,7 @@
         {
           "name": "created_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "created_at",
           "decltype": "TEXT",
           "nullable": false
@@ -98,7 +98,7 @@
         {
           "name": "updated_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "updated_at",
           "decltype": "TEXT",
           "nullable": false
@@ -106,7 +106,7 @@
         {
           "name": "created_by",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "created_by",
           "decltype": "TEXT",
           "nullable": true
@@ -114,7 +114,7 @@
         {
           "name": "sort_order",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "sort_order",
           "decltype": "INTEGER",
           "nullable": false
@@ -125,7 +125,7 @@
     {
       "name": "insertWorkbook",
       "result_type": "Row",
-      "sql": "insert into datasette_sheets_workbook (name, created_by)\nvalues ($name::text, $created_by::text::)\nreturning id, name, created_at, updated_at, created_by, sort_order;",
+      "sql": "insert into _datasette_sheets_workbook (name, created_by)\nvalues ($name::text, $created_by::text::)\nreturning id, name, created_at, updated_at, created_by, sort_order;",
       "parameters": [
         {
           "full_name": "$name::text",
@@ -144,7 +144,7 @@
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -152,7 +152,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": false
@@ -160,7 +160,7 @@
         {
           "name": "created_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "created_at",
           "decltype": "TEXT",
           "nullable": false
@@ -168,7 +168,7 @@
         {
           "name": "updated_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "updated_at",
           "decltype": "TEXT",
           "nullable": false
@@ -176,7 +176,7 @@
         {
           "name": "created_by",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "created_by",
           "decltype": "TEXT",
           "nullable": true
@@ -184,7 +184,7 @@
         {
           "name": "sort_order",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "sort_order",
           "decltype": "INTEGER",
           "nullable": false
@@ -195,7 +195,7 @@
     {
       "name": "updateWorkbook",
       "result_type": "Row",
-      "sql": "update datasette_sheets_workbook\nset name = case when $name_do_update::boolean then $name::text else name end,\n    sort_order = case\n        when $sort_order_do_update::boolean then $sort_order::integer\n        else sort_order\n    end,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $workbook_id::integer\nreturning id, name, created_at, updated_at, created_by, sort_order;",
+      "sql": "update _datasette_sheets_workbook\nset name = case when $name_do_update::boolean then $name::text else name end,\n    sort_order = case\n        when $sort_order_do_update::boolean then $sort_order::integer\n        else sort_order\n    end,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $workbook_id::integer\nreturning id, name, created_at, updated_at, created_by, sort_order;",
       "parameters": [
         {
           "full_name": "$name_do_update::boolean",
@@ -232,7 +232,7 @@
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -240,7 +240,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": false
@@ -248,7 +248,7 @@
         {
           "name": "created_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "created_at",
           "decltype": "TEXT",
           "nullable": false
@@ -256,7 +256,7 @@
         {
           "name": "updated_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "updated_at",
           "decltype": "TEXT",
           "nullable": false
@@ -264,7 +264,7 @@
         {
           "name": "created_by",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "created_by",
           "decltype": "TEXT",
           "nullable": true
@@ -272,7 +272,7 @@
         {
           "name": "sort_order",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_workbook",
+          "origin_table": "_datasette_sheets_workbook",
           "origin_column": "sort_order",
           "decltype": "INTEGER",
           "nullable": false
@@ -283,7 +283,7 @@
     {
       "name": "deleteWorkbookCells",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_cell\nwhere sheet_id in (\n    select id from datasette_sheets_sheet where workbook_id = $workbook_id::integer\n);",
+      "sql": "delete from _datasette_sheets_cell\nwhere sheet_id in (\n    select id from _datasette_sheets_sheet where workbook_id = $workbook_id::integer\n);",
       "parameters": [
         {
           "full_name": "$workbook_id::integer",
@@ -298,7 +298,7 @@
     {
       "name": "deleteWorkbookColumns",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_column\nwhere sheet_id in (\n    select id from datasette_sheets_sheet where workbook_id = $workbook_id::integer\n);",
+      "sql": "delete from _datasette_sheets_column\nwhere sheet_id in (\n    select id from _datasette_sheets_sheet where workbook_id = $workbook_id::integer\n);",
       "parameters": [
         {
           "full_name": "$workbook_id::integer",
@@ -313,7 +313,7 @@
     {
       "name": "deleteWorkbookNamedRanges",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_named_range\nwhere sheet_id in (\n    select id from datasette_sheets_sheet where workbook_id = $workbook_id::integer\n);",
+      "sql": "delete from _datasette_sheets_named_range\nwhere sheet_id in (\n    select id from _datasette_sheets_sheet where workbook_id = $workbook_id::integer\n);",
       "parameters": [
         {
           "full_name": "$workbook_id::integer",
@@ -328,7 +328,7 @@
     {
       "name": "deleteWorkbookSheets",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_sheet where workbook_id = $workbook_id::integer;",
+      "sql": "delete from _datasette_sheets_sheet where workbook_id = $workbook_id::integer;",
       "parameters": [
         {
           "full_name": "$workbook_id::integer",
@@ -343,7 +343,7 @@
     {
       "name": "deleteWorkbookRow",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_workbook where id = $workbook_id::integer;",
+      "sql": "delete from _datasette_sheets_workbook where id = $workbook_id::integer;",
       "parameters": [
         {
           "full_name": "$workbook_id::integer",
@@ -358,7 +358,7 @@
     {
       "name": "listSheets",
       "result_type": "Rows",
-      "sql": "select id, workbook_id, name, color, sort_order, created_at, updated_at\nfrom datasette_sheets_sheet\nwhere workbook_id = $workbook_id::integer\norder by sort_order, created_at;",
+      "sql": "select id, workbook_id, name, color, sort_order, created_at, updated_at\nfrom _datasette_sheets_sheet\nwhere workbook_id = $workbook_id::integer\norder by sort_order, created_at;",
       "parameters": [
         {
           "full_name": "$workbook_id::integer",
@@ -371,7 +371,7 @@
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -379,7 +379,7 @@
         {
           "name": "workbook_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "workbook_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -387,7 +387,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": false
@@ -395,7 +395,7 @@
         {
           "name": "color",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "color",
           "decltype": "TEXT",
           "nullable": false
@@ -403,7 +403,7 @@
         {
           "name": "sort_order",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "sort_order",
           "decltype": "INTEGER",
           "nullable": false
@@ -411,7 +411,7 @@
         {
           "name": "created_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "created_at",
           "decltype": "TEXT",
           "nullable": false
@@ -419,7 +419,7 @@
         {
           "name": "updated_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "updated_at",
           "decltype": "TEXT",
           "nullable": false
@@ -430,7 +430,7 @@
     {
       "name": "getSheet",
       "result_type": "Row",
-      "sql": "select id, workbook_id, name, color, sort_order, created_at, updated_at\nfrom datasette_sheets_sheet\nwhere id = $sheet_id::integer;",
+      "sql": "select id, workbook_id, name, color, sort_order, created_at, updated_at\nfrom _datasette_sheets_sheet\nwhere id = $sheet_id::integer;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -443,7 +443,7 @@
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -451,7 +451,7 @@
         {
           "name": "workbook_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "workbook_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -459,7 +459,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": false
@@ -467,7 +467,7 @@
         {
           "name": "color",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "color",
           "decltype": "TEXT",
           "nullable": false
@@ -475,7 +475,7 @@
         {
           "name": "sort_order",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "sort_order",
           "decltype": "INTEGER",
           "nullable": false
@@ -483,7 +483,7 @@
         {
           "name": "created_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "created_at",
           "decltype": "TEXT",
           "nullable": false
@@ -491,7 +491,7 @@
         {
           "name": "updated_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "updated_at",
           "decltype": "TEXT",
           "nullable": false
@@ -502,7 +502,7 @@
     {
       "name": "insertSheet",
       "result_type": "Row",
-      "sql": "insert into datasette_sheets_sheet (workbook_id, name, color)\nvalues ($workbook_id::integer, $name::text, $color::text)\nreturning id, workbook_id, name, color, sort_order, created_at, updated_at;",
+      "sql": "insert into _datasette_sheets_sheet (workbook_id, name, color)\nvalues ($workbook_id::integer, $name::text, $color::text)\nreturning id, workbook_id, name, color, sort_order, created_at, updated_at;",
       "parameters": [
         {
           "full_name": "$workbook_id::integer",
@@ -527,7 +527,7 @@
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -535,7 +535,7 @@
         {
           "name": "workbook_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "workbook_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -543,7 +543,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": false
@@ -551,7 +551,7 @@
         {
           "name": "color",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "color",
           "decltype": "TEXT",
           "nullable": false
@@ -559,7 +559,7 @@
         {
           "name": "sort_order",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "sort_order",
           "decltype": "INTEGER",
           "nullable": false
@@ -567,7 +567,7 @@
         {
           "name": "created_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "created_at",
           "decltype": "TEXT",
           "nullable": false
@@ -575,7 +575,7 @@
         {
           "name": "updated_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "updated_at",
           "decltype": "TEXT",
           "nullable": false
@@ -586,7 +586,7 @@
     {
       "name": "updateSheet",
       "result_type": "Row",
-      "sql": "update datasette_sheets_sheet\nset name = case when $name_do_update::boolean then $name::text else name end,\n    color = case when $color_do_update::boolean then $color::text else color end,\n    sort_order = case\n        when $sort_order_do_update::boolean then $sort_order::integer\n        else sort_order\n    end,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $sheet_id::integer\nreturning id, workbook_id, name, color, sort_order, created_at, updated_at;",
+      "sql": "update _datasette_sheets_sheet\nset name = case when $name_do_update::boolean then $name::text else name end,\n    color = case when $color_do_update::boolean then $color::text else color end,\n    sort_order = case\n        when $sort_order_do_update::boolean then $sort_order::integer\n        else sort_order\n    end,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $sheet_id::integer\nreturning id, workbook_id, name, color, sort_order, created_at, updated_at;",
       "parameters": [
         {
           "full_name": "$name_do_update::boolean",
@@ -635,7 +635,7 @@
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -643,7 +643,7 @@
         {
           "name": "workbook_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "workbook_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -651,7 +651,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": false
@@ -659,7 +659,7 @@
         {
           "name": "color",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "color",
           "decltype": "TEXT",
           "nullable": false
@@ -667,7 +667,7 @@
         {
           "name": "sort_order",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "sort_order",
           "decltype": "INTEGER",
           "nullable": false
@@ -675,7 +675,7 @@
         {
           "name": "created_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "created_at",
           "decltype": "TEXT",
           "nullable": false
@@ -683,7 +683,7 @@
         {
           "name": "updated_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_sheet",
+          "origin_table": "_datasette_sheets_sheet",
           "origin_column": "updated_at",
           "decltype": "TEXT",
           "nullable": false
@@ -694,7 +694,7 @@
     {
       "name": "insertDefaultColumn",
       "result_type": "Void",
-      "sql": "insert into datasette_sheets_column (sheet_id, col_idx, name, width)\nvalues ($sheet_id::integer, $col_idx::integer, $name::text, $width::integer);",
+      "sql": "insert into _datasette_sheets_column (sheet_id, col_idx, name, width)\nvalues ($sheet_id::integer, $col_idx::integer, $name::text, $width::integer);",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -727,7 +727,7 @@
     {
       "name": "deleteSheetCells",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_cell where sheet_id = $sheet_id::integer;",
+      "sql": "delete from _datasette_sheets_cell where sheet_id = $sheet_id::integer;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -742,7 +742,7 @@
     {
       "name": "deleteSheetColumns",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_column where sheet_id = $sheet_id::integer;",
+      "sql": "delete from _datasette_sheets_column where sheet_id = $sheet_id::integer;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -757,7 +757,7 @@
     {
       "name": "deleteSheetNamedRanges",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_named_range where sheet_id = $sheet_id::integer;",
+      "sql": "delete from _datasette_sheets_named_range where sheet_id = $sheet_id::integer;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -772,7 +772,7 @@
     {
       "name": "deleteSheetRow",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_sheet where id = $sheet_id::integer;",
+      "sql": "delete from _datasette_sheets_sheet where id = $sheet_id::integer;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -787,7 +787,7 @@
     {
       "name": "reorderSheet",
       "result_type": "Void",
-      "sql": "update datasette_sheets_sheet\nset sort_order = $sort_order::integer,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $sheet_id::integer\n  and workbook_id = $workbook_id::integer;",
+      "sql": "update _datasette_sheets_sheet\nset sort_order = $sort_order::integer,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $sheet_id::integer\n  and workbook_id = $workbook_id::integer;",
       "parameters": [
         {
           "full_name": "$sort_order::integer",
@@ -814,7 +814,7 @@
     {
       "name": "touchSheet",
       "result_type": "Void",
-      "sql": "update datasette_sheets_sheet\nset updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $sheet_id::integer;",
+      "sql": "update _datasette_sheets_sheet\nset updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $sheet_id::integer;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -829,7 +829,7 @@
     {
       "name": "listColumns",
       "result_type": "Rows",
-      "sql": "select sheet_id, col_idx, name, width, format_json\nfrom datasette_sheets_column\nwhere sheet_id = $sheet_id::integer\norder by col_idx;",
+      "sql": "select sheet_id, col_idx, name, width, format_json\nfrom _datasette_sheets_column\nwhere sheet_id = $sheet_id::integer\norder by col_idx;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -842,7 +842,7 @@
         {
           "name": "sheet_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_column",
+          "origin_table": "_datasette_sheets_column",
           "origin_column": "sheet_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -850,7 +850,7 @@
         {
           "name": "col_idx",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_column",
+          "origin_table": "_datasette_sheets_column",
           "origin_column": "col_idx",
           "decltype": "INTEGER",
           "nullable": false
@@ -858,7 +858,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_column",
+          "origin_table": "_datasette_sheets_column",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": false
@@ -866,7 +866,7 @@
         {
           "name": "width",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_column",
+          "origin_table": "_datasette_sheets_column",
           "origin_column": "width",
           "decltype": "INTEGER",
           "nullable": false
@@ -874,7 +874,7 @@
         {
           "name": "format_json",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_column",
+          "origin_table": "_datasette_sheets_column",
           "origin_column": "format_json",
           "decltype": "TEXT",
           "nullable": true
@@ -885,7 +885,7 @@
     {
       "name": "setColumn",
       "result_type": "Row",
-      "sql": "update datasette_sheets_column\nset name = case when $name_do_update::boolean then $name::text else name end,\n    width = case\n        when $width_do_update::boolean then $width::integer\n        else width\n    end\nwhere sheet_id = $sheet_id::integer\n  and col_idx = $col_idx::integer\nreturning sheet_id, col_idx, name, width, format_json;",
+      "sql": "update _datasette_sheets_column\nset name = case when $name_do_update::boolean then $name::text else name end,\n    width = case\n        when $width_do_update::boolean then $width::integer\n        else width\n    end\nwhere sheet_id = $sheet_id::integer\n  and col_idx = $col_idx::integer\nreturning sheet_id, col_idx, name, width, format_json;",
       "parameters": [
         {
           "full_name": "$name_do_update::boolean",
@@ -928,7 +928,7 @@
         {
           "name": "sheet_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_column",
+          "origin_table": "_datasette_sheets_column",
           "origin_column": "sheet_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -936,7 +936,7 @@
         {
           "name": "col_idx",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_column",
+          "origin_table": "_datasette_sheets_column",
           "origin_column": "col_idx",
           "decltype": "INTEGER",
           "nullable": false
@@ -944,7 +944,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_column",
+          "origin_table": "_datasette_sheets_column",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": false
@@ -952,7 +952,7 @@
         {
           "name": "width",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_column",
+          "origin_table": "_datasette_sheets_column",
           "origin_column": "width",
           "decltype": "INTEGER",
           "nullable": false
@@ -960,7 +960,7 @@
         {
           "name": "format_json",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_column",
+          "origin_table": "_datasette_sheets_column",
           "origin_column": "format_json",
           "decltype": "TEXT",
           "nullable": true
@@ -971,7 +971,7 @@
     {
       "name": "listCells",
       "result_type": "Rows",
-      "sql": "select sheet_id, row_idx, col_idx, raw_value, computed_value,\n       computed_value_kind, typed_kind, typed_data, format_json,\n       updated_at, updated_by\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\norder by row_idx, col_idx;",
+      "sql": "select sheet_id, row_idx, col_idx, raw_value, computed_value,\n       computed_value_kind, typed_kind, typed_data, format_json,\n       updated_at, updated_by\nfrom _datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\norder by row_idx, col_idx;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -984,7 +984,7 @@
         {
           "name": "sheet_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "sheet_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -992,7 +992,7 @@
         {
           "name": "row_idx",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "row_idx",
           "decltype": "INTEGER",
           "nullable": false
@@ -1000,7 +1000,7 @@
         {
           "name": "col_idx",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "col_idx",
           "decltype": "INTEGER",
           "nullable": false
@@ -1008,7 +1008,7 @@
         {
           "name": "raw_value",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "raw_value",
           "decltype": "TEXT",
           "nullable": false
@@ -1016,7 +1016,7 @@
         {
           "name": "computed_value",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "computed_value",
           "decltype": null,
           "nullable": true
@@ -1024,7 +1024,7 @@
         {
           "name": "computed_value_kind",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "computed_value_kind",
           "decltype": "TEXT",
           "nullable": true
@@ -1032,7 +1032,7 @@
         {
           "name": "typed_kind",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "typed_kind",
           "decltype": "TEXT",
           "nullable": true
@@ -1040,7 +1040,7 @@
         {
           "name": "typed_data",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "typed_data",
           "decltype": "TEXT",
           "nullable": true
@@ -1048,7 +1048,7 @@
         {
           "name": "format_json",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "format_json",
           "decltype": "TEXT",
           "nullable": true
@@ -1056,7 +1056,7 @@
         {
           "name": "updated_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "updated_at",
           "decltype": "TEXT",
           "nullable": false
@@ -1064,7 +1064,7 @@
         {
           "name": "updated_by",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "updated_by",
           "decltype": "TEXT",
           "nullable": true
@@ -1075,7 +1075,7 @@
     {
       "name": "deleteCell",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and row_idx = $row_idx::integer\n  and col_idx = $col_idx::integer;",
+      "sql": "delete from _datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and row_idx = $row_idx::integer\n  and col_idx = $col_idx::integer;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1102,7 +1102,7 @@
     {
       "name": "upsertCell",
       "result_type": "Void",
-      "sql": "insert into datasette_sheets_cell\n    (sheet_id, row_idx, col_idx, raw_value, format_json,\n     typed_kind, typed_data, updated_by, updated_at)\nvalues\n    ($sheet_id::integer, $row_idx::integer, $col_idx::integer,\n     $raw_value::text, $format_json::text::,\n     $typed_kind::text::, $typed_data::text::,\n     $updated_by::text::, strftime('%Y-%m-%dT%H:%M:%f', 'now'))\non conflict(sheet_id, row_idx, col_idx) do update set\n    raw_value = excluded.raw_value,\n    format_json = excluded.format_json,\n    typed_kind = excluded.typed_kind,\n    typed_data = excluded.typed_data,\n    updated_by = excluded.updated_by,\n    updated_at = excluded.updated_at;",
+      "sql": "insert into _datasette_sheets_cell\n    (sheet_id, row_idx, col_idx, raw_value, format_json,\n     typed_kind, typed_data, updated_by, updated_at)\nvalues\n    ($sheet_id::integer, $row_idx::integer, $col_idx::integer,\n     $raw_value::text, $format_json::text::,\n     $typed_kind::text::, $typed_data::text::,\n     $updated_by::text::, strftime('%Y-%m-%dT%H:%M:%f', 'now'))\non conflict(sheet_id, row_idx, col_idx) do update set\n    raw_value = excluded.raw_value,\n    format_json = excluded.format_json,\n    typed_kind = excluded.typed_kind,\n    typed_data = excluded.typed_data,\n    updated_by = excluded.updated_by,\n    updated_at = excluded.updated_at;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1159,7 +1159,7 @@
     {
       "name": "listCellsForRecalc",
       "result_type": "Rows",
-      "sql": "select row_idx, col_idx, raw_value, typed_kind, typed_data,\n       computed_value, computed_value_kind\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer;",
+      "sql": "select row_idx, col_idx, raw_value, typed_kind, typed_data,\n       computed_value, computed_value_kind\nfrom _datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1172,7 +1172,7 @@
         {
           "name": "row_idx",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "row_idx",
           "decltype": "INTEGER",
           "nullable": false
@@ -1180,7 +1180,7 @@
         {
           "name": "col_idx",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "col_idx",
           "decltype": "INTEGER",
           "nullable": false
@@ -1188,7 +1188,7 @@
         {
           "name": "raw_value",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "raw_value",
           "decltype": "TEXT",
           "nullable": false
@@ -1196,7 +1196,7 @@
         {
           "name": "typed_kind",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "typed_kind",
           "decltype": "TEXT",
           "nullable": true
@@ -1204,7 +1204,7 @@
         {
           "name": "typed_data",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "typed_data",
           "decltype": "TEXT",
           "nullable": true
@@ -1212,7 +1212,7 @@
         {
           "name": "computed_value",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "computed_value",
           "decltype": null,
           "nullable": true
@@ -1220,7 +1220,7 @@
         {
           "name": "computed_value_kind",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "computed_value_kind",
           "decltype": "TEXT",
           "nullable": true
@@ -1231,7 +1231,7 @@
     {
       "name": "listNamedRangesForRecalc",
       "result_type": "Rows",
-      "sql": "select name, definition\nfrom datasette_sheets_named_range\nwhere sheet_id = $sheet_id::integer;",
+      "sql": "select name, definition\nfrom _datasette_sheets_named_range\nwhere sheet_id = $sheet_id::integer;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1244,7 +1244,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_named_range",
+          "origin_table": "_datasette_sheets_named_range",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": false
@@ -1252,7 +1252,7 @@
         {
           "name": "definition",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_named_range",
+          "origin_table": "_datasette_sheets_named_range",
           "origin_column": "definition",
           "decltype": "TEXT",
           "nullable": false
@@ -1263,7 +1263,7 @@
     {
       "name": "updateCellComputed",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset computed_value = $value::,\n    computed_value_kind = $kind::text::\nwhere sheet_id = $sheet_id::integer\n  and row_idx = $row_idx::integer\n  and col_idx = $col_idx::integer;",
+      "sql": "update _datasette_sheets_cell\nset computed_value = $value::,\n    computed_value_kind = $kind::text::\nwhere sheet_id = $sheet_id::integer\n  and row_idx = $row_idx::integer\n  and col_idx = $col_idx::integer;",
       "parameters": [
         {
           "full_name": "$value::",
@@ -1302,7 +1302,7 @@
     {
       "name": "listFormulaCells",
       "result_type": "Rows",
-      "sql": "select row_idx, col_idx, raw_value\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and raw_value like '=%';",
+      "sql": "select row_idx, col_idx, raw_value\nfrom _datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and raw_value like '=%';",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1315,7 +1315,7 @@
         {
           "name": "row_idx",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "row_idx",
           "decltype": "INTEGER",
           "nullable": false
@@ -1323,7 +1323,7 @@
         {
           "name": "col_idx",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "col_idx",
           "decltype": "INTEGER",
           "nullable": false
@@ -1331,7 +1331,7 @@
         {
           "name": "raw_value",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "raw_value",
           "decltype": "TEXT",
           "nullable": false
@@ -1342,7 +1342,7 @@
     {
       "name": "updateCellRaw",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset raw_value = $raw_value::text\nwhere sheet_id = $sheet_id::integer\n  and row_idx = $row_idx::integer\n  and col_idx = $col_idx::integer;",
+      "sql": "update _datasette_sheets_cell\nset raw_value = $raw_value::text\nwhere sheet_id = $sheet_id::integer\n  and row_idx = $row_idx::integer\n  and col_idx = $col_idx::integer;",
       "parameters": [
         {
           "full_name": "$raw_value::text",
@@ -1375,7 +1375,7 @@
     {
       "name": "deleteCellsInRows",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and row_idx in (\n    select cast(value as integer) from json_each($row_indices_json::text)\n  );",
+      "sql": "delete from _datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and row_idx in (\n    select cast(value as integer) from json_each($row_indices_json::text)\n  );",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1396,7 +1396,7 @@
     {
       "name": "shiftCellRowsToBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset row_idx = -(row_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and row_idx > (\n    select min(cast(value as integer)) from json_each($row_indices_json::text)\n  );",
+      "sql": "update _datasette_sheets_cell\nset row_idx = -(row_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and row_idx > (\n    select min(cast(value as integer)) from json_each($row_indices_json::text)\n  );",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1417,7 +1417,7 @@
     {
       "name": "shiftCellRowsFromBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset row_idx = (-row_idx - 1) - (\n    select count(*) from json_each($row_indices_json::text)\n    where cast(value as integer) < (-datasette_sheets_cell.row_idx - 1)\n)\nwhere sheet_id = $sheet_id::integer\n  and row_idx < 0;",
+      "sql": "update _datasette_sheets_cell\nset row_idx = (-row_idx - 1) - (\n    select count(*) from json_each($row_indices_json::text)\n    where cast(value as integer) < (-_datasette_sheets_cell.row_idx - 1)\n)\nwhere sheet_id = $sheet_id::integer\n  and row_idx < 0;",
       "parameters": [
         {
           "full_name": "$row_indices_json::text",
@@ -1438,7 +1438,7 @@
     {
       "name": "deleteCellsInCols",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and col_idx in (\n    select cast(value as integer) from json_each($col_indices_json::text)\n  );",
+      "sql": "delete from _datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and col_idx in (\n    select cast(value as integer) from json_each($col_indices_json::text)\n  );",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1459,7 +1459,7 @@
     {
       "name": "deleteColumnsInCols",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_column\nwhere sheet_id = $sheet_id::integer\n  and col_idx in (\n    select cast(value as integer) from json_each($col_indices_json::text)\n  );",
+      "sql": "delete from _datasette_sheets_column\nwhere sheet_id = $sheet_id::integer\n  and col_idx in (\n    select cast(value as integer) from json_each($col_indices_json::text)\n  );",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1480,7 +1480,7 @@
     {
       "name": "shiftCellColsToBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx > (\n    select min(cast(value as integer)) from json_each($col_indices_json::text)\n  );",
+      "sql": "update _datasette_sheets_cell\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx > (\n    select min(cast(value as integer)) from json_each($col_indices_json::text)\n  );",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1501,7 +1501,7 @@
     {
       "name": "shiftCellColsFromBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset col_idx = (-col_idx - 1) - (\n    select count(*) from json_each($col_indices_json::text)\n    where cast(value as integer) < (-datasette_sheets_cell.col_idx - 1)\n)\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
+      "sql": "update _datasette_sheets_cell\nset col_idx = (-col_idx - 1) - (\n    select count(*) from json_each($col_indices_json::text)\n    where cast(value as integer) < (-_datasette_sheets_cell.col_idx - 1)\n)\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
       "parameters": [
         {
           "full_name": "$col_indices_json::text",
@@ -1522,7 +1522,7 @@
     {
       "name": "shiftColumnColsToBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_column\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx > (\n    select min(cast(value as integer)) from json_each($col_indices_json::text)\n  );",
+      "sql": "update _datasette_sheets_column\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx > (\n    select min(cast(value as integer)) from json_each($col_indices_json::text)\n  );",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1543,7 +1543,7 @@
     {
       "name": "shiftColumnColsFromBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_column\nset col_idx = (-col_idx - 1) - (\n    select count(*) from json_each($col_indices_json::text)\n    where cast(value as integer) < (-datasette_sheets_column.col_idx - 1)\n)\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
+      "sql": "update _datasette_sheets_column\nset col_idx = (-col_idx - 1) - (\n    select count(*) from json_each($col_indices_json::text)\n    where cast(value as integer) < (-_datasette_sheets_column.col_idx - 1)\n)\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
       "parameters": [
         {
           "full_name": "$col_indices_json::text",
@@ -1564,7 +1564,7 @@
     {
       "name": "insertShiftCellColsToBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx >= $at::integer;",
+      "sql": "update _datasette_sheets_cell\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx >= $at::integer;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1585,7 +1585,7 @@
     {
       "name": "insertShiftCellColsFromBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset col_idx = (-col_idx - 1) + $count::integer\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
+      "sql": "update _datasette_sheets_cell\nset col_idx = (-col_idx - 1) + $count::integer\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
       "parameters": [
         {
           "full_name": "$count::integer",
@@ -1606,7 +1606,7 @@
     {
       "name": "insertShiftColumnColsToBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_column\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx >= $at::integer;",
+      "sql": "update _datasette_sheets_column\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx >= $at::integer;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1627,7 +1627,7 @@
     {
       "name": "insertShiftColumnColsFromBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_column\nset col_idx = (-col_idx - 1) + $count::integer\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
+      "sql": "update _datasette_sheets_column\nset col_idx = (-col_idx - 1) + $count::integer\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
       "parameters": [
         {
           "full_name": "$count::integer",
@@ -1648,7 +1648,7 @@
     {
       "name": "moveCellColsToBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx between $low::integer and $high::integer;",
+      "sql": "update _datasette_sheets_cell\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx between $low::integer and $high::integer;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1675,7 +1675,7 @@
     {
       "name": "moveCellColsFromBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset col_idx = case\n  when (-col_idx - 1) between $src_start::integer and $src_end::integer\n    then (-col_idx - 1) - $src_start::integer + $final_start::integer\n  when (-col_idx - 1) < $src_start::integer\n    then (-col_idx - 1) + $width::integer\n  else (-col_idx - 1) - $width::integer\nend\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
+      "sql": "update _datasette_sheets_cell\nset col_idx = case\n  when (-col_idx - 1) between $src_start::integer and $src_end::integer\n    then (-col_idx - 1) - $src_start::integer + $final_start::integer\n  when (-col_idx - 1) < $src_start::integer\n    then (-col_idx - 1) + $width::integer\n  else (-col_idx - 1) - $width::integer\nend\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
       "parameters": [
         {
           "full_name": "$src_start::integer",
@@ -1714,7 +1714,7 @@
     {
       "name": "moveColumnMetaToBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_column\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx between $low::integer and $high::integer;",
+      "sql": "update _datasette_sheets_column\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx between $low::integer and $high::integer;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1741,7 +1741,7 @@
     {
       "name": "moveColumnMetaFromBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_column\nset col_idx = case\n  when (-col_idx - 1) between $src_start::integer and $src_end::integer\n    then (-col_idx - 1) - $src_start::integer + $final_start::integer\n  when (-col_idx - 1) < $src_start::integer\n    then (-col_idx - 1) + $width::integer\n  else (-col_idx - 1) - $width::integer\nend\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
+      "sql": "update _datasette_sheets_column\nset col_idx = case\n  when (-col_idx - 1) between $src_start::integer and $src_end::integer\n    then (-col_idx - 1) - $src_start::integer + $final_start::integer\n  when (-col_idx - 1) < $src_start::integer\n    then (-col_idx - 1) + $width::integer\n  else (-col_idx - 1) - $width::integer\nend\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
       "parameters": [
         {
           "full_name": "$src_start::integer",
@@ -1780,7 +1780,7 @@
     {
       "name": "moveCellRowsToBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset row_idx = -(row_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and row_idx between $low::integer and $high::integer;",
+      "sql": "update _datasette_sheets_cell\nset row_idx = -(row_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and row_idx between $low::integer and $high::integer;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1807,7 +1807,7 @@
     {
       "name": "moveCellRowsFromBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset row_idx = case\n  when (-row_idx - 1) between $src_start::integer and $src_end::integer\n    then (-row_idx - 1) - $src_start::integer + $final_start::integer\n  when (-row_idx - 1) < $src_start::integer\n    then (-row_idx - 1) + $width::integer\n  else (-row_idx - 1) - $width::integer\nend\nwhere sheet_id = $sheet_id::integer\n  and row_idx < 0;",
+      "sql": "update _datasette_sheets_cell\nset row_idx = case\n  when (-row_idx - 1) between $src_start::integer and $src_end::integer\n    then (-row_idx - 1) - $src_start::integer + $final_start::integer\n  when (-row_idx - 1) < $src_start::integer\n    then (-row_idx - 1) + $width::integer\n  else (-row_idx - 1) - $width::integer\nend\nwhere sheet_id = $sheet_id::integer\n  and row_idx < 0;",
       "parameters": [
         {
           "full_name": "$src_start::integer",
@@ -1846,7 +1846,7 @@
     {
       "name": "listNamedRanges",
       "result_type": "Rows",
-      "sql": "select sheet_id, name, definition, updated_at\nfrom datasette_sheets_named_range\nwhere sheet_id = $sheet_id::integer\norder by name collate nocase;",
+      "sql": "select sheet_id, name, definition, updated_at\nfrom _datasette_sheets_named_range\nwhere sheet_id = $sheet_id::integer\norder by name collate nocase;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1859,7 +1859,7 @@
         {
           "name": "sheet_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_named_range",
+          "origin_table": "_datasette_sheets_named_range",
           "origin_column": "sheet_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -1867,7 +1867,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_named_range",
+          "origin_table": "_datasette_sheets_named_range",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": false
@@ -1875,7 +1875,7 @@
         {
           "name": "definition",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_named_range",
+          "origin_table": "_datasette_sheets_named_range",
           "origin_column": "definition",
           "decltype": "TEXT",
           "nullable": false
@@ -1883,7 +1883,7 @@
         {
           "name": "updated_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_named_range",
+          "origin_table": "_datasette_sheets_named_range",
           "origin_column": "updated_at",
           "decltype": "TEXT",
           "nullable": false
@@ -1894,7 +1894,7 @@
     {
       "name": "upsertNamedRange",
       "result_type": "Row",
-      "sql": "insert into datasette_sheets_named_range\n    (sheet_id, name, definition, updated_at)\nvalues\n    ($sheet_id::integer, $name::text, $definition::text,\n     strftime('%Y-%m-%dT%H:%M:%f', 'now'))\non conflict(sheet_id, name) do update set\n    definition = excluded.definition,\n    updated_at = excluded.updated_at\nreturning sheet_id, name, definition, updated_at;",
+      "sql": "insert into _datasette_sheets_named_range\n    (sheet_id, name, definition, updated_at)\nvalues\n    ($sheet_id::integer, $name::text, $definition::text,\n     strftime('%Y-%m-%dT%H:%M:%f', 'now'))\non conflict(sheet_id, name) do update set\n    definition = excluded.definition,\n    updated_at = excluded.updated_at\nreturning sheet_id, name, definition, updated_at;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1919,7 +1919,7 @@
         {
           "name": "sheet_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_named_range",
+          "origin_table": "_datasette_sheets_named_range",
           "origin_column": "sheet_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -1927,7 +1927,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_named_range",
+          "origin_table": "_datasette_sheets_named_range",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": false
@@ -1935,7 +1935,7 @@
         {
           "name": "definition",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_named_range",
+          "origin_table": "_datasette_sheets_named_range",
           "origin_column": "definition",
           "decltype": "TEXT",
           "nullable": false
@@ -1943,7 +1943,7 @@
         {
           "name": "updated_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_named_range",
+          "origin_table": "_datasette_sheets_named_range",
           "origin_column": "updated_at",
           "decltype": "TEXT",
           "nullable": false
@@ -1954,7 +1954,7 @@
     {
       "name": "deleteNamedRange",
       "result_type": "Row",
-      "sql": "delete from datasette_sheets_named_range\nwhere sheet_id = $sheet_id::integer\n  and name = $name::text collate nocase\nreturning name;",
+      "sql": "delete from _datasette_sheets_named_range\nwhere sheet_id = $sheet_id::integer\n  and name = $name::text collate nocase\nreturning name;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -1973,7 +1973,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_named_range",
+          "origin_table": "_datasette_sheets_named_range",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": false
@@ -1984,7 +1984,7 @@
     {
       "name": "updateNamedRangeDefinition",
       "result_type": "Void",
-      "sql": "update datasette_sheets_named_range\nset definition = $definition::text,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere sheet_id = $sheet_id::integer\n  and name = $name::text collate nocase;",
+      "sql": "update _datasette_sheets_named_range\nset definition = $definition::text,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere sheet_id = $sheet_id::integer\n  and name = $name::text collate nocase;",
       "parameters": [
         {
           "full_name": "$definition::text",
@@ -2011,7 +2011,7 @@
     {
       "name": "listDropdownRules",
       "result_type": "Rows",
-      "sql": "select id, workbook_id, name, multi, options_json, updated_at\nfrom datasette_sheets_dropdown_rule\nwhere workbook_id = $workbook_id::integer\norder by coalesce(name, ''), id;",
+      "sql": "select id, workbook_id, name, multi, options_json, updated_at\nfrom _datasette_sheets_dropdown_rule\nwhere workbook_id = $workbook_id::integer\norder by coalesce(name, ''), id;",
       "parameters": [
         {
           "full_name": "$workbook_id::integer",
@@ -2024,7 +2024,7 @@
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -2032,7 +2032,7 @@
         {
           "name": "workbook_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "workbook_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -2040,7 +2040,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": true
@@ -2048,7 +2048,7 @@
         {
           "name": "multi",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "multi",
           "decltype": "INTEGER",
           "nullable": false
@@ -2056,7 +2056,7 @@
         {
           "name": "options_json",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "options_json",
           "decltype": "TEXT",
           "nullable": false
@@ -2064,7 +2064,7 @@
         {
           "name": "updated_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "updated_at",
           "decltype": "TEXT",
           "nullable": false
@@ -2075,7 +2075,7 @@
     {
       "name": "getDropdownRule",
       "result_type": "Row",
-      "sql": "select id, workbook_id, name, multi, options_json, updated_at\nfrom datasette_sheets_dropdown_rule\nwhere id = $rule_id::integer\n  and workbook_id = $workbook_id::integer;",
+      "sql": "select id, workbook_id, name, multi, options_json, updated_at\nfrom _datasette_sheets_dropdown_rule\nwhere id = $rule_id::integer\n  and workbook_id = $workbook_id::integer;",
       "parameters": [
         {
           "full_name": "$rule_id::integer",
@@ -2094,7 +2094,7 @@
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -2102,7 +2102,7 @@
         {
           "name": "workbook_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "workbook_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -2110,7 +2110,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": true
@@ -2118,7 +2118,7 @@
         {
           "name": "multi",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "multi",
           "decltype": "INTEGER",
           "nullable": false
@@ -2126,7 +2126,7 @@
         {
           "name": "options_json",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "options_json",
           "decltype": "TEXT",
           "nullable": false
@@ -2134,7 +2134,7 @@
         {
           "name": "updated_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "updated_at",
           "decltype": "TEXT",
           "nullable": false
@@ -2145,7 +2145,7 @@
     {
       "name": "insertDropdownRule",
       "result_type": "Row",
-      "sql": "insert into datasette_sheets_dropdown_rule\n    (workbook_id, name, multi, options_json, updated_at)\nvalues\n    ($workbook_id::integer, $name::text::,\n     $multi::integer, $options_json::text,\n     strftime('%Y-%m-%dT%H:%M:%f', 'now'))\nreturning id, workbook_id, name, multi, options_json, updated_at;",
+      "sql": "insert into _datasette_sheets_dropdown_rule\n    (workbook_id, name, multi, options_json, updated_at)\nvalues\n    ($workbook_id::integer, $name::text::,\n     $multi::integer, $options_json::text,\n     strftime('%Y-%m-%dT%H:%M:%f', 'now'))\nreturning id, workbook_id, name, multi, options_json, updated_at;",
       "parameters": [
         {
           "full_name": "$workbook_id::integer",
@@ -2176,7 +2176,7 @@
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -2184,7 +2184,7 @@
         {
           "name": "workbook_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "workbook_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -2192,7 +2192,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": true
@@ -2200,7 +2200,7 @@
         {
           "name": "multi",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "multi",
           "decltype": "INTEGER",
           "nullable": false
@@ -2208,7 +2208,7 @@
         {
           "name": "options_json",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "options_json",
           "decltype": "TEXT",
           "nullable": false
@@ -2216,7 +2216,7 @@
         {
           "name": "updated_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "updated_at",
           "decltype": "TEXT",
           "nullable": false
@@ -2227,7 +2227,7 @@
     {
       "name": "updateDropdownRule",
       "result_type": "Row",
-      "sql": "update datasette_sheets_dropdown_rule\nset name = case\n        when $name_do_update::boolean then $name::text::\n        else name\n    end,\n    multi = case\n        when $multi_do_update::boolean then $multi::integer\n        else multi\n    end,\n    options_json = case\n        when $options_do_update::boolean then $options_json::text\n        else options_json\n    end,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $rule_id::integer\n  and workbook_id = $workbook_id::integer\nreturning id, workbook_id, name, multi, options_json, updated_at;",
+      "sql": "update _datasette_sheets_dropdown_rule\nset name = case\n        when $name_do_update::boolean then $name::text::\n        else name\n    end,\n    multi = case\n        when $multi_do_update::boolean then $multi::integer\n        else multi\n    end,\n    options_json = case\n        when $options_do_update::boolean then $options_json::text\n        else options_json\n    end,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $rule_id::integer\n  and workbook_id = $workbook_id::integer\nreturning id, workbook_id, name, multi, options_json, updated_at;",
       "parameters": [
         {
           "full_name": "$name_do_update::boolean",
@@ -2282,7 +2282,7 @@
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -2290,7 +2290,7 @@
         {
           "name": "workbook_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "workbook_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -2298,7 +2298,7 @@
         {
           "name": "name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "name",
           "decltype": "TEXT",
           "nullable": true
@@ -2306,7 +2306,7 @@
         {
           "name": "multi",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "multi",
           "decltype": "INTEGER",
           "nullable": false
@@ -2314,7 +2314,7 @@
         {
           "name": "options_json",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "options_json",
           "decltype": "TEXT",
           "nullable": false
@@ -2322,7 +2322,7 @@
         {
           "name": "updated_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "updated_at",
           "decltype": "TEXT",
           "nullable": false
@@ -2333,7 +2333,7 @@
     {
       "name": "deleteDropdownRule",
       "result_type": "Row",
-      "sql": "delete from datasette_sheets_dropdown_rule\nwhere id = $rule_id::integer\n  and workbook_id = $workbook_id::integer\nreturning id;",
+      "sql": "delete from _datasette_sheets_dropdown_rule\nwhere id = $rule_id::integer\n  and workbook_id = $workbook_id::integer\nreturning id;",
       "parameters": [
         {
           "full_name": "$rule_id::integer",
@@ -2352,7 +2352,7 @@
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_table": "_datasette_sheets_dropdown_rule",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -2363,7 +2363,7 @@
     {
       "name": "deleteWorkbookDropdownRules",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_dropdown_rule\nwhere workbook_id = $workbook_id::integer;",
+      "sql": "delete from _datasette_sheets_dropdown_rule\nwhere workbook_id = $workbook_id::integer;",
       "parameters": [
         {
           "full_name": "$workbook_id::integer",
@@ -2378,7 +2378,7 @@
     {
       "name": "listViews",
       "result_type": "Rows",
-      "sql": "select id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n       use_headers, color, created_at, enable_insert, enable_update,\n       enable_delete, delete_mode\nfrom datasette_sheets_view\nwhere sheet_id = $sheet_id::integer\norder by created_at;",
+      "sql": "select id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n       use_headers, color, created_at, enable_insert, enable_update,\n       enable_delete, delete_mode\nfrom _datasette_sheets_view\nwhere sheet_id = $sheet_id::integer\norder by created_at;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -2391,7 +2391,7 @@
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -2399,7 +2399,7 @@
         {
           "name": "sheet_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "sheet_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -2407,7 +2407,7 @@
         {
           "name": "view_name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "view_name",
           "decltype": "TEXT",
           "nullable": false
@@ -2415,7 +2415,7 @@
         {
           "name": "range_str",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "range_str",
           "decltype": "TEXT",
           "nullable": false
@@ -2423,7 +2423,7 @@
         {
           "name": "min_row",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "min_row",
           "decltype": "INTEGER",
           "nullable": false
@@ -2431,7 +2431,7 @@
         {
           "name": "min_col",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "min_col",
           "decltype": "INTEGER",
           "nullable": false
@@ -2439,7 +2439,7 @@
         {
           "name": "max_row",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "max_row",
           "decltype": "INTEGER",
           "nullable": false
@@ -2447,7 +2447,7 @@
         {
           "name": "max_col",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "max_col",
           "decltype": "INTEGER",
           "nullable": false
@@ -2455,7 +2455,7 @@
         {
           "name": "use_headers",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "use_headers",
           "decltype": "INTEGER",
           "nullable": false
@@ -2463,7 +2463,7 @@
         {
           "name": "color",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "color",
           "decltype": "TEXT",
           "nullable": false
@@ -2471,7 +2471,7 @@
         {
           "name": "created_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "created_at",
           "decltype": "TEXT",
           "nullable": false
@@ -2479,7 +2479,7 @@
         {
           "name": "enable_insert",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "enable_insert",
           "decltype": "INTEGER",
           "nullable": false
@@ -2487,7 +2487,7 @@
         {
           "name": "enable_update",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "enable_update",
           "decltype": "INTEGER",
           "nullable": false
@@ -2495,7 +2495,7 @@
         {
           "name": "enable_delete",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "enable_delete",
           "decltype": "INTEGER",
           "nullable": false
@@ -2503,7 +2503,7 @@
         {
           "name": "delete_mode",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "delete_mode",
           "decltype": "TEXT",
           "nullable": false
@@ -2514,7 +2514,7 @@
     {
       "name": "getView",
       "result_type": "Row",
-      "sql": "select id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n       use_headers, color, created_at, enable_insert, enable_update,\n       enable_delete, delete_mode\nfrom datasette_sheets_view\nwhere id = $view_id::integer;",
+      "sql": "select id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n       use_headers, color, created_at, enable_insert, enable_update,\n       enable_delete, delete_mode\nfrom _datasette_sheets_view\nwhere id = $view_id::integer;",
       "parameters": [
         {
           "full_name": "$view_id::integer",
@@ -2527,7 +2527,7 @@
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -2535,7 +2535,7 @@
         {
           "name": "sheet_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "sheet_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -2543,7 +2543,7 @@
         {
           "name": "view_name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "view_name",
           "decltype": "TEXT",
           "nullable": false
@@ -2551,7 +2551,7 @@
         {
           "name": "range_str",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "range_str",
           "decltype": "TEXT",
           "nullable": false
@@ -2559,7 +2559,7 @@
         {
           "name": "min_row",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "min_row",
           "decltype": "INTEGER",
           "nullable": false
@@ -2567,7 +2567,7 @@
         {
           "name": "min_col",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "min_col",
           "decltype": "INTEGER",
           "nullable": false
@@ -2575,7 +2575,7 @@
         {
           "name": "max_row",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "max_row",
           "decltype": "INTEGER",
           "nullable": false
@@ -2583,7 +2583,7 @@
         {
           "name": "max_col",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "max_col",
           "decltype": "INTEGER",
           "nullable": false
@@ -2591,7 +2591,7 @@
         {
           "name": "use_headers",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "use_headers",
           "decltype": "INTEGER",
           "nullable": false
@@ -2599,7 +2599,7 @@
         {
           "name": "color",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "color",
           "decltype": "TEXT",
           "nullable": false
@@ -2607,7 +2607,7 @@
         {
           "name": "created_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "created_at",
           "decltype": "TEXT",
           "nullable": false
@@ -2615,7 +2615,7 @@
         {
           "name": "enable_insert",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "enable_insert",
           "decltype": "INTEGER",
           "nullable": false
@@ -2623,7 +2623,7 @@
         {
           "name": "enable_update",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "enable_update",
           "decltype": "INTEGER",
           "nullable": false
@@ -2631,7 +2631,7 @@
         {
           "name": "enable_delete",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "enable_delete",
           "decltype": "INTEGER",
           "nullable": false
@@ -2639,7 +2639,7 @@
         {
           "name": "delete_mode",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "delete_mode",
           "decltype": "TEXT",
           "nullable": false
@@ -2650,7 +2650,7 @@
     {
       "name": "insertView",
       "result_type": "Row",
-      "sql": "insert into datasette_sheets_view\n    (sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n     use_headers, color, enable_insert, enable_update, enable_delete, delete_mode)\nvalues\n    ($sheet_id::integer, $view_name::text, $range_str::text,\n     $min_row::integer, $min_col::integer, $max_row::integer, $max_col::integer,\n     $use_headers::integer, $color::text,\n     $enable_insert::integer, $enable_update::integer, $enable_delete::integer,\n     $delete_mode::text)\nreturning id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n          use_headers, color, created_at, enable_insert, enable_update,\n          enable_delete, delete_mode;",
+      "sql": "insert into _datasette_sheets_view\n    (sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n     use_headers, color, enable_insert, enable_update, enable_delete, delete_mode)\nvalues\n    ($sheet_id::integer, $view_name::text, $range_str::text,\n     $min_row::integer, $min_col::integer, $max_row::integer, $max_col::integer,\n     $use_headers::integer, $color::text,\n     $enable_insert::integer, $enable_update::integer, $enable_delete::integer,\n     $delete_mode::text)\nreturning id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n          use_headers, color, created_at, enable_insert, enable_update,\n          enable_delete, delete_mode;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -2735,7 +2735,7 @@
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -2743,7 +2743,7 @@
         {
           "name": "sheet_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "sheet_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -2751,7 +2751,7 @@
         {
           "name": "view_name",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "view_name",
           "decltype": "TEXT",
           "nullable": false
@@ -2759,7 +2759,7 @@
         {
           "name": "range_str",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "range_str",
           "decltype": "TEXT",
           "nullable": false
@@ -2767,7 +2767,7 @@
         {
           "name": "min_row",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "min_row",
           "decltype": "INTEGER",
           "nullable": false
@@ -2775,7 +2775,7 @@
         {
           "name": "min_col",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "min_col",
           "decltype": "INTEGER",
           "nullable": false
@@ -2783,7 +2783,7 @@
         {
           "name": "max_row",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "max_row",
           "decltype": "INTEGER",
           "nullable": false
@@ -2791,7 +2791,7 @@
         {
           "name": "max_col",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "max_col",
           "decltype": "INTEGER",
           "nullable": false
@@ -2799,7 +2799,7 @@
         {
           "name": "use_headers",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "use_headers",
           "decltype": "INTEGER",
           "nullable": false
@@ -2807,7 +2807,7 @@
         {
           "name": "color",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "color",
           "decltype": "TEXT",
           "nullable": false
@@ -2815,7 +2815,7 @@
         {
           "name": "created_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "created_at",
           "decltype": "TEXT",
           "nullable": false
@@ -2823,7 +2823,7 @@
         {
           "name": "enable_insert",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "enable_insert",
           "decltype": "INTEGER",
           "nullable": false
@@ -2831,7 +2831,7 @@
         {
           "name": "enable_update",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "enable_update",
           "decltype": "INTEGER",
           "nullable": false
@@ -2839,7 +2839,7 @@
         {
           "name": "enable_delete",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "enable_delete",
           "decltype": "INTEGER",
           "nullable": false
@@ -2847,7 +2847,7 @@
         {
           "name": "delete_mode",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_view",
+          "origin_table": "_datasette_sheets_view",
           "origin_column": "delete_mode",
           "decltype": "TEXT",
           "nullable": false
@@ -2858,7 +2858,7 @@
     {
       "name": "deleteView",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_view where id = $view_id::integer;",
+      "sql": "delete from _datasette_sheets_view where id = $view_id::integer;",
       "parameters": [
         {
           "full_name": "$view_id::integer",
@@ -2873,7 +2873,7 @@
     {
       "name": "updateViewColBounds",
       "result_type": "Void",
-      "sql": "update datasette_sheets_view\nset min_col = $min_col::integer,\n    max_col = $max_col::integer\nwhere id = $view_id::integer;",
+      "sql": "update _datasette_sheets_view\nset min_col = $min_col::integer,\n    max_col = $max_col::integer\nwhere id = $view_id::integer;",
       "parameters": [
         {
           "full_name": "$min_col::integer",
@@ -2900,7 +2900,7 @@
     {
       "name": "updateViewRowBounds",
       "result_type": "Void",
-      "sql": "update datasette_sheets_view\nset min_row = $min_row::integer,\n    max_row = $max_row::integer\nwhere id = $view_id::integer;",
+      "sql": "update _datasette_sheets_view\nset min_row = $min_row::integer,\n    max_row = $max_row::integer\nwhere id = $view_id::integer;",
       "parameters": [
         {
           "full_name": "$min_row::integer",
@@ -2951,7 +2951,7 @@
     {
       "name": "listCellsInRow",
       "result_type": "Rows",
-      "sql": "select col_idx, computed_value\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and row_idx = $row_idx::integer\n  and col_idx between $min_col::integer and $max_col::integer;",
+      "sql": "select col_idx, computed_value\nfrom _datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and row_idx = $row_idx::integer\n  and col_idx between $min_col::integer and $max_col::integer;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -2982,7 +2982,7 @@
         {
           "name": "col_idx",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "col_idx",
           "decltype": "INTEGER",
           "nullable": false
@@ -2990,7 +2990,7 @@
         {
           "name": "computed_value",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "computed_value",
           "decltype": null,
           "nullable": true
@@ -3001,7 +3001,7 @@
     {
       "name": "getFilterBySheet",
       "result_type": "Row",
-      "sql": "select id, sheet_id, min_row, min_col, max_row, max_col,\n       sort_col_idx, sort_direction, predicates_json,\n       created_at, updated_at\nfrom datasette_sheets_filter\nwhere sheet_id = $sheet_id::integer;",
+      "sql": "select id, sheet_id, min_row, min_col, max_row, max_col,\n       sort_col_idx, sort_direction, predicates_json,\n       created_at, updated_at\nfrom _datasette_sheets_filter\nwhere sheet_id = $sheet_id::integer;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -3014,7 +3014,7 @@
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -3022,7 +3022,7 @@
         {
           "name": "sheet_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "sheet_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -3030,7 +3030,7 @@
         {
           "name": "min_row",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "min_row",
           "decltype": "INTEGER",
           "nullable": false
@@ -3038,7 +3038,7 @@
         {
           "name": "min_col",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "min_col",
           "decltype": "INTEGER",
           "nullable": false
@@ -3046,7 +3046,7 @@
         {
           "name": "max_row",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "max_row",
           "decltype": "INTEGER",
           "nullable": false
@@ -3054,7 +3054,7 @@
         {
           "name": "max_col",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "max_col",
           "decltype": "INTEGER",
           "nullable": false
@@ -3062,7 +3062,7 @@
         {
           "name": "sort_col_idx",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "sort_col_idx",
           "decltype": "INTEGER",
           "nullable": true
@@ -3070,7 +3070,7 @@
         {
           "name": "sort_direction",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "sort_direction",
           "decltype": "TEXT",
           "nullable": true
@@ -3078,7 +3078,7 @@
         {
           "name": "predicates_json",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "predicates_json",
           "decltype": "TEXT",
           "nullable": false
@@ -3086,7 +3086,7 @@
         {
           "name": "created_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "created_at",
           "decltype": "TEXT",
           "nullable": false
@@ -3094,7 +3094,7 @@
         {
           "name": "updated_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "updated_at",
           "decltype": "TEXT",
           "nullable": false
@@ -3105,7 +3105,7 @@
     {
       "name": "insertFilter",
       "result_type": "Row",
-      "sql": "insert into datasette_sheets_filter\n    (sheet_id, min_row, min_col, max_row, max_col,\n     sort_col_idx, sort_direction, predicates_json)\nvalues\n    ($sheet_id::integer,\n     $min_row::integer, $min_col::integer,\n     $max_row::integer, $max_col::integer,\n     $sort_col_idx::, $sort_direction::,\n     $predicates_json::text)\nreturning id, sheet_id, min_row, min_col, max_row, max_col,\n          sort_col_idx, sort_direction, predicates_json,\n          created_at, updated_at;",
+      "sql": "insert into _datasette_sheets_filter\n    (sheet_id, min_row, min_col, max_row, max_col,\n     sort_col_idx, sort_direction, predicates_json)\nvalues\n    ($sheet_id::integer,\n     $min_row::integer, $min_col::integer,\n     $max_row::integer, $max_col::integer,\n     $sort_col_idx::, $sort_direction::,\n     $predicates_json::text)\nreturning id, sheet_id, min_row, min_col, max_row, max_col,\n          sort_col_idx, sort_direction, predicates_json,\n          created_at, updated_at;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -3160,7 +3160,7 @@
         {
           "name": "id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "id",
           "decltype": "INTEGER",
           "nullable": false
@@ -3168,7 +3168,7 @@
         {
           "name": "sheet_id",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "sheet_id",
           "decltype": "INTEGER",
           "nullable": false
@@ -3176,7 +3176,7 @@
         {
           "name": "min_row",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "min_row",
           "decltype": "INTEGER",
           "nullable": false
@@ -3184,7 +3184,7 @@
         {
           "name": "min_col",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "min_col",
           "decltype": "INTEGER",
           "nullable": false
@@ -3192,7 +3192,7 @@
         {
           "name": "max_row",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "max_row",
           "decltype": "INTEGER",
           "nullable": false
@@ -3200,7 +3200,7 @@
         {
           "name": "max_col",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "max_col",
           "decltype": "INTEGER",
           "nullable": false
@@ -3208,7 +3208,7 @@
         {
           "name": "sort_col_idx",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "sort_col_idx",
           "decltype": "INTEGER",
           "nullable": true
@@ -3216,7 +3216,7 @@
         {
           "name": "sort_direction",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "sort_direction",
           "decltype": "TEXT",
           "nullable": true
@@ -3224,7 +3224,7 @@
         {
           "name": "predicates_json",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "predicates_json",
           "decltype": "TEXT",
           "nullable": false
@@ -3232,7 +3232,7 @@
         {
           "name": "created_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "created_at",
           "decltype": "TEXT",
           "nullable": false
@@ -3240,7 +3240,7 @@
         {
           "name": "updated_at",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_filter",
+          "origin_table": "_datasette_sheets_filter",
           "origin_column": "updated_at",
           "decltype": "TEXT",
           "nullable": false
@@ -3251,7 +3251,7 @@
     {
       "name": "updateFilterColBounds",
       "result_type": "Void",
-      "sql": "update datasette_sheets_filter\nset min_col = $min_col::integer,\n    max_col = $max_col::integer,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::integer;",
+      "sql": "update _datasette_sheets_filter\nset min_col = $min_col::integer,\n    max_col = $max_col::integer,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::integer;",
       "parameters": [
         {
           "full_name": "$min_col::integer",
@@ -3278,7 +3278,7 @@
     {
       "name": "updateFilterRowBounds",
       "result_type": "Void",
-      "sql": "update datasette_sheets_filter\nset min_row = $min_row::integer,\n    max_row = $max_row::integer,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::integer;",
+      "sql": "update _datasette_sheets_filter\nset min_row = $min_row::integer,\n    max_row = $max_row::integer,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::integer;",
       "parameters": [
         {
           "full_name": "$min_row::integer",
@@ -3305,7 +3305,7 @@
     {
       "name": "updateFilterSort",
       "result_type": "Void",
-      "sql": "update datasette_sheets_filter\nset sort_col_idx = $sort_col_idx::,\n    sort_direction = $sort_direction::,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::integer;",
+      "sql": "update _datasette_sheets_filter\nset sort_col_idx = $sort_col_idx::,\n    sort_direction = $sort_direction::,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::integer;",
       "parameters": [
         {
           "full_name": "$sort_col_idx::",
@@ -3332,7 +3332,7 @@
     {
       "name": "updateFilterPredicates",
       "result_type": "Void",
-      "sql": "update datasette_sheets_filter\nset predicates_json = $predicates_json::text,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::integer;",
+      "sql": "update _datasette_sheets_filter\nset predicates_json = $predicates_json::text,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::integer;",
       "parameters": [
         {
           "full_name": "$predicates_json::text",
@@ -3353,7 +3353,7 @@
     {
       "name": "deleteFilterBySheet",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_filter where sheet_id = $sheet_id::integer;",
+      "sql": "delete from _datasette_sheets_filter where sheet_id = $sheet_id::integer;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -3368,7 +3368,7 @@
     {
       "name": "deleteWorkbookFilters",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_filter\nwhere sheet_id in (\n    select id from datasette_sheets_sheet where workbook_id = $workbook_id::integer\n);",
+      "sql": "delete from _datasette_sheets_filter\nwhere sheet_id in (\n    select id from _datasette_sheets_sheet where workbook_id = $workbook_id::integer\n);",
       "parameters": [
         {
           "full_name": "$workbook_id::integer",
@@ -3383,7 +3383,7 @@
     {
       "name": "listCellsInColRange",
       "result_type": "Rows",
-      "sql": "select row_idx, computed_value, computed_value_kind\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and col_idx = $col_idx::integer\n  and row_idx between $min_row::integer and $max_row::integer\norder by row_idx;",
+      "sql": "select row_idx, computed_value, computed_value_kind\nfrom _datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and col_idx = $col_idx::integer\n  and row_idx between $min_row::integer and $max_row::integer\norder by row_idx;",
       "parameters": [
         {
           "full_name": "$sheet_id::integer",
@@ -3414,7 +3414,7 @@
         {
           "name": "row_idx",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "row_idx",
           "decltype": "INTEGER",
           "nullable": false
@@ -3422,7 +3422,7 @@
         {
           "name": "computed_value",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "computed_value",
           "decltype": null,
           "nullable": true
@@ -3430,7 +3430,7 @@
         {
           "name": "computed_value_kind",
           "origin_database": "main",
-          "origin_table": "datasette_sheets_cell",
+          "origin_table": "_datasette_sheets_cell",
           "origin_column": "computed_value_kind",
           "decltype": "TEXT",
           "nullable": true

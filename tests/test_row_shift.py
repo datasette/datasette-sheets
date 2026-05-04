@@ -39,7 +39,7 @@ def conn():
 def seed(conn: sqlite3.Connection, rows: list[tuple[int, int, str]], sheet: str = "s"):
     """Insert (row_idx, col_idx, raw_value) triples under the given sheet."""
     conn.executemany(
-        "INSERT INTO datasette_sheets_cell (sheet_id, row_idx, col_idx, raw_value) "
+        "INSERT INTO _datasette_sheets_cell (sheet_id, row_idx, col_idx, raw_value) "
         "VALUES (?, ?, ?, ?)",
         [(sheet, r, c, v) for (r, c, v) in rows],
     )
@@ -49,7 +49,7 @@ def current(conn: sqlite3.Connection, sheet: str = "s") -> list[tuple[int, int, 
     return [
         (r, c, v)
         for (r, c, v) in conn.execute(
-            "SELECT row_idx, col_idx, raw_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? ORDER BY row_idx, col_idx",
             [sheet],
         )
@@ -260,7 +260,7 @@ def test_shift_with_non_monotonic_insert_order(conn):
     # row 3, etc. With an in-place shift-by-1, SQLite would try to move
     # row 5 → 4 while row 4 still exists → UNIQUE constraint failed.
     conn.executemany(
-        "INSERT INTO datasette_sheets_cell (sheet_id, row_idx, col_idx, raw_value) "
+        "INSERT INTO _datasette_sheets_cell (sheet_id, row_idx, col_idx, raw_value) "
         "VALUES (?, ?, ?, ?)",
         [
             ("s", 5, 0, "r5"),
@@ -287,7 +287,7 @@ def test_shift_with_non_monotonic_insert_order(conn):
 def test_shift_with_scrambled_inserts_and_middle_delete(conn):
     """Same as above but actually deleting a row with scrambled order."""
     conn.executemany(
-        "INSERT INTO datasette_sheets_cell (sheet_id, row_idx, col_idx, raw_value) "
+        "INSERT INTO _datasette_sheets_cell (sheet_id, row_idx, col_idx, raw_value) "
         "VALUES (?, ?, ?, ?)",
         [
             ("s", 7, 0, "r7"),

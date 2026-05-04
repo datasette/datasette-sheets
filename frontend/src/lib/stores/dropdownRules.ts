@@ -7,7 +7,7 @@
  * Storage is workbook-level: editing options on rule X updates every
  * cell across every sheet of the workbook that points at X. The
  * server is the source of truth (table
- * ``datasette_sheets_dropdown_rule``); this store is a typed
+ * ``_datasette_sheets_dropdown_rule``); this store is a typed
  * client-side mirror loaded once per workbook. [sheet.data.dropdown]
  */
 import { derived, writable } from "svelte/store";

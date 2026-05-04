@@ -54,7 +54,7 @@ async def computed(ds, db_name, sheet_id, row_idx, col_idx):
     db = ds.get_database(db_name)
     row = (
         await db.execute(
-            "SELECT computed_value FROM datasette_sheets_cell "
+            "SELECT computed_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? AND row_idx = ? AND col_idx = ?",
             [sheet_id, row_idx, col_idx],
         )

@@ -59,7 +59,7 @@ async def get_cells(ds, db_name, sheet_id):
     return [
         (r["row_idx"], r["col_idx"], r["raw_value"], r["computed_value"])
         for r in await db.execute(
-            "SELECT row_idx, col_idx, raw_value, computed_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value, computed_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ? ORDER BY row_idx, col_idx",
             [sheet_id],
         )
@@ -208,7 +208,7 @@ async def test_cell_format_json_follows_data():
 
     rows = list(
         await ds.get_database(db_name).execute(
-            "SELECT row_idx, col_idx, raw_value, format_json FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value, format_json FROM _datasette_sheets_cell "
             "WHERE sheet_id = ?",
             [sheet_id],
         )
@@ -236,7 +236,7 @@ async def test_single_cell_ref_follows_data():
     rows = {
         (r["row_idx"], r["col_idx"]): (r["raw_value"], r["computed_value"])
         for r in await ds.get_database(db_name).execute(
-            "SELECT row_idx, col_idx, raw_value, computed_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value, computed_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ?",
             [sheet_id],
         )
@@ -266,7 +266,7 @@ async def test_whole_row_ref_follows():
     rows = {
         (r["row_idx"], r["col_idx"]): (r["raw_value"], r["computed_value"])
         for r in await ds.get_database(db_name).execute(
-            "SELECT row_idx, col_idx, raw_value, computed_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value, computed_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ?",
             [sheet_id],
         )
@@ -295,7 +295,7 @@ async def test_bounded_range_in_cell_formula_stays_positional():
     rows = {
         (r["row_idx"], r["col_idx"]): r["raw_value"]
         for r in await ds.get_database(db_name).execute(
-            "SELECT row_idx, col_idx, raw_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ?",
             [sheet_id],
         )
@@ -315,7 +315,7 @@ async def test_whole_col_ref_unaffected_by_row_move():
     rows = {
         (r["row_idx"], r["col_idx"]): r["raw_value"]
         for r in await ds.get_database(db_name).execute(
-            "SELECT row_idx, col_idx, raw_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ?",
             [sheet_id],
         )
@@ -334,7 +334,7 @@ async def test_absolute_marker_preserved():
     rows = {
         (r["row_idx"], r["col_idx"]): r["raw_value"]
         for r in await ds.get_database(db_name).execute(
-            "SELECT row_idx, col_idx, raw_value FROM datasette_sheets_cell "
+            "SELECT row_idx, col_idx, raw_value FROM _datasette_sheets_cell "
             "WHERE sheet_id = ?",
             [sheet_id],
         )
@@ -381,7 +381,7 @@ async def test_named_range_definition_rewrites():
     defs = {
         r["name"]: r["definition"]
         for r in await ds.get_database(db_name).execute(
-            "SELECT name, definition FROM datasette_sheets_named_range "
+            "SELECT name, definition FROM _datasette_sheets_named_range "
             "WHERE sheet_id = ?",
             [sheet_id],
         )
@@ -434,7 +434,7 @@ async def test_view_min_max_row_update():
 
     view_row = (
         await ds.get_database(db_name).execute(
-            "SELECT min_row, max_row FROM datasette_sheets_view "
+            "SELECT min_row, max_row FROM _datasette_sheets_view "
             "WHERE sheet_id = ? AND view_name = ?",
             [sheet_id, "v_rows"],
         )

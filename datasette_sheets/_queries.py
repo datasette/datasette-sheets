@@ -164,7 +164,7 @@ select
     updated_at,
     created_by,
     sort_order
-from datasette_sheets_workbook
+from _datasette_sheets_workbook
 order by sort_order, created_at;
 """
     params: dict[str, Any] = {}
@@ -181,7 +181,7 @@ select
     updated_at,
     created_by,
     sort_order
-from datasette_sheets_workbook
+from _datasette_sheets_workbook
 where id = $workbook_id::integer;
 """
     params = {"workbook_id::integer": workbook_id}
@@ -194,7 +194,7 @@ def insert_workbook(
     conn: sqlite3.Connection, name: str, created_by: str | None
 ) -> Workbook | None:
     sql = """\
-insert into datasette_sheets_workbook (name, created_by)
+insert into _datasette_sheets_workbook (name, created_by)
 values ($name::text, $created_by::text::)
 returning id, name, created_at, updated_at, created_by, sort_order;
 """
@@ -213,7 +213,7 @@ def update_workbook(
     workbook_id: int,
 ) -> Workbook | None:
     sql = """\
-update datasette_sheets_workbook
+update _datasette_sheets_workbook
 set name = case when $name_do_update::boolean then $name::text else name end,
     sort_order = case
         when $sort_order_do_update::boolean then $sort_order::integer
@@ -237,9 +237,9 @@ returning id, name, created_at, updated_at, created_by, sort_order;
 
 def delete_workbook_cells(conn: sqlite3.Connection, workbook_id: int) -> None:
     sql = """\
-delete from datasette_sheets_cell
+delete from _datasette_sheets_cell
 where sheet_id in (
-    select id from datasette_sheets_sheet where workbook_id = $workbook_id::integer
+    select id from _datasette_sheets_sheet where workbook_id = $workbook_id::integer
 );
 """
     params = {"workbook_id::integer": workbook_id}
@@ -249,9 +249,9 @@ where sheet_id in (
 
 def delete_workbook_columns(conn: sqlite3.Connection, workbook_id: int) -> None:
     sql = """\
-delete from datasette_sheets_column
+delete from _datasette_sheets_column
 where sheet_id in (
-    select id from datasette_sheets_sheet where workbook_id = $workbook_id::integer
+    select id from _datasette_sheets_sheet where workbook_id = $workbook_id::integer
 );
 """
     params = {"workbook_id::integer": workbook_id}
@@ -261,9 +261,9 @@ where sheet_id in (
 
 def delete_workbook_named_ranges(conn: sqlite3.Connection, workbook_id: int) -> None:
     sql = """\
-delete from datasette_sheets_named_range
+delete from _datasette_sheets_named_range
 where sheet_id in (
-    select id from datasette_sheets_sheet where workbook_id = $workbook_id::integer
+    select id from _datasette_sheets_sheet where workbook_id = $workbook_id::integer
 );
 """
     params = {"workbook_id::integer": workbook_id}
@@ -273,7 +273,7 @@ where sheet_id in (
 
 def delete_workbook_sheets(conn: sqlite3.Connection, workbook_id: int) -> None:
     sql = (
-        "delete from datasette_sheets_sheet where workbook_id = $workbook_id::integer;"
+        "delete from _datasette_sheets_sheet where workbook_id = $workbook_id::integer;"
     )
     params = {"workbook_id::integer": workbook_id}
     conn.execute(sql, params)
@@ -281,7 +281,7 @@ def delete_workbook_sheets(conn: sqlite3.Connection, workbook_id: int) -> None:
 
 
 def delete_workbook_row(conn: sqlite3.Connection, workbook_id: int) -> None:
-    sql = "delete from datasette_sheets_workbook where id = $workbook_id::integer;"
+    sql = "delete from _datasette_sheets_workbook where id = $workbook_id::integer;"
     params = {"workbook_id::integer": workbook_id}
     conn.execute(sql, params)
     return None
@@ -290,7 +290,7 @@ def delete_workbook_row(conn: sqlite3.Connection, workbook_id: int) -> None:
 def list_sheets(conn: sqlite3.Connection, workbook_id: int) -> list[Sheet]:
     sql = """\
 select id, workbook_id, name, color, sort_order, created_at, updated_at
-from datasette_sheets_sheet
+from _datasette_sheets_sheet
 where workbook_id = $workbook_id::integer
 order by sort_order, created_at;
 """
@@ -302,7 +302,7 @@ order by sort_order, created_at;
 def get_sheet(conn: sqlite3.Connection, sheet_id: int) -> Sheet | None:
     sql = """\
 select id, workbook_id, name, color, sort_order, created_at, updated_at
-from datasette_sheets_sheet
+from _datasette_sheets_sheet
 where id = $sheet_id::integer;
 """
     params = {"sheet_id::integer": sheet_id}
@@ -315,7 +315,7 @@ def insert_sheet(
     conn: sqlite3.Connection, workbook_id: int, name: str, color: str
 ) -> Sheet | None:
     sql = """\
-insert into datasette_sheets_sheet (workbook_id, name, color)
+insert into _datasette_sheets_sheet (workbook_id, name, color)
 values ($workbook_id::integer, $name::text, $color::text)
 returning id, workbook_id, name, color, sort_order, created_at, updated_at;
 """
@@ -340,7 +340,7 @@ def update_sheet(
     sheet_id: int,
 ) -> Sheet | None:
     sql = """\
-update datasette_sheets_sheet
+update _datasette_sheets_sheet
 set name = case when $name_do_update::boolean then $name::text else name end,
     color = case when $color_do_update::boolean then $color::text else color end,
     sort_order = case
@@ -369,7 +369,7 @@ def insert_default_column(
     conn: sqlite3.Connection, sheet_id: int, col_idx: int, name: str, width: int
 ) -> None:
     sql = """\
-insert into datasette_sheets_column (sheet_id, col_idx, name, width)
+insert into _datasette_sheets_column (sheet_id, col_idx, name, width)
 values ($sheet_id::integer, $col_idx::integer, $name::text, $width::integer);
 """
     params = {
@@ -383,14 +383,14 @@ values ($sheet_id::integer, $col_idx::integer, $name::text, $width::integer);
 
 
 def delete_sheet_cells(conn: sqlite3.Connection, sheet_id: int) -> None:
-    sql = "delete from datasette_sheets_cell where sheet_id = $sheet_id::integer;"
+    sql = "delete from _datasette_sheets_cell where sheet_id = $sheet_id::integer;"
     params = {"sheet_id::integer": sheet_id}
     conn.execute(sql, params)
     return None
 
 
 def delete_sheet_columns(conn: sqlite3.Connection, sheet_id: int) -> None:
-    sql = "delete from datasette_sheets_column where sheet_id = $sheet_id::integer;"
+    sql = "delete from _datasette_sheets_column where sheet_id = $sheet_id::integer;"
     params = {"sheet_id::integer": sheet_id}
     conn.execute(sql, params)
     return None
@@ -398,7 +398,7 @@ def delete_sheet_columns(conn: sqlite3.Connection, sheet_id: int) -> None:
 
 def delete_sheet_named_ranges(conn: sqlite3.Connection, sheet_id: int) -> None:
     sql = (
-        "delete from datasette_sheets_named_range where sheet_id = $sheet_id::integer;"
+        "delete from _datasette_sheets_named_range where sheet_id = $sheet_id::integer;"
     )
     params = {"sheet_id::integer": sheet_id}
     conn.execute(sql, params)
@@ -406,7 +406,7 @@ def delete_sheet_named_ranges(conn: sqlite3.Connection, sheet_id: int) -> None:
 
 
 def delete_sheet_row(conn: sqlite3.Connection, sheet_id: int) -> None:
-    sql = "delete from datasette_sheets_sheet where id = $sheet_id::integer;"
+    sql = "delete from _datasette_sheets_sheet where id = $sheet_id::integer;"
     params = {"sheet_id::integer": sheet_id}
     conn.execute(sql, params)
     return None
@@ -416,7 +416,7 @@ def reorder_sheet(
     conn: sqlite3.Connection, sort_order: int, sheet_id: int, workbook_id: int
 ) -> None:
     sql = """\
-update datasette_sheets_sheet
+update _datasette_sheets_sheet
 set sort_order = $sort_order::integer,
     updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')
 where id = $sheet_id::integer
@@ -433,7 +433,7 @@ where id = $sheet_id::integer
 
 def touch_sheet(conn: sqlite3.Connection, sheet_id: int) -> None:
     sql = """\
-update datasette_sheets_sheet
+update _datasette_sheets_sheet
 set updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')
 where id = $sheet_id::integer;
 """
@@ -445,7 +445,7 @@ where id = $sheet_id::integer;
 def list_columns(conn: sqlite3.Connection, sheet_id: int) -> list[Column]:
     sql = """\
 select sheet_id, col_idx, name, width, format_json
-from datasette_sheets_column
+from _datasette_sheets_column
 where sheet_id = $sheet_id::integer
 order by col_idx;
 """
@@ -464,7 +464,7 @@ def set_column(
     col_idx: int,
 ) -> Column | None:
     sql = """\
-update datasette_sheets_column
+update _datasette_sheets_column
 set name = case when $name_do_update::boolean then $name::text else name end,
     width = case
         when $width_do_update::boolean then $width::integer
@@ -492,7 +492,7 @@ def list_cells(conn: sqlite3.Connection, sheet_id: int) -> list[Cell]:
 select sheet_id, row_idx, col_idx, raw_value, computed_value,
        computed_value_kind, typed_kind, typed_data, format_json,
        updated_at, updated_by
-from datasette_sheets_cell
+from _datasette_sheets_cell
 where sheet_id = $sheet_id::integer
 order by row_idx, col_idx;
 """
@@ -505,7 +505,7 @@ def delete_cell(
     conn: sqlite3.Connection, sheet_id: int, row_idx: int, col_idx: int
 ) -> None:
     sql = """\
-delete from datasette_sheets_cell
+delete from _datasette_sheets_cell
 where sheet_id = $sheet_id::integer
   and row_idx = $row_idx::integer
   and col_idx = $col_idx::integer;
@@ -531,7 +531,7 @@ def upsert_cell(
     updated_by: str | None,
 ) -> None:
     sql = """\
-insert into datasette_sheets_cell
+insert into _datasette_sheets_cell
     (sheet_id, row_idx, col_idx, raw_value, format_json,
      typed_kind, typed_data, updated_by, updated_at)
 values
@@ -567,7 +567,7 @@ def list_cells_for_recalc(
     sql = """\
 select row_idx, col_idx, raw_value, typed_kind, typed_data,
        computed_value, computed_value_kind
-from datasette_sheets_cell
+from _datasette_sheets_cell
 where sheet_id = $sheet_id::integer;
 """
     params = {"sheet_id::integer": sheet_id}
@@ -580,7 +580,7 @@ def list_named_ranges_for_recalc(
 ) -> list[ListNamedRangesForRecalcRow]:
     sql = """\
 select name, definition
-from datasette_sheets_named_range
+from _datasette_sheets_named_range
 where sheet_id = $sheet_id::integer;
 """
     params = {"sheet_id::integer": sheet_id}
@@ -597,7 +597,7 @@ def update_cell_computed(
     col_idx: int,
 ) -> None:
     sql = """\
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set computed_value = $value::,
     computed_value_kind = $kind::text::
 where sheet_id = $sheet_id::integer
@@ -620,7 +620,7 @@ def list_formula_cells(
 ) -> list[ListFormulaCellsRow]:
     sql = """\
 select row_idx, col_idx, raw_value
-from datasette_sheets_cell
+from _datasette_sheets_cell
 where sheet_id = $sheet_id::integer
   and raw_value like '=%';
 """
@@ -633,7 +633,7 @@ def update_cell_raw(
     conn: sqlite3.Connection, raw_value: str, sheet_id: int, row_idx: int, col_idx: int
 ) -> None:
     sql = """\
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set raw_value = $raw_value::text
 where sheet_id = $sheet_id::integer
   and row_idx = $row_idx::integer
@@ -653,7 +653,7 @@ def delete_cells_in_rows(
     conn: sqlite3.Connection, sheet_id: int, row_indices_json: str
 ) -> None:
     sql = """\
-delete from datasette_sheets_cell
+delete from _datasette_sheets_cell
 where sheet_id = $sheet_id::integer
   and row_idx in (
     select cast(value as integer) from json_each($row_indices_json::text)
@@ -668,7 +668,7 @@ def shift_cell_rows_to_buffer(
     conn: sqlite3.Connection, sheet_id: int, row_indices_json: str
 ) -> None:
     sql = """\
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set row_idx = -(row_idx + 1)
 where sheet_id = $sheet_id::integer
   and row_idx > (
@@ -684,10 +684,10 @@ def shift_cell_rows_from_buffer(
     conn: sqlite3.Connection, row_indices_json: str, sheet_id: int
 ) -> None:
     sql = """\
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set row_idx = (-row_idx - 1) - (
     select count(*) from json_each($row_indices_json::text)
-    where cast(value as integer) < (-datasette_sheets_cell.row_idx - 1)
+    where cast(value as integer) < (-_datasette_sheets_cell.row_idx - 1)
 )
 where sheet_id = $sheet_id::integer
   and row_idx < 0;
@@ -701,7 +701,7 @@ def delete_cells_in_cols(
     conn: sqlite3.Connection, sheet_id: int, col_indices_json: str
 ) -> None:
     sql = """\
-delete from datasette_sheets_cell
+delete from _datasette_sheets_cell
 where sheet_id = $sheet_id::integer
   and col_idx in (
     select cast(value as integer) from json_each($col_indices_json::text)
@@ -716,7 +716,7 @@ def delete_columns_in_cols(
     conn: sqlite3.Connection, sheet_id: int, col_indices_json: str
 ) -> None:
     sql = """\
-delete from datasette_sheets_column
+delete from _datasette_sheets_column
 where sheet_id = $sheet_id::integer
   and col_idx in (
     select cast(value as integer) from json_each($col_indices_json::text)
@@ -731,7 +731,7 @@ def shift_cell_cols_to_buffer(
     conn: sqlite3.Connection, sheet_id: int, col_indices_json: str
 ) -> None:
     sql = """\
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set col_idx = -(col_idx + 1)
 where sheet_id = $sheet_id::integer
   and col_idx > (
@@ -747,10 +747,10 @@ def shift_cell_cols_from_buffer(
     conn: sqlite3.Connection, col_indices_json: str, sheet_id: int
 ) -> None:
     sql = """\
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set col_idx = (-col_idx - 1) - (
     select count(*) from json_each($col_indices_json::text)
-    where cast(value as integer) < (-datasette_sheets_cell.col_idx - 1)
+    where cast(value as integer) < (-_datasette_sheets_cell.col_idx - 1)
 )
 where sheet_id = $sheet_id::integer
   and col_idx < 0;
@@ -764,7 +764,7 @@ def shift_column_cols_to_buffer(
     conn: sqlite3.Connection, sheet_id: int, col_indices_json: str
 ) -> None:
     sql = """\
-update datasette_sheets_column
+update _datasette_sheets_column
 set col_idx = -(col_idx + 1)
 where sheet_id = $sheet_id::integer
   and col_idx > (
@@ -780,10 +780,10 @@ def shift_column_cols_from_buffer(
     conn: sqlite3.Connection, col_indices_json: str, sheet_id: int
 ) -> None:
     sql = """\
-update datasette_sheets_column
+update _datasette_sheets_column
 set col_idx = (-col_idx - 1) - (
     select count(*) from json_each($col_indices_json::text)
-    where cast(value as integer) < (-datasette_sheets_column.col_idx - 1)
+    where cast(value as integer) < (-_datasette_sheets_column.col_idx - 1)
 )
 where sheet_id = $sheet_id::integer
   and col_idx < 0;
@@ -797,7 +797,7 @@ def insert_shift_cell_cols_to_buffer(
     conn: sqlite3.Connection, sheet_id: int, at: int
 ) -> None:
     sql = """\
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set col_idx = -(col_idx + 1)
 where sheet_id = $sheet_id::integer
   and col_idx >= $at::integer;
@@ -811,7 +811,7 @@ def insert_shift_cell_cols_from_buffer(
     conn: sqlite3.Connection, count: int, sheet_id: int
 ) -> None:
     sql = """\
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set col_idx = (-col_idx - 1) + $count::integer
 where sheet_id = $sheet_id::integer
   and col_idx < 0;
@@ -825,7 +825,7 @@ def insert_shift_column_cols_to_buffer(
     conn: sqlite3.Connection, sheet_id: int, at: int
 ) -> None:
     sql = """\
-update datasette_sheets_column
+update _datasette_sheets_column
 set col_idx = -(col_idx + 1)
 where sheet_id = $sheet_id::integer
   and col_idx >= $at::integer;
@@ -839,7 +839,7 @@ def insert_shift_column_cols_from_buffer(
     conn: sqlite3.Connection, count: int, sheet_id: int
 ) -> None:
     sql = """\
-update datasette_sheets_column
+update _datasette_sheets_column
 set col_idx = (-col_idx - 1) + $count::integer
 where sheet_id = $sheet_id::integer
   and col_idx < 0;
@@ -853,7 +853,7 @@ def move_cell_cols_to_buffer(
     conn: sqlite3.Connection, sheet_id: int, low: int, high: int
 ) -> None:
     sql = """\
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set col_idx = -(col_idx + 1)
 where sheet_id = $sheet_id::integer
   and col_idx between $low::integer and $high::integer;
@@ -872,7 +872,7 @@ def move_cell_cols_from_buffer(
     sheet_id: int,
 ) -> None:
     sql = """\
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set col_idx = case
   when (-col_idx - 1) between $src_start::integer and $src_end::integer
     then (-col_idx - 1) - $src_start::integer + $final_start::integer
@@ -898,7 +898,7 @@ def move_column_meta_to_buffer(
     conn: sqlite3.Connection, sheet_id: int, low: int, high: int
 ) -> None:
     sql = """\
-update datasette_sheets_column
+update _datasette_sheets_column
 set col_idx = -(col_idx + 1)
 where sheet_id = $sheet_id::integer
   and col_idx between $low::integer and $high::integer;
@@ -917,7 +917,7 @@ def move_column_meta_from_buffer(
     sheet_id: int,
 ) -> None:
     sql = """\
-update datasette_sheets_column
+update _datasette_sheets_column
 set col_idx = case
   when (-col_idx - 1) between $src_start::integer and $src_end::integer
     then (-col_idx - 1) - $src_start::integer + $final_start::integer
@@ -943,7 +943,7 @@ def move_cell_rows_to_buffer(
     conn: sqlite3.Connection, sheet_id: int, low: int, high: int
 ) -> None:
     sql = """\
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set row_idx = -(row_idx + 1)
 where sheet_id = $sheet_id::integer
   and row_idx between $low::integer and $high::integer;
@@ -962,7 +962,7 @@ def move_cell_rows_from_buffer(
     sheet_id: int,
 ) -> None:
     sql = """\
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set row_idx = case
   when (-row_idx - 1) between $src_start::integer and $src_end::integer
     then (-row_idx - 1) - $src_start::integer + $final_start::integer
@@ -987,7 +987,7 @@ where sheet_id = $sheet_id::integer
 def list_named_ranges(conn: sqlite3.Connection, sheet_id: int) -> list[NamedRange]:
     sql = """\
 select sheet_id, name, definition, updated_at
-from datasette_sheets_named_range
+from _datasette_sheets_named_range
 where sheet_id = $sheet_id::integer
 order by name collate nocase;
 """
@@ -1000,7 +1000,7 @@ def upsert_named_range(
     conn: sqlite3.Connection, sheet_id: int, name: str, definition: str
 ) -> NamedRange | None:
     sql = """\
-insert into datasette_sheets_named_range
+insert into _datasette_sheets_named_range
     (sheet_id, name, definition, updated_at)
 values
     ($sheet_id::integer, $name::text, $definition::text,
@@ -1024,7 +1024,7 @@ def delete_named_range(
     conn: sqlite3.Connection, sheet_id: int, name: str
 ) -> DeleteNamedRangeRow | None:
     sql = """\
-delete from datasette_sheets_named_range
+delete from _datasette_sheets_named_range
 where sheet_id = $sheet_id::integer
   and name = $name::text collate nocase
 returning name;
@@ -1039,7 +1039,7 @@ def update_named_range_definition(
     conn: sqlite3.Connection, definition: str, sheet_id: int, name: str
 ) -> None:
     sql = """\
-update datasette_sheets_named_range
+update _datasette_sheets_named_range
 set definition = $definition::text,
     updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')
 where sheet_id = $sheet_id::integer
@@ -1059,7 +1059,7 @@ def list_dropdown_rules(
 ) -> list[DropdownRule]:
     sql = """\
 select id, workbook_id, name, multi, options_json, updated_at
-from datasette_sheets_dropdown_rule
+from _datasette_sheets_dropdown_rule
 where workbook_id = $workbook_id::integer
 order by coalesce(name, ''), id;
 """
@@ -1073,7 +1073,7 @@ def get_dropdown_rule(
 ) -> DropdownRule | None:
     sql = """\
 select id, workbook_id, name, multi, options_json, updated_at
-from datasette_sheets_dropdown_rule
+from _datasette_sheets_dropdown_rule
 where id = $rule_id::integer
   and workbook_id = $workbook_id::integer;
 """
@@ -1091,7 +1091,7 @@ def insert_dropdown_rule(
     options_json: str,
 ) -> DropdownRule | None:
     sql = """\
-insert into datasette_sheets_dropdown_rule
+insert into _datasette_sheets_dropdown_rule
     (workbook_id, name, multi, options_json, updated_at)
 values
     ($workbook_id::integer, $name::text::,
@@ -1122,7 +1122,7 @@ def update_dropdown_rule(
     workbook_id: int,
 ) -> DropdownRule | None:
     sql = """\
-update datasette_sheets_dropdown_rule
+update _datasette_sheets_dropdown_rule
 set name = case
         when $name_do_update::boolean then $name::text::
         else name
@@ -1159,7 +1159,7 @@ def delete_dropdown_rule(
     conn: sqlite3.Connection, rule_id: int, workbook_id: int
 ) -> DeleteDropdownRuleRow | None:
     sql = """\
-delete from datasette_sheets_dropdown_rule
+delete from _datasette_sheets_dropdown_rule
 where id = $rule_id::integer
   and workbook_id = $workbook_id::integer
 returning id;
@@ -1172,7 +1172,7 @@ returning id;
 
 def delete_workbook_dropdown_rules(conn: sqlite3.Connection, workbook_id: int) -> None:
     sql = """\
-delete from datasette_sheets_dropdown_rule
+delete from _datasette_sheets_dropdown_rule
 where workbook_id = $workbook_id::integer;
 """
     params = {"workbook_id::integer": workbook_id}
@@ -1185,7 +1185,7 @@ def list_views(conn: sqlite3.Connection, sheet_id: int) -> list[View]:
 select id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,
        use_headers, color, created_at, enable_insert, enable_update,
        enable_delete, delete_mode
-from datasette_sheets_view
+from _datasette_sheets_view
 where sheet_id = $sheet_id::integer
 order by created_at;
 """
@@ -1199,7 +1199,7 @@ def get_view(conn: sqlite3.Connection, view_id: int) -> View | None:
 select id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,
        use_headers, color, created_at, enable_insert, enable_update,
        enable_delete, delete_mode
-from datasette_sheets_view
+from _datasette_sheets_view
 where id = $view_id::integer;
 """
     params = {"view_id::integer": view_id}
@@ -1225,7 +1225,7 @@ def insert_view(
     delete_mode: str,
 ) -> View | None:
     sql = """\
-insert into datasette_sheets_view
+insert into _datasette_sheets_view
     (sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,
      use_headers, color, enable_insert, enable_update, enable_delete, delete_mode)
 values
@@ -1259,7 +1259,7 @@ returning id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col
 
 
 def delete_view(conn: sqlite3.Connection, view_id: int) -> None:
-    sql = "delete from datasette_sheets_view where id = $view_id::integer;"
+    sql = "delete from _datasette_sheets_view where id = $view_id::integer;"
     params = {"view_id::integer": view_id}
     conn.execute(sql, params)
     return None
@@ -1269,7 +1269,7 @@ def update_view_col_bounds(
     conn: sqlite3.Connection, min_col: int, max_col: int, view_id: int
 ) -> None:
     sql = """\
-update datasette_sheets_view
+update _datasette_sheets_view
 set min_col = $min_col::integer,
     max_col = $max_col::integer
 where id = $view_id::integer;
@@ -1287,7 +1287,7 @@ def update_view_row_bounds(
     conn: sqlite3.Connection, min_row: int, max_row: int, view_id: int
 ) -> None:
     sql = """\
-update datasette_sheets_view
+update _datasette_sheets_view
 set min_row = $min_row::integer,
     max_row = $max_row::integer
 where id = $view_id::integer;
@@ -1317,7 +1317,7 @@ def list_cells_in_row(
 ) -> list[ListCellsInRowRow]:
     sql = """\
 select col_idx, computed_value
-from datasette_sheets_cell
+from _datasette_sheets_cell
 where sheet_id = $sheet_id::integer
   and row_idx = $row_idx::integer
   and col_idx between $min_col::integer and $max_col::integer;
@@ -1337,7 +1337,7 @@ def get_filter_by_sheet(conn: sqlite3.Connection, sheet_id: int) -> Filter | Non
 select id, sheet_id, min_row, min_col, max_row, max_col,
        sort_col_idx, sort_direction, predicates_json,
        created_at, updated_at
-from datasette_sheets_filter
+from _datasette_sheets_filter
 where sheet_id = $sheet_id::integer;
 """
     params = {"sheet_id::integer": sheet_id}
@@ -1358,7 +1358,7 @@ def insert_filter(
     predicates_json: str,
 ) -> Filter | None:
     sql = """\
-insert into datasette_sheets_filter
+insert into _datasette_sheets_filter
     (sheet_id, min_row, min_col, max_row, max_col,
      sort_col_idx, sort_direction, predicates_json)
 values
@@ -1390,7 +1390,7 @@ def update_filter_col_bounds(
     conn: sqlite3.Connection, min_col: int, max_col: int, filter_id: int
 ) -> None:
     sql = """\
-update datasette_sheets_filter
+update _datasette_sheets_filter
 set min_col = $min_col::integer,
     max_col = $max_col::integer,
     updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')
@@ -1409,7 +1409,7 @@ def update_filter_row_bounds(
     conn: sqlite3.Connection, min_row: int, max_row: int, filter_id: int
 ) -> None:
     sql = """\
-update datasette_sheets_filter
+update _datasette_sheets_filter
 set min_row = $min_row::integer,
     max_row = $max_row::integer,
     updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')
@@ -1428,7 +1428,7 @@ def update_filter_sort(
     conn: sqlite3.Connection, sort_col_idx: Any, sort_direction: Any, filter_id: int
 ) -> None:
     sql = """\
-update datasette_sheets_filter
+update _datasette_sheets_filter
 set sort_col_idx = $sort_col_idx::,
     sort_direction = $sort_direction::,
     updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')
@@ -1447,7 +1447,7 @@ def update_filter_predicates(
     conn: sqlite3.Connection, predicates_json: str, filter_id: int
 ) -> None:
     sql = """\
-update datasette_sheets_filter
+update _datasette_sheets_filter
 set predicates_json = $predicates_json::text,
     updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')
 where id = $filter_id::integer;
@@ -1458,7 +1458,7 @@ where id = $filter_id::integer;
 
 
 def delete_filter_by_sheet(conn: sqlite3.Connection, sheet_id: int) -> None:
-    sql = "delete from datasette_sheets_filter where sheet_id = $sheet_id::integer;"
+    sql = "delete from _datasette_sheets_filter where sheet_id = $sheet_id::integer;"
     params = {"sheet_id::integer": sheet_id}
     conn.execute(sql, params)
     return None
@@ -1466,9 +1466,9 @@ def delete_filter_by_sheet(conn: sqlite3.Connection, sheet_id: int) -> None:
 
 def delete_workbook_filters(conn: sqlite3.Connection, workbook_id: int) -> None:
     sql = """\
-delete from datasette_sheets_filter
+delete from _datasette_sheets_filter
 where sheet_id in (
-    select id from datasette_sheets_sheet where workbook_id = $workbook_id::integer
+    select id from _datasette_sheets_sheet where workbook_id = $workbook_id::integer
 );
 """
     params = {"workbook_id::integer": workbook_id}
@@ -1481,7 +1481,7 @@ def list_cells_in_col_range(
 ) -> list[ListCellsInColRangeRow]:
     sql = """\
 select row_idx, computed_value, computed_value_kind
-from datasette_sheets_cell
+from _datasette_sheets_cell
 where sheet_id = $sheet_id::integer
   and col_idx = $col_idx::integer
   and row_idx between $min_row::integer and $max_row::integer

@@ -18,7 +18,7 @@ def m001_schema(db: Database):
     # steps below — never edit this step.
     db.executescript(
         """
-        CREATE TABLE IF NOT EXISTS datasette_sheets_workbook(
+        CREATE TABLE IF NOT EXISTS _datasette_sheets_workbook(
             --! A collection of spreadsheet tabs ("sheets") owned by a user.
             --! One workbook maps to one Datasette "document"; every sheet
             --! underneath shares its lifetime.
@@ -53,7 +53,7 @@ def m001_schema(db: Database):
             sort_order INTEGER NOT NULL DEFAULT 0
         );
 
-        CREATE TABLE IF NOT EXISTS datasette_sheets_sheet(
+        CREATE TABLE IF NOT EXISTS _datasette_sheets_sheet(
             --! A single tab within a workbook. Holds cells, column
             --! metadata, and views.
 
@@ -63,7 +63,7 @@ def m001_schema(db: Database):
 
             --- Parent workbook id. Cascades on delete.
             --- @example 1
-            workbook_id INTEGER NOT NULL REFERENCES datasette_sheets_workbook(id) ON DELETE CASCADE,
+            workbook_id INTEGER NOT NULL REFERENCES _datasette_sheets_workbook(id) ON DELETE CASCADE,
 
             --- Tab name shown in the UI. UNIQUE per workbook so the
             --- combination (workbook_id, name) identifies a sheet
@@ -90,14 +90,14 @@ def m001_schema(db: Database):
             UNIQUE(workbook_id, name)
         );
 
-        CREATE TABLE IF NOT EXISTS datasette_sheets_column(
+        CREATE TABLE IF NOT EXISTS _datasette_sheets_column(
             --! Per-column UI metadata (width, header name, format) for a
             --! sheet. A row per column that has been customized; absent
             --! rows use DEFAULT_COLUMNS in db.py.
 
             --- Parent sheet id. Cascades on delete.
             --- @example 1
-            sheet_id INTEGER NOT NULL REFERENCES datasette_sheets_sheet(id) ON DELETE CASCADE,
+            sheet_id INTEGER NOT NULL REFERENCES _datasette_sheets_sheet(id) ON DELETE CASCADE,
 
             --- Zero-based column index. 0 is column A, 1 is B, etc.
             --- @example 0
@@ -120,7 +120,7 @@ def m001_schema(db: Database):
             PRIMARY KEY (sheet_id, col_idx)
         );
 
-        CREATE TABLE IF NOT EXISTS datasette_sheets_cell(
+        CREATE TABLE IF NOT EXISTS _datasette_sheets_cell(
             --! One row per non-empty cell. ``raw_value`` is what the user
             --! typed; ``computed_value`` is the Rust formula engine's
             --! evaluation of that raw value (equal to raw_value for
@@ -128,7 +128,7 @@ def m001_schema(db: Database):
 
             --- Parent sheet id. Cascades on delete.
             --- @example 1
-            sheet_id INTEGER NOT NULL REFERENCES datasette_sheets_sheet(id) ON DELETE CASCADE,
+            sheet_id INTEGER NOT NULL REFERENCES _datasette_sheets_sheet(id) ON DELETE CASCADE,
 
             --- Zero-based row index (0 == row 1 in A1 notation).
             --- @example 0
@@ -207,11 +207,11 @@ def m001_schema(db: Database):
         );
 
         CREATE INDEX IF NOT EXISTS idx_sheets_cells_sheet
-            ON datasette_sheets_cell(sheet_id);
+            ON _datasette_sheets_cell(sheet_id);
         CREATE INDEX IF NOT EXISTS idx_sheets_cells_sheet_row
-            ON datasette_sheets_cell(sheet_id, row_idx);
+            ON _datasette_sheets_cell(sheet_id, row_idx);
 
-        CREATE TABLE IF NOT EXISTS datasette_sheets_view(
+        CREATE TABLE IF NOT EXISTS _datasette_sheets_view(
             --! Tracks SQL VIEWs created from sheet ranges. The actual
             --! view (and any INSTEAD OF triggers) lives alongside this
             --! row in sqlite_master; this table is the plugin's registry.
@@ -222,7 +222,7 @@ def m001_schema(db: Database):
 
             --- Parent sheet id. Cascades on delete.
             --- @example 1
-            sheet_id INTEGER NOT NULL REFERENCES datasette_sheets_sheet(id) ON DELETE CASCADE,
+            sheet_id INTEGER NOT NULL REFERENCES _datasette_sheets_sheet(id) ON DELETE CASCADE,
 
             --- Name of the generated SQL VIEW in the database. Must be a
             --- safe SQL identifier; enforced by view_sql.validate_view_name.
@@ -291,7 +291,7 @@ def m001_schema(db: Database):
             delete_mode TEXT NOT NULL DEFAULT 'clear'
         );
 
-        CREATE TABLE IF NOT EXISTS datasette_sheets_named_range(
+        CREATE TABLE IF NOT EXISTS _datasette_sheets_named_range(
             --! A workbook-global named range defined on a sheet.
             --! ``definition`` is the raw text handed to the Rust engine
             --! via ``Sheet.set_name`` — a literal ('0.05'), a cell
@@ -301,7 +301,7 @@ def m001_schema(db: Database):
 
             --- Parent sheet id. Cascades on delete.
             --- @example 1
-            sheet_id INTEGER NOT NULL REFERENCES datasette_sheets_sheet(id) ON DELETE CASCADE,
+            sheet_id INTEGER NOT NULL REFERENCES _datasette_sheets_sheet(id) ON DELETE CASCADE,
 
             --- Name as the user typed it. The primary key uses
             --- ``COLLATE NOCASE`` so lookups match the engine's
@@ -322,9 +322,9 @@ def m001_schema(db: Database):
         );
 
         CREATE INDEX IF NOT EXISTS idx_sheets_named_range_sheet
-            ON datasette_sheets_named_range(sheet_id);
+            ON _datasette_sheets_named_range(sheet_id);
 
-        CREATE TABLE IF NOT EXISTS datasette_sheets_dropdown_rule(
+        CREATE TABLE IF NOT EXISTS _datasette_sheets_dropdown_rule(
             --! A workbook-scoped data-validation dropdown rule. Cells
             --! point at one of these via their ``format_json``
             --! ``dropdownRuleId`` field; selecting an option writes
@@ -342,7 +342,7 @@ def m001_schema(db: Database):
             --- delete is a manual DELETE in db.py mirroring the rest
             --- of the cascade — see deleteWorkbook* in queries.sql).
             --- @example 1
-            workbook_id INTEGER NOT NULL REFERENCES datasette_sheets_workbook(id) ON DELETE CASCADE,
+            workbook_id INTEGER NOT NULL REFERENCES _datasette_sheets_workbook(id) ON DELETE CASCADE,
 
             --- Optional human label shown in the rule list / editor.
             --- @example 'Status'
@@ -367,14 +367,14 @@ def m001_schema(db: Database):
         );
 
         CREATE INDEX IF NOT EXISTS idx_sheets_dropdown_rule_workbook
-            ON datasette_sheets_dropdown_rule(workbook_id);
+            ON _datasette_sheets_dropdown_rule(workbook_id);
 
-        CREATE TABLE IF NOT EXISTS datasette_sheets_filter(
+        CREATE TABLE IF NOT EXISTS _datasette_sheets_filter(
             --! A "Basic Filter" applied to a contiguous rectangle on
             --! a sheet. At most one per sheet — multi-filter / saved
             --! "filter views" is deferred. Bounds shift in lockstep
             --! with row/col delete / insert / move via the same
-            --! forward-map helper that updates ``datasette_sheets_view``.
+            --! forward-map helper that updates ``_datasette_sheets_view``.
 
             --- Autoincrement integer id (alias for SQLite's rowid).
             --- @example 1
@@ -385,7 +385,7 @@ def m001_schema(db: Database):
             --- cascade — see ``deleteSheet*`` in queries.sql).
             --- @example 1
             sheet_id INTEGER NOT NULL UNIQUE
-                REFERENCES datasette_sheets_sheet(id) ON DELETE CASCADE,
+                REFERENCES _datasette_sheets_sheet(id) ON DELETE CASCADE,
 
             --- Zero-based first row of the filter (the header row).
             --- @example 0
@@ -427,6 +427,6 @@ def m001_schema(db: Database):
         );
 
         CREATE INDEX IF NOT EXISTS idx_sheets_filter_sheet
-            ON datasette_sheets_filter(sheet_id);
+            ON _datasette_sheets_filter(sheet_id);
         """
     )

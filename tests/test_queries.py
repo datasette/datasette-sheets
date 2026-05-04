@@ -44,7 +44,7 @@ def _insert_workbook(
     that field — it's DB-defaulted).
     """
     cur = conn.execute(
-        "INSERT INTO datasette_sheets_workbook "
+        "INSERT INTO _datasette_sheets_workbook "
         "(name, created_by, sort_order) VALUES (?, ?, ?)",
         [name, created_by, sort_order],
     )
@@ -241,17 +241,17 @@ def _seed_sheet_with_children(conn, *, wb_name="WB", sheet_name="Sheet 1"):
     )
     assert sheet is not None
     conn.execute(
-        "INSERT INTO datasette_sheets_cell "
+        "INSERT INTO _datasette_sheets_cell "
         "(sheet_id, row_idx, col_idx, raw_value) VALUES (?, 0, 0, 'hi')",
         [sheet.id],
     )
     conn.execute(
-        "INSERT INTO datasette_sheets_column "
+        "INSERT INTO _datasette_sheets_column "
         "(sheet_id, col_idx, name) VALUES (?, 0, 'A')",
         [sheet.id],
     )
     conn.execute(
-        "INSERT INTO datasette_sheets_named_range "
+        "INSERT INTO _datasette_sheets_named_range "
         "(sheet_id, name, definition) VALUES (?, 'TaxRate', '=0.05')",
         [sheet.id],
     )
@@ -260,8 +260,8 @@ def _seed_sheet_with_children(conn, *, wb_name="WB", sheet_name="Sheet 1"):
 
 def _child_counts(conn, wb_id: int) -> dict[str, int]:
     q = (
-        "SELECT COUNT(*) FROM datasette_sheets_{tbl} "
-        "WHERE sheet_id IN (SELECT id FROM datasette_sheets_sheet WHERE workbook_id = ?)"
+        "SELECT COUNT(*) FROM _datasette_sheets_{tbl} "
+        "WHERE sheet_id IN (SELECT id FROM _datasette_sheets_sheet WHERE workbook_id = ?)"
     )
     return {
         "cells": conn.execute(q.format(tbl="cell"), [wb_id]).fetchone()[0],
@@ -270,11 +270,11 @@ def _child_counts(conn, wb_id: int) -> dict[str, int]:
             0
         ],
         "sheets": conn.execute(
-            "SELECT COUNT(*) FROM datasette_sheets_sheet WHERE workbook_id = ?",
+            "SELECT COUNT(*) FROM _datasette_sheets_sheet WHERE workbook_id = ?",
             [wb_id],
         ).fetchone()[0],
         "workbook": conn.execute(
-            "SELECT COUNT(*) FROM datasette_sheets_workbook WHERE id = ?", [wb_id]
+            "SELECT COUNT(*) FROM _datasette_sheets_workbook WHERE id = ?", [wb_id]
         ).fetchone()[0],
     }
 
@@ -485,7 +485,7 @@ def test_insert_default_column_writes_a_row(conn):
         conn, sheet_id=sheet.id, col_idx=0, name="A", width=100
     )
     rows = conn.execute(
-        "SELECT col_idx, name, width FROM datasette_sheets_column WHERE sheet_id = ?",
+        "SELECT col_idx, name, width FROM _datasette_sheets_column WHERE sheet_id = ?",
         [sheet.id],
     ).fetchall()
     assert rows == [(0, "A", 100)]
@@ -501,17 +501,17 @@ def _seed_sheet_with_children_only(
     cell + one column + one named range. Returns the new sheet id."""
     sheet = _insert_sheet(conn, workbook_id=workbook_id, name=name)
     conn.execute(
-        "INSERT INTO datasette_sheets_cell "
+        "INSERT INTO _datasette_sheets_cell "
         "(sheet_id, row_idx, col_idx, raw_value) VALUES (?, 0, 0, 'hi')",
         [sheet.id],
     )
     conn.execute(
-        "INSERT INTO datasette_sheets_column "
+        "INSERT INTO _datasette_sheets_column "
         "(sheet_id, col_idx, name) VALUES (?, 0, 'A')",
         [sheet.id],
     )
     conn.execute(
-        "INSERT INTO datasette_sheets_named_range "
+        "INSERT INTO _datasette_sheets_named_range "
         "(sheet_id, name, definition) VALUES (?, 'TaxRate', '=0.05')",
         [sheet.id],
     )
@@ -522,13 +522,13 @@ def _sheet_child_counts(conn, sheet_id: int) -> dict[str, int]:
     tables = ("cell", "column", "named_range")
     counts = {
         t: conn.execute(
-            f"SELECT COUNT(*) FROM datasette_sheets_{t} WHERE sheet_id = ?",
+            f"SELECT COUNT(*) FROM _datasette_sheets_{t} WHERE sheet_id = ?",
             [sheet_id],
         ).fetchone()[0]
         for t in tables
     }
     counts["sheet"] = conn.execute(
-        "SELECT COUNT(*) FROM datasette_sheets_sheet WHERE id = ?", [sheet_id]
+        "SELECT COUNT(*) FROM _datasette_sheets_sheet WHERE id = ?", [sheet_id]
     ).fetchone()[0]
     return counts
 
@@ -921,12 +921,12 @@ def test_list_cells_for_recalc_returns_minimal_tuple(conn):
 def test_list_named_ranges_for_recalc(conn):
     sheet = _insert_sheet(conn)
     conn.execute(
-        "INSERT INTO datasette_sheets_named_range "
+        "INSERT INTO _datasette_sheets_named_range "
         "(sheet_id, name, definition) VALUES (?, ?, ?)",
         [sheet.id, "TaxRate", "=0.05"],
     )
     conn.execute(
-        "INSERT INTO datasette_sheets_named_range "
+        "INSERT INTO _datasette_sheets_named_range "
         "(sheet_id, name, definition) VALUES (?, ?, ?)",
         [sheet.id, "Region", "=A1:A10"],
     )

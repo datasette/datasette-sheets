@@ -33,7 +33,7 @@ select
     updated_at,
     created_by,
     sort_order
-from datasette_sheets_workbook
+from _datasette_sheets_workbook
 order by sort_order, created_at;
 
 -- name: getWorkbook :row -> Workbook
@@ -44,7 +44,7 @@ select
     updated_at,
     created_by,
     sort_order
-from datasette_sheets_workbook
+from _datasette_sheets_workbook
 where id = $workbook_id::integer;
 
 -- INSERT ... RETURNING lets the caller skip a follow-up SELECT to
@@ -52,7 +52,7 @@ where id = $workbook_id::integer;
 -- ``id`` is an INTEGER PRIMARY KEY (rowid alias) so SQLite assigns
 -- the next free integer; the caller never passes an id.
 -- name: insertWorkbook :row -> Workbook
-insert into datasette_sheets_workbook (name, created_by)
+insert into _datasette_sheets_workbook (name, created_by)
 values ($name::text, $created_by::text::)
 returning id, name, created_at, updated_at, created_by, sort_order;
 
@@ -65,7 +65,7 @@ returning id, name, created_at, updated_at, created_by, sort_order;
 -- used to do for partial patches, and RETURNING * skips the
 -- trailing SELECT too.
 -- name: updateWorkbook :row -> Workbook
-update datasette_sheets_workbook
+update _datasette_sheets_workbook
 set name = case when $name_do_update::boolean then $name::text else name end,
     sort_order = case
         when $sort_order_do_update::boolean then $sort_order::integer
@@ -81,33 +81,33 @@ returning id, name, created_at, updated_at, created_by, sort_order;
 -- Each query is a single DELETE with an ``IN (SELECT ...)`` subselect
 -- — one statement per child table rather than the per-sheet Python
 -- loop this replaces.
--- NOTE: datasette_sheets_view rows are deliberately NOT cleaned up
+-- NOTE: _datasette_sheets_view rows are deliberately NOT cleaned up
 -- here; the pre-refactor ``delete_workbook`` didn't either, so mirror
 -- that behaviour. Separate bugfix.
 
 -- name: deleteWorkbookCells
-delete from datasette_sheets_cell
+delete from _datasette_sheets_cell
 where sheet_id in (
-    select id from datasette_sheets_sheet where workbook_id = $workbook_id::integer
+    select id from _datasette_sheets_sheet where workbook_id = $workbook_id::integer
 );
 
 -- name: deleteWorkbookColumns
-delete from datasette_sheets_column
+delete from _datasette_sheets_column
 where sheet_id in (
-    select id from datasette_sheets_sheet where workbook_id = $workbook_id::integer
+    select id from _datasette_sheets_sheet where workbook_id = $workbook_id::integer
 );
 
 -- name: deleteWorkbookNamedRanges
-delete from datasette_sheets_named_range
+delete from _datasette_sheets_named_range
 where sheet_id in (
-    select id from datasette_sheets_sheet where workbook_id = $workbook_id::integer
+    select id from _datasette_sheets_sheet where workbook_id = $workbook_id::integer
 );
 
 -- name: deleteWorkbookSheets
-delete from datasette_sheets_sheet where workbook_id = $workbook_id::integer;
+delete from _datasette_sheets_sheet where workbook_id = $workbook_id::integer;
 
 -- name: deleteWorkbookRow
-delete from datasette_sheets_workbook where id = $workbook_id::integer;
+delete from _datasette_sheets_workbook where id = $workbook_id::integer;
 
 -- ============================================================================
 -- Sheets
@@ -115,24 +115,24 @@ delete from datasette_sheets_workbook where id = $workbook_id::integer;
 
 -- name: listSheets :rows -> Sheet
 select id, workbook_id, name, color, sort_order, created_at, updated_at
-from datasette_sheets_sheet
+from _datasette_sheets_sheet
 where workbook_id = $workbook_id::integer
 order by sort_order, created_at;
 
 -- name: getSheet :row -> Sheet
 select id, workbook_id, name, color, sort_order, created_at, updated_at
-from datasette_sheets_sheet
+from _datasette_sheets_sheet
 where id = $sheet_id::integer;
 
 -- ``id`` is an INTEGER PRIMARY KEY autoincrement; SQLite assigns it.
 -- name: insertSheet :row -> Sheet
-insert into datasette_sheets_sheet (workbook_id, name, color)
+insert into _datasette_sheets_sheet (workbook_id, name, color)
 values ($workbook_id::integer, $name::text, $color::text)
 returning id, workbook_id, name, color, sort_order, created_at, updated_at;
 
 -- sqlc-style partial update — see updateWorkbook for the pattern.
 -- name: updateSheet :row -> Sheet
-update datasette_sheets_sheet
+update _datasette_sheets_sheet
 set name = case when $name_do_update::boolean then $name::text else name end,
     color = case when $color_do_update::boolean then $color::text else color end,
     sort_order = case
@@ -147,32 +147,32 @@ returning id, workbook_id, name, color, sort_order, created_at, updated_at;
 -- One query per column keeps the shape simple; the A1 labels / widths
 -- still live in Python (``db.DEFAULT_COLUMNS``).
 -- name: insertDefaultColumn
-insert into datasette_sheets_column (sheet_id, col_idx, name, width)
+insert into _datasette_sheets_column (sheet_id, col_idx, name, width)
 values ($sheet_id::integer, $col_idx::integer, $name::text, $width::integer);
 
 -- Delete cascade. Mirrors the workbook pattern: FK cascade isn't on,
 -- executescript can't bind params, so each child table is its own
 -- parameterised DELETE called in sequence by db.py::delete_sheet.
--- NOTE: datasette_sheets_view rows are NOT cleared — pre-existing
+-- NOTE: _datasette_sheets_view rows are NOT cleared — pre-existing
 -- parity with the old delete_sheet; see deleteWorkbook* comment.
 
 -- name: deleteSheetCells
-delete from datasette_sheets_cell where sheet_id = $sheet_id::integer;
+delete from _datasette_sheets_cell where sheet_id = $sheet_id::integer;
 
 -- name: deleteSheetColumns
-delete from datasette_sheets_column where sheet_id = $sheet_id::integer;
+delete from _datasette_sheets_column where sheet_id = $sheet_id::integer;
 
 -- name: deleteSheetNamedRanges
-delete from datasette_sheets_named_range where sheet_id = $sheet_id::integer;
+delete from _datasette_sheets_named_range where sheet_id = $sheet_id::integer;
 
 -- name: deleteSheetRow
-delete from datasette_sheets_sheet where id = $sheet_id::integer;
+delete from _datasette_sheets_sheet where id = $sheet_id::integer;
 
 -- Used inside db.py::reorder_sheets' Python loop after the
 -- permutation has been validated. Touches updated_at so any watcher
 -- sees the reorder as a change.
 -- name: reorderSheet
-update datasette_sheets_sheet
+update _datasette_sheets_sheet
 set sort_order = $sort_order::integer,
     updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')
 where id = $sheet_id::integer
@@ -183,7 +183,7 @@ where id = $sheet_id::integer
 -- delete_named_range — anywhere a descendant row changes and watchers
 -- need to see a fresh updated_at on the parent sheet.
 -- name: touchSheet
-update datasette_sheets_sheet
+update _datasette_sheets_sheet
 set updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')
 where id = $sheet_id::integer;
 
@@ -193,7 +193,7 @@ where id = $sheet_id::integer;
 
 -- name: listColumns :rows -> Column
 select sheet_id, col_idx, name, width, format_json
-from datasette_sheets_column
+from _datasette_sheets_column
 where sheet_id = $sheet_id::integer
 order by col_idx;
 
@@ -201,7 +201,7 @@ order by col_idx;
 -- No RETURNING row-id since the PK is composite; returns the full
 -- post-update row so callers can skip a follow-up SELECT.
 -- name: setColumn :row -> Column
-update datasette_sheets_column
+update _datasette_sheets_column
 set name = case when $name_do_update::boolean then $name::text else name end,
     width = case
         when $width_do_update::boolean then $width::integer
@@ -219,12 +219,12 @@ returning sheet_id, col_idx, name, width, format_json;
 select sheet_id, row_idx, col_idx, raw_value, computed_value,
        computed_value_kind, typed_kind, typed_data, format_json,
        updated_at, updated_by
-from datasette_sheets_cell
+from _datasette_sheets_cell
 where sheet_id = $sheet_id::integer
 order by row_idx, col_idx;
 
 -- name: deleteCell
-delete from datasette_sheets_cell
+delete from _datasette_sheets_cell
 where sheet_id = $sheet_id::integer
   and row_idx = $row_idx::integer
   and col_idx = $col_idx::integer;
@@ -237,7 +237,7 @@ where sheet_id = $sheet_id::integer
 -- a prior force-text override in place, and the cell would still
 -- auto-classify-bypassed).
 -- name: upsertCell
-insert into datasette_sheets_cell
+insert into _datasette_sheets_cell
     (sheet_id, row_idx, col_idx, raw_value, format_json,
      typed_kind, typed_data, updated_by, updated_at)
 values
@@ -262,12 +262,12 @@ on conflict(sheet_id, row_idx, col_idx) do update set
 -- name: listCellsForRecalc
 select row_idx, col_idx, raw_value, typed_kind, typed_data,
        computed_value, computed_value_kind
-from datasette_sheets_cell
+from _datasette_sheets_cell
 where sheet_id = $sheet_id::integer;
 
 -- name: listNamedRangesForRecalc
 select name, definition
-from datasette_sheets_named_range
+from _datasette_sheets_named_range
 where sheet_id = $sheet_id::integer;
 
 -- ``computed_value`` has no declared type (BLOB affinity so the
@@ -278,7 +278,7 @@ where sheet_id = $sheet_id::integer;
 -- type discriminator (e.g. ``'bool'`` for booleans stored as
 -- INTEGER 0/1) — see the column comment in migrations.py.
 -- name: updateCellComputed
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set computed_value = $value::,
     computed_value_kind = $kind::text::
 where sheet_id = $sheet_id::integer
@@ -292,7 +292,7 @@ where sheet_id = $sheet_id::integer
 -- a ref.
 -- name: listFormulaCells
 select row_idx, col_idx, raw_value
-from datasette_sheets_cell
+from _datasette_sheets_cell
 where sheet_id = $sheet_id::integer
   and raw_value like '=%';
 
@@ -303,7 +303,7 @@ where sheet_id = $sheet_id::integer
 -- mutation of the cell. The parent sheet's ``touch_sheet`` already
 -- covers the "something changed" signal for watchers.
 -- name: updateCellRaw
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set raw_value = $raw_value::text
 where sheet_id = $sheet_id::integer
   and row_idx = $row_idx::integer
@@ -336,17 +336,17 @@ where sheet_id = $sheet_id::integer
 -- db.py via ``json.dumps(sorted({int(i) for i in xs if int(i) >= 0}))``.
 -- ``json_each`` + ``CAST(value AS INTEGER)`` unpacks them inside SQL.
 
--- --- delete rows (cell table only: datasette_sheets_column has no row_idx)
+-- --- delete rows (cell table only: _datasette_sheets_column has no row_idx)
 
 -- name: deleteCellsInRows
-delete from datasette_sheets_cell
+delete from _datasette_sheets_cell
 where sheet_id = $sheet_id::integer
   and row_idx in (
     select cast(value as integer) from json_each($row_indices_json::text)
   );
 
 -- name: shiftCellRowsToBuffer
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set row_idx = -(row_idx + 1)
 where sheet_id = $sheet_id::integer
   and row_idx > (
@@ -354,10 +354,10 @@ where sheet_id = $sheet_id::integer
   );
 
 -- name: shiftCellRowsFromBuffer
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set row_idx = (-row_idx - 1) - (
     select count(*) from json_each($row_indices_json::text)
-    where cast(value as integer) < (-datasette_sheets_cell.row_idx - 1)
+    where cast(value as integer) < (-_datasette_sheets_cell.row_idx - 1)
 )
 where sheet_id = $sheet_id::integer
   and row_idx < 0;
@@ -365,21 +365,21 @@ where sheet_id = $sheet_id::integer
 -- --- delete columns (both cell + column tables get shifted)
 
 -- name: deleteCellsInCols
-delete from datasette_sheets_cell
+delete from _datasette_sheets_cell
 where sheet_id = $sheet_id::integer
   and col_idx in (
     select cast(value as integer) from json_each($col_indices_json::text)
   );
 
 -- name: deleteColumnsInCols
-delete from datasette_sheets_column
+delete from _datasette_sheets_column
 where sheet_id = $sheet_id::integer
   and col_idx in (
     select cast(value as integer) from json_each($col_indices_json::text)
   );
 
 -- name: shiftCellColsToBuffer
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set col_idx = -(col_idx + 1)
 where sheet_id = $sheet_id::integer
   and col_idx > (
@@ -387,16 +387,16 @@ where sheet_id = $sheet_id::integer
   );
 
 -- name: shiftCellColsFromBuffer
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set col_idx = (-col_idx - 1) - (
     select count(*) from json_each($col_indices_json::text)
-    where cast(value as integer) < (-datasette_sheets_cell.col_idx - 1)
+    where cast(value as integer) < (-_datasette_sheets_cell.col_idx - 1)
 )
 where sheet_id = $sheet_id::integer
   and col_idx < 0;
 
 -- name: shiftColumnColsToBuffer
-update datasette_sheets_column
+update _datasette_sheets_column
 set col_idx = -(col_idx + 1)
 where sheet_id = $sheet_id::integer
   and col_idx > (
@@ -404,10 +404,10 @@ where sheet_id = $sheet_id::integer
   );
 
 -- name: shiftColumnColsFromBuffer
-update datasette_sheets_column
+update _datasette_sheets_column
 set col_idx = (-col_idx - 1) - (
     select count(*) from json_each($col_indices_json::text)
-    where cast(value as integer) < (-datasette_sheets_column.col_idx - 1)
+    where cast(value as integer) < (-_datasette_sheets_column.col_idx - 1)
 )
 where sheet_id = $sheet_id::integer
   and col_idx < 0;
@@ -419,25 +419,25 @@ where sheet_id = $sheet_id::integer
 -- flipped back with ``+ count`` applied (pass 2).
 
 -- name: insertShiftCellColsToBuffer
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set col_idx = -(col_idx + 1)
 where sheet_id = $sheet_id::integer
   and col_idx >= $at::integer;
 
 -- name: insertShiftCellColsFromBuffer
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set col_idx = (-col_idx - 1) + $count::integer
 where sheet_id = $sheet_id::integer
   and col_idx < 0;
 
 -- name: insertShiftColumnColsToBuffer
-update datasette_sheets_column
+update _datasette_sheets_column
 set col_idx = -(col_idx + 1)
 where sheet_id = $sheet_id::integer
   and col_idx >= $at::integer;
 
 -- name: insertShiftColumnColsFromBuffer
-update datasette_sheets_column
+update _datasette_sheets_column
 set col_idx = (-col_idx - 1) + $count::integer
 where sheet_id = $sheet_id::integer
   and col_idx < 0;
@@ -460,13 +460,13 @@ where sheet_id = $sheet_id::integer
 --   c > src_end   (band edge)      → c - width  (final_start > src_end case)
 
 -- name: moveCellColsToBuffer
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set col_idx = -(col_idx + 1)
 where sheet_id = $sheet_id::integer
   and col_idx between $low::integer and $high::integer;
 
 -- name: moveCellColsFromBuffer
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set col_idx = case
   when (-col_idx - 1) between $src_start::integer and $src_end::integer
     then (-col_idx - 1) - $src_start::integer + $final_start::integer
@@ -478,13 +478,13 @@ where sheet_id = $sheet_id::integer
   and col_idx < 0;
 
 -- name: moveColumnMetaToBuffer
-update datasette_sheets_column
+update _datasette_sheets_column
 set col_idx = -(col_idx + 1)
 where sheet_id = $sheet_id::integer
   and col_idx between $low::integer and $high::integer;
 
 -- name: moveColumnMetaFromBuffer
-update datasette_sheets_column
+update _datasette_sheets_column
 set col_idx = case
   when (-col_idx - 1) between $src_start::integer and $src_end::integer
     then (-col_idx - 1) - $src_start::integer + $final_start::integer
@@ -504,13 +504,13 @@ where sheet_id = $sheet_id::integer
 -- needs zero SQL change.
 
 -- name: moveCellRowsToBuffer
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set row_idx = -(row_idx + 1)
 where sheet_id = $sheet_id::integer
   and row_idx between $low::integer and $high::integer;
 
 -- name: moveCellRowsFromBuffer
-update datasette_sheets_cell
+update _datasette_sheets_cell
 set row_idx = case
   when (-row_idx - 1) between $src_start::integer and $src_end::integer
     then (-row_idx - 1) - $src_start::integer + $final_start::integer
@@ -532,12 +532,12 @@ where sheet_id = $sheet_id::integer
 
 -- name: listNamedRanges :rows -> NamedRange
 select sheet_id, name, definition, updated_at
-from datasette_sheets_named_range
+from _datasette_sheets_named_range
 where sheet_id = $sheet_id::integer
 order by name collate nocase;
 
 -- name: upsertNamedRange :row -> NamedRange
-insert into datasette_sheets_named_range
+insert into _datasette_sheets_named_range
     (sheet_id, name, definition, updated_at)
 values
     ($sheet_id::integer, $name::text, $definition::text,
@@ -552,7 +552,7 @@ returning sheet_id, name, definition, updated_at;
 -- ``delete_named_range`` returns ``bool``; None from this query
 -- means "nothing matched".
 -- name: deleteNamedRange :row
-delete from datasette_sheets_named_range
+delete from _datasette_sheets_named_range
 where sheet_id = $sheet_id::integer
   and name = $name::text collate nocase
 returning name;
@@ -564,7 +564,7 @@ returning name;
 -- watchers downstream key off this timestamp. Caller passes the
 -- new definition text already validated by the engine.
 -- name: updateNamedRangeDefinition
-update datasette_sheets_named_range
+update _datasette_sheets_named_range
 set definition = $definition::text,
     updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')
 where sheet_id = $sheet_id::integer
@@ -576,19 +576,19 @@ where sheet_id = $sheet_id::integer
 
 -- name: listDropdownRules :rows -> DropdownRule
 select id, workbook_id, name, multi, options_json, updated_at
-from datasette_sheets_dropdown_rule
+from _datasette_sheets_dropdown_rule
 where workbook_id = $workbook_id::integer
 order by coalesce(name, ''), id;
 
 -- name: getDropdownRule :row -> DropdownRule
 select id, workbook_id, name, multi, options_json, updated_at
-from datasette_sheets_dropdown_rule
+from _datasette_sheets_dropdown_rule
 where id = $rule_id::integer
   and workbook_id = $workbook_id::integer;
 
 -- ``id`` is an INTEGER PRIMARY KEY autoincrement; SQLite assigns it.
 -- name: insertDropdownRule :row -> DropdownRule
-insert into datasette_sheets_dropdown_rule
+insert into _datasette_sheets_dropdown_rule
     (workbook_id, name, multi, options_json, updated_at)
 values
     ($workbook_id::integer, $name::text::,
@@ -598,7 +598,7 @@ returning id, workbook_id, name, multi, options_json, updated_at;
 
 -- sqlc-style partial update — see updateWorkbook for the pattern.
 -- name: updateDropdownRule :row -> DropdownRule
-update datasette_sheets_dropdown_rule
+update _datasette_sheets_dropdown_rule
 set name = case
         when $name_do_update::boolean then $name::text::
         else name
@@ -617,18 +617,18 @@ where id = $rule_id::integer
 returning id, workbook_id, name, multi, options_json, updated_at;
 
 -- name: deleteDropdownRule :row
-delete from datasette_sheets_dropdown_rule
+delete from _datasette_sheets_dropdown_rule
 where id = $rule_id::integer
   and workbook_id = $workbook_id::integer
 returning id;
 
 -- Cascade hook for workbook delete — mirrors deleteWorkbookNamedRanges.
 -- name: deleteWorkbookDropdownRules
-delete from datasette_sheets_dropdown_rule
+delete from _datasette_sheets_dropdown_rule
 where workbook_id = $workbook_id::integer;
 
 -- ============================================================================
--- Views (the datasette_sheets_view registry — the SQL views themselves
+-- Views (the _datasette_sheets_view registry — the SQL views themselves
 -- and their INSTEAD OF triggers are built dynamically by view_sql.py and
 -- executed directly from db.py::create_view / delete_view.)
 -- ============================================================================
@@ -637,7 +637,7 @@ where workbook_id = $workbook_id::integer;
 select id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,
        use_headers, color, created_at, enable_insert, enable_update,
        enable_delete, delete_mode
-from datasette_sheets_view
+from _datasette_sheets_view
 where sheet_id = $sheet_id::integer
 order by created_at;
 
@@ -648,12 +648,12 @@ order by created_at;
 select id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,
        use_headers, color, created_at, enable_insert, enable_update,
        enable_delete, delete_mode
-from datasette_sheets_view
+from _datasette_sheets_view
 where id = $view_id::integer;
 
 -- ``id`` is an INTEGER PRIMARY KEY autoincrement; SQLite assigns it.
 -- name: insertView :row -> View
-insert into datasette_sheets_view
+insert into _datasette_sheets_view
     (sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,
      use_headers, color, enable_insert, enable_update, enable_delete, delete_mode)
 values
@@ -667,7 +667,7 @@ returning id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col
           enable_delete, delete_mode;
 
 -- name: deleteView
-delete from datasette_sheets_view where id = $view_id::integer;
+delete from _datasette_sheets_view where id = $view_id::integer;
 
 -- Update view-registry column bounds after a structural op (col
 -- move / col delete / col insert). The actual SQL VIEW DDL keeps
@@ -676,7 +676,7 @@ delete from datasette_sheets_view where id = $view_id::integer;
 -- registry's [min_col, max_col] honest so subsequent edits land
 -- in the right place.
 -- name: updateViewColBounds
-update datasette_sheets_view
+update _datasette_sheets_view
 set min_col = $min_col::integer,
     max_col = $max_col::integer
 where id = $view_id::integer;
@@ -684,7 +684,7 @@ where id = $view_id::integer;
 -- Sibling for the row axis — used by row-delete to keep the
 -- registry's [min_row, max_row] in sync. Same caveats as above.
 -- name: updateViewRowBounds
-update datasette_sheets_view
+update _datasette_sheets_view
 set min_row = $min_row::integer,
     max_row = $max_row::integer
 where id = $view_id::integer;
@@ -701,7 +701,7 @@ where type in ('table', 'view') and name = $name::text;
 -- float / str / None; caller coerces to str for display.
 -- name: listCellsInRow
 select col_idx, computed_value
-from datasette_sheets_cell
+from _datasette_sheets_cell
 where sheet_id = $sheet_id::integer
   and row_idx = $row_idx::integer
   and col_idx between $min_col::integer and $max_col::integer;
@@ -713,7 +713,7 @@ where sheet_id = $sheet_id::integer
 -- One filter row per sheet (UNIQUE(sheet_id)). Bounds + sort + per-
 -- column predicates live in the same row; predicates are JSON-encoded
 -- to keep the wire shape variable-length without a join. Mirrors
--- the structural-shift pattern used by datasette_sheets_view —
+-- the structural-shift pattern used by _datasette_sheets_view —
 -- bounds are kept in sync via update_filter_*_bounds during row /
 -- col delete / insert / move.
 
@@ -721,12 +721,12 @@ where sheet_id = $sheet_id::integer
 select id, sheet_id, min_row, min_col, max_row, max_col,
        sort_col_idx, sort_direction, predicates_json,
        created_at, updated_at
-from datasette_sheets_filter
+from _datasette_sheets_filter
 where sheet_id = $sheet_id::integer;
 
 -- ``id`` is an INTEGER PRIMARY KEY autoincrement; SQLite assigns it.
 -- name: insertFilter :row -> Filter
-insert into datasette_sheets_filter
+insert into _datasette_sheets_filter
     (sheet_id, min_row, min_col, max_row, max_col,
      sort_col_idx, sort_direction, predicates_json)
 values
@@ -741,14 +741,14 @@ returning id, sheet_id, min_row, min_col, max_row, max_col,
 
 -- Bound-shift helpers, mirror of updateView{Col,Row}Bounds.
 -- name: updateFilterColBounds
-update datasette_sheets_filter
+update _datasette_sheets_filter
 set min_col = $min_col::integer,
     max_col = $max_col::integer,
     updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')
 where id = $filter_id::integer;
 
 -- name: updateFilterRowBounds
-update datasette_sheets_filter
+update _datasette_sheets_filter
 set min_row = $min_row::integer,
     max_row = $max_row::integer,
     updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')
@@ -758,14 +758,14 @@ where id = $filter_id::integer;
 -- NULL clears the active sort; setting predicates_json to '{}' is the
 -- "no predicates" state.
 -- name: updateFilterSort
-update datasette_sheets_filter
+update _datasette_sheets_filter
 set sort_col_idx = $sort_col_idx::,
     sort_direction = $sort_direction::,
     updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')
 where id = $filter_id::integer;
 
 -- name: updateFilterPredicates
-update datasette_sheets_filter
+update _datasette_sheets_filter
 set predicates_json = $predicates_json::text,
     updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')
 where id = $filter_id::integer;
@@ -774,15 +774,15 @@ where id = $filter_id::integer;
 -- sheet-delete cascade in db.py::delete_sheet — at most one filter
 -- per sheet, so a single sheet_id is the unique-row key for both.
 -- name: deleteFilterBySheet
-delete from datasette_sheets_filter where sheet_id = $sheet_id::integer;
+delete from _datasette_sheets_filter where sheet_id = $sheet_id::integer;
 
 -- Workbook-delete cascade. FK cascade isn't on per-conn (see the
 -- deleteWorkbook* block above) so this child table needs its own
 -- explicit DELETE called from db.py::delete_workbook.
 -- name: deleteWorkbookFilters
-delete from datasette_sheets_filter
+delete from _datasette_sheets_filter
 where sheet_id in (
-    select id from datasette_sheets_sheet where workbook_id = $workbook_id::integer
+    select id from _datasette_sheets_sheet where workbook_id = $workbook_id::integer
 );
 
 -- Read the (row_idx, computed_value, computed_value_kind) tuples
@@ -794,7 +794,7 @@ where sheet_id in (
 -- (caller fills in empty for those).
 -- name: listCellsInColRange
 select row_idx, computed_value, computed_value_kind
-from datasette_sheets_cell
+from _datasette_sheets_cell
 where sheet_id = $sheet_id::integer
   and col_idx = $col_idx::integer
   and row_idx between $min_row::integer and $max_row::integer
