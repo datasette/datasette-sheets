@@ -5,7 +5,7 @@
 [![Tests](https://github.com/datasette/datasette-sheets/actions/workflows/test.yml/badge.svg)](https://github.com/datasette/datasette-sheets/actions/workflows/test.yml)
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/datasette/datasette-sheets/blob/main/LICENSE)
 
-Spreadsheets in Datasette
+Custom spreadsheets in Datasette. Work in progress, heavy usage of LLM development. 
 
 ## Installation
 
