@@ -1,0 +1,31 @@
+.venv
+__pycache__/
+*.py[cod]
+*$py.class
+venv
+.eggs
+.pytest_cache
+*.egg-info
+.DS_Store
+.vscode
+dist
+build
+uv.lock
+frontend/node_modules/
+node_modules/
+# Downloaded by `just engine-wasm` — pinned liblotus release tarball
+# extracted into a vendored pkg dir that the frontend imports directly.
+frontend/vendor/
+datasette_sheets/static/gen/
+datasette_sheets/manifest.json
+datasette_sheets/static/manifest.json
+datasette_sheets/static/gen/
+test-results/
+playwright-report/
+frontend/.vitest-attachments/
+frontend/src/**/__screenshots__/
+frontend/coverage/
+rust/target/
+
+*.db
+deno.lock

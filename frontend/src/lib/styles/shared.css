@@ -1,0 +1,57 @@
+/*
+ * Shared primitives for the Sheets UI.
+ *
+ * Loaded once from src/pages/sheets/index.ts. Every rule is ancestor-
+ * scoped to .sheets-app-container via :where(...), which applies the
+ * scope constraint without adding specificity. That way a component's
+ * locally-scoped Svelte override (e.g. `.btn.svelte-abc123`) reliably
+ * beats these defaults — they're strict fallbacks.
+ *
+ * Design tokens (colors, shadows, radii, z-index) live in
+ * SheetsPage.svelte's :global(.sheets-app-container) block.
+ */
+
+/* ---------- Buttons ---------- */
+/* Default: neutral surface. Add .primary for an accent CTA. */
+:where(.sheets-app-container) .btn {
+  padding: 5px 12px;
+  border-radius: var(--sheet-radius-md);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid var(--sheet-border-strong);
+  background: var(--sheet-surface);
+  color: var(--sheet-text);
+  font-family: inherit;
+}
+
+:where(.sheets-app-container) .btn:hover:not(:disabled) {
+  background: var(--sheet-header-bg);
+}
+
+:where(.sheets-app-container) .btn.primary {
+  background: var(--sheet-accent);
+  color: #fff;
+  border-color: var(--sheet-accent);
+}
+
+:where(.sheets-app-container) .btn.primary:hover:not(:disabled) {
+  opacity: 0.9;
+}
+
+:where(.sheets-app-container) .btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ---------- Popover container ---------- */
+/* Floating surface (dropdowns, context menus, pickers). Components
+   set their own position, padding, min-width, and z-index — padding
+   varies meaningfully between menu-style popovers (~4px 0) and panel-
+   style popovers like ColorPicker/BorderPicker (~8px). */
+:where(.sheets-app-container) .popover {
+  background: var(--sheet-surface);
+  border: 1px solid var(--sheet-border-strong);
+  border-radius: var(--sheet-radius-md);
+  box-shadow: var(--sheet-shadow-md);
+}

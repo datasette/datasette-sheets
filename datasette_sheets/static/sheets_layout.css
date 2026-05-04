@@ -1,0 +1,55 @@
+/*
+ * Layout CSS for the Sheets workbook page.
+ *
+ * Scoped to body.sheets-fullscreen so Datasette's other pages are
+ * unaffected. Lives outside the Svelte bundle on purpose — these rules
+ * target the Datasette shell DOM (<body>, .not-footer, .content, .ft)
+ * which is rendered before the Svelte app mounts inside #sheets-app.
+ * Keeping it as an external stylesheet linked from sheets_base.html
+ * avoids the flash-of-default-layout that a JS-bundled stylesheet
+ * would introduce.
+ */
+
+html:has(body.sheets-fullscreen) {
+  height: 100%;
+  overflow: hidden;
+}
+
+body.sheets-fullscreen {
+  height: 100dvh;
+  margin: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+body.sheets-fullscreen .not-footer {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+body.sheets-fullscreen .content {
+  flex: 1;
+  min-height: 0;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+body.sheets-fullscreen .ft {
+  display: none;
+}
+
+body.sheets-fullscreen .sheets-app-container {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+}

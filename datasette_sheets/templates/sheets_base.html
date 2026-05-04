@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}{{ workbook_name }} - Sheets{% endblock %}
+
+{% block body_class %}sheets-fullscreen{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{{ sheets_layout_css }}">
+{{ datasette_sheets_vite_entry("src/pages/sheets/index.ts") | safe }}
+{% endblock %}
+
+{% block content %}
+<div id="sheets-app" class="sheets-app-container"
+     data-database="{{ database }}"
+     data-workbook-id="{{ workbook_id }}"
+     data-workbook-name="{{ workbook_name }}"></div>
+{% endblock %}

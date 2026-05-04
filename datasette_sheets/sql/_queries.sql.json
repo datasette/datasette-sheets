@@ -1,0 +1,3472 @@
+{
+  "setup": [],
+  "exports": [
+    {
+      "name": "listWorkbooks",
+      "result_type": "Rows",
+      "sql": "select\n    id,\n    name,\n    created_at,\n    updated_at,\n    created_by,\n    sort_order\nfrom datasette_sheets_workbook\norder by sort_order, created_at;",
+      "parameters": [],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "created_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "updated_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_by",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "created_by",
+          "decltype": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "sort_order",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "sort_order",
+          "decltype": "INTEGER",
+          "nullable": false
+        }
+      ],
+      "result_class": "Workbook"
+    },
+    {
+      "name": "getWorkbook",
+      "result_type": "Row",
+      "sql": "select\n    id,\n    name,\n    created_at,\n    updated_at,\n    created_by,\n    sort_order\nfrom datasette_sheets_workbook\nwhere id = $workbook_id::text;",
+      "parameters": [
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "created_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "updated_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_by",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "created_by",
+          "decltype": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "sort_order",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "sort_order",
+          "decltype": "INTEGER",
+          "nullable": false
+        }
+      ],
+      "result_class": "Workbook"
+    },
+    {
+      "name": "insertWorkbook",
+      "result_type": "Row",
+      "sql": "insert into datasette_sheets_workbook (id, name, created_by)\nvalues ($workbook_id::text, $name::text, $created_by::text::)\nreturning id, name, created_at, updated_at, created_by, sort_order;",
+      "parameters": [
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$name::text",
+          "name": "name",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$created_by::text::",
+          "name": "created_by",
+          "annotated_type": "text",
+          "nullable": true
+        }
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "created_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "updated_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_by",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "created_by",
+          "decltype": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "sort_order",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "sort_order",
+          "decltype": "INTEGER",
+          "nullable": false
+        }
+      ],
+      "result_class": "Workbook"
+    },
+    {
+      "name": "updateWorkbook",
+      "result_type": "Row",
+      "sql": "update datasette_sheets_workbook\nset name = case when $name_do_update::boolean then $name::text else name end,\n    sort_order = case\n        when $sort_order_do_update::boolean then $sort_order::integer\n        else sort_order\n    end,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $workbook_id::text\nreturning id, name, created_at, updated_at, created_by, sort_order;",
+      "parameters": [
+        {
+          "full_name": "$name_do_update::boolean",
+          "name": "name_do_update",
+          "annotated_type": "boolean",
+          "nullable": false
+        },
+        {
+          "full_name": "$name::text",
+          "name": "name",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$sort_order_do_update::boolean",
+          "name": "sort_order_do_update",
+          "annotated_type": "boolean",
+          "nullable": false
+        },
+        {
+          "full_name": "$sort_order::integer",
+          "name": "sort_order",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "created_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "updated_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_by",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "created_by",
+          "decltype": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "sort_order",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_workbook",
+          "origin_column": "sort_order",
+          "decltype": "INTEGER",
+          "nullable": false
+        }
+      ],
+      "result_class": "Workbook"
+    },
+    {
+      "name": "deleteWorkbookCells",
+      "result_type": "Void",
+      "sql": "delete from datasette_sheets_cell\nwhere sheet_id in (\n    select id from datasette_sheets_sheet where workbook_id = $workbook_id::text\n);",
+      "parameters": [
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "deleteWorkbookColumns",
+      "result_type": "Void",
+      "sql": "delete from datasette_sheets_column\nwhere sheet_id in (\n    select id from datasette_sheets_sheet where workbook_id = $workbook_id::text\n);",
+      "parameters": [
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "deleteWorkbookNamedRanges",
+      "result_type": "Void",
+      "sql": "delete from datasette_sheets_named_range\nwhere sheet_id in (\n    select id from datasette_sheets_sheet where workbook_id = $workbook_id::text\n);",
+      "parameters": [
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "deleteWorkbookSheets",
+      "result_type": "Void",
+      "sql": "delete from datasette_sheets_sheet where workbook_id = $workbook_id::text;",
+      "parameters": [
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "deleteWorkbookRow",
+      "result_type": "Void",
+      "sql": "delete from datasette_sheets_workbook where id = $workbook_id::text;",
+      "parameters": [
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "listSheets",
+      "result_type": "Rows",
+      "sql": "select id, workbook_id, name, color, sort_order, created_at, updated_at\nfrom datasette_sheets_sheet\nwhere workbook_id = $workbook_id::text\norder by sort_order, created_at;",
+      "parameters": [
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "workbook_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "workbook_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "color",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "color",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "sort_order",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "sort_order",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "created_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "updated_at",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": "Sheet"
+    },
+    {
+      "name": "getSheet",
+      "result_type": "Row",
+      "sql": "select id, workbook_id, name, color, sort_order, created_at, updated_at\nfrom datasette_sheets_sheet\nwhere id = $sheet_id::text;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "workbook_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "workbook_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "color",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "color",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "sort_order",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "sort_order",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "created_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "updated_at",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": "Sheet"
+    },
+    {
+      "name": "insertSheet",
+      "result_type": "Row",
+      "sql": "insert into datasette_sheets_sheet (id, workbook_id, name, color)\nvalues ($sheet_id::text, $workbook_id::text, $name::text, $color::text)\nreturning id, workbook_id, name, color, sort_order, created_at, updated_at;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$name::text",
+          "name": "name",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$color::text",
+          "name": "color",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "workbook_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "workbook_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "color",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "color",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "sort_order",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "sort_order",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "created_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "updated_at",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": "Sheet"
+    },
+    {
+      "name": "updateSheet",
+      "result_type": "Row",
+      "sql": "update datasette_sheets_sheet\nset name = case when $name_do_update::boolean then $name::text else name end,\n    color = case when $color_do_update::boolean then $color::text else color end,\n    sort_order = case\n        when $sort_order_do_update::boolean then $sort_order::integer\n        else sort_order\n    end,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $sheet_id::text\nreturning id, workbook_id, name, color, sort_order, created_at, updated_at;",
+      "parameters": [
+        {
+          "full_name": "$name_do_update::boolean",
+          "name": "name_do_update",
+          "annotated_type": "boolean",
+          "nullable": false
+        },
+        {
+          "full_name": "$name::text",
+          "name": "name",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$color_do_update::boolean",
+          "name": "color_do_update",
+          "annotated_type": "boolean",
+          "nullable": false
+        },
+        {
+          "full_name": "$color::text",
+          "name": "color",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$sort_order_do_update::boolean",
+          "name": "sort_order_do_update",
+          "annotated_type": "boolean",
+          "nullable": false
+        },
+        {
+          "full_name": "$sort_order::integer",
+          "name": "sort_order",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "workbook_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "workbook_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "color",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "color",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "sort_order",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "sort_order",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "created_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_sheet",
+          "origin_column": "updated_at",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": "Sheet"
+    },
+    {
+      "name": "insertDefaultColumn",
+      "result_type": "Void",
+      "sql": "insert into datasette_sheets_column (sheet_id, col_idx, name, width)\nvalues ($sheet_id::text, $col_idx::integer, $name::text, $width::integer);",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$col_idx::integer",
+          "name": "col_idx",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$name::text",
+          "name": "name",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$width::integer",
+          "name": "width",
+          "annotated_type": "integer",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "deleteSheetCells",
+      "result_type": "Void",
+      "sql": "delete from datasette_sheets_cell where sheet_id = $sheet_id::text;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "deleteSheetColumns",
+      "result_type": "Void",
+      "sql": "delete from datasette_sheets_column where sheet_id = $sheet_id::text;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "deleteSheetNamedRanges",
+      "result_type": "Void",
+      "sql": "delete from datasette_sheets_named_range where sheet_id = $sheet_id::text;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "deleteSheetRow",
+      "result_type": "Void",
+      "sql": "delete from datasette_sheets_sheet where id = $sheet_id::text;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "reorderSheet",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_sheet\nset sort_order = $sort_order::integer,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $sheet_id::text\n  and workbook_id = $workbook_id::text;",
+      "parameters": [
+        {
+          "full_name": "$sort_order::integer",
+          "name": "sort_order",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "touchSheet",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_sheet\nset updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $sheet_id::text;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "listColumns",
+      "result_type": "Rows",
+      "sql": "select sheet_id, col_idx, name, width, format_json\nfrom datasette_sheets_column\nwhere sheet_id = $sheet_id::text\norder by col_idx;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "sheet_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_column",
+          "origin_column": "sheet_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "col_idx",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_column",
+          "origin_column": "col_idx",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_column",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "width",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_column",
+          "origin_column": "width",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "format_json",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_column",
+          "origin_column": "format_json",
+          "decltype": "TEXT",
+          "nullable": true
+        }
+      ],
+      "result_class": "Column"
+    },
+    {
+      "name": "setColumn",
+      "result_type": "Row",
+      "sql": "update datasette_sheets_column\nset name = case when $name_do_update::boolean then $name::text else name end,\n    width = case\n        when $width_do_update::boolean then $width::integer\n        else width\n    end\nwhere sheet_id = $sheet_id::text\n  and col_idx = $col_idx::integer\nreturning sheet_id, col_idx, name, width, format_json;",
+      "parameters": [
+        {
+          "full_name": "$name_do_update::boolean",
+          "name": "name_do_update",
+          "annotated_type": "boolean",
+          "nullable": false
+        },
+        {
+          "full_name": "$name::text",
+          "name": "name",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$width_do_update::boolean",
+          "name": "width_do_update",
+          "annotated_type": "boolean",
+          "nullable": false
+        },
+        {
+          "full_name": "$width::integer",
+          "name": "width",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$col_idx::integer",
+          "name": "col_idx",
+          "annotated_type": "integer",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "sheet_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_column",
+          "origin_column": "sheet_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "col_idx",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_column",
+          "origin_column": "col_idx",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_column",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "width",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_column",
+          "origin_column": "width",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "format_json",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_column",
+          "origin_column": "format_json",
+          "decltype": "TEXT",
+          "nullable": true
+        }
+      ],
+      "result_class": "Column"
+    },
+    {
+      "name": "listCells",
+      "result_type": "Rows",
+      "sql": "select sheet_id, row_idx, col_idx, raw_value, computed_value,\n       computed_value_kind, typed_kind, typed_data, format_json,\n       updated_at, updated_by\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::text\norder by row_idx, col_idx;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "sheet_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "sheet_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "row_idx",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "row_idx",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "col_idx",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "col_idx",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "raw_value",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "raw_value",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "computed_value",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "computed_value",
+          "decltype": null,
+          "nullable": true
+        },
+        {
+          "name": "computed_value_kind",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "computed_value_kind",
+          "decltype": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "typed_kind",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "typed_kind",
+          "decltype": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "typed_data",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "typed_data",
+          "decltype": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "format_json",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "format_json",
+          "decltype": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "updated_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "updated_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "updated_by",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "updated_by",
+          "decltype": "TEXT",
+          "nullable": true
+        }
+      ],
+      "result_class": "Cell"
+    },
+    {
+      "name": "deleteCell",
+      "result_type": "Void",
+      "sql": "delete from datasette_sheets_cell\nwhere sheet_id = $sheet_id::text\n  and row_idx = $row_idx::integer\n  and col_idx = $col_idx::integer;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$row_idx::integer",
+          "name": "row_idx",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$col_idx::integer",
+          "name": "col_idx",
+          "annotated_type": "integer",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "upsertCell",
+      "result_type": "Void",
+      "sql": "insert into datasette_sheets_cell\n    (sheet_id, row_idx, col_idx, raw_value, format_json,\n     typed_kind, typed_data, updated_by, updated_at)\nvalues\n    ($sheet_id::text, $row_idx::integer, $col_idx::integer,\n     $raw_value::text, $format_json::text::,\n     $typed_kind::text::, $typed_data::text::,\n     $updated_by::text::, strftime('%Y-%m-%dT%H:%M:%f', 'now'))\non conflict(sheet_id, row_idx, col_idx) do update set\n    raw_value = excluded.raw_value,\n    format_json = excluded.format_json,\n    typed_kind = excluded.typed_kind,\n    typed_data = excluded.typed_data,\n    updated_by = excluded.updated_by,\n    updated_at = excluded.updated_at;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$row_idx::integer",
+          "name": "row_idx",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$col_idx::integer",
+          "name": "col_idx",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$raw_value::text",
+          "name": "raw_value",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$format_json::text::",
+          "name": "format_json",
+          "annotated_type": "text",
+          "nullable": true
+        },
+        {
+          "full_name": "$typed_kind::text::",
+          "name": "typed_kind",
+          "annotated_type": "text",
+          "nullable": true
+        },
+        {
+          "full_name": "$typed_data::text::",
+          "name": "typed_data",
+          "annotated_type": "text",
+          "nullable": true
+        },
+        {
+          "full_name": "$updated_by::text::",
+          "name": "updated_by",
+          "annotated_type": "text",
+          "nullable": true
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "listCellsForRecalc",
+      "result_type": "Rows",
+      "sql": "select row_idx, col_idx, raw_value, typed_kind, typed_data,\n       computed_value, computed_value_kind\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::text;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "row_idx",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "row_idx",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "col_idx",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "col_idx",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "raw_value",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "raw_value",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "typed_kind",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "typed_kind",
+          "decltype": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "typed_data",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "typed_data",
+          "decltype": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "computed_value",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "computed_value",
+          "decltype": null,
+          "nullable": true
+        },
+        {
+          "name": "computed_value_kind",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "computed_value_kind",
+          "decltype": "TEXT",
+          "nullable": true
+        }
+      ],
+      "result_class": null
+    },
+    {
+      "name": "listNamedRangesForRecalc",
+      "result_type": "Rows",
+      "sql": "select name, definition\nfrom datasette_sheets_named_range\nwhere sheet_id = $sheet_id::text;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_named_range",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "definition",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_named_range",
+          "origin_column": "definition",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": null
+    },
+    {
+      "name": "updateCellComputed",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_cell\nset computed_value = $value::,\n    computed_value_kind = $kind::text::\nwhere sheet_id = $sheet_id::text\n  and row_idx = $row_idx::integer\n  and col_idx = $col_idx::integer;",
+      "parameters": [
+        {
+          "full_name": "$value::",
+          "name": "value",
+          "annotated_type": null,
+          "nullable": true
+        },
+        {
+          "full_name": "$kind::text::",
+          "name": "kind",
+          "annotated_type": "text",
+          "nullable": true
+        },
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$row_idx::integer",
+          "name": "row_idx",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$col_idx::integer",
+          "name": "col_idx",
+          "annotated_type": "integer",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "listFormulaCells",
+      "result_type": "Rows",
+      "sql": "select row_idx, col_idx, raw_value\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::text\n  and raw_value like '=%';",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "row_idx",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "row_idx",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "col_idx",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "col_idx",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "raw_value",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "raw_value",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": null
+    },
+    {
+      "name": "updateCellRaw",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_cell\nset raw_value = $raw_value::text\nwhere sheet_id = $sheet_id::text\n  and row_idx = $row_idx::integer\n  and col_idx = $col_idx::integer;",
+      "parameters": [
+        {
+          "full_name": "$raw_value::text",
+          "name": "raw_value",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$row_idx::integer",
+          "name": "row_idx",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$col_idx::integer",
+          "name": "col_idx",
+          "annotated_type": "integer",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "deleteCellsInRows",
+      "result_type": "Void",
+      "sql": "delete from datasette_sheets_cell\nwhere sheet_id = $sheet_id::text\n  and row_idx in (\n    select cast(value as integer) from json_each($row_indices_json::text)\n  );",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$row_indices_json::text",
+          "name": "row_indices_json",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "shiftCellRowsToBuffer",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_cell\nset row_idx = -(row_idx + 1)\nwhere sheet_id = $sheet_id::text\n  and row_idx > (\n    select min(cast(value as integer)) from json_each($row_indices_json::text)\n  );",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$row_indices_json::text",
+          "name": "row_indices_json",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "shiftCellRowsFromBuffer",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_cell\nset row_idx = (-row_idx - 1) - (\n    select count(*) from json_each($row_indices_json::text)\n    where cast(value as integer) < (-datasette_sheets_cell.row_idx - 1)\n)\nwhere sheet_id = $sheet_id::text\n  and row_idx < 0;",
+      "parameters": [
+        {
+          "full_name": "$row_indices_json::text",
+          "name": "row_indices_json",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "deleteCellsInCols",
+      "result_type": "Void",
+      "sql": "delete from datasette_sheets_cell\nwhere sheet_id = $sheet_id::text\n  and col_idx in (\n    select cast(value as integer) from json_each($col_indices_json::text)\n  );",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$col_indices_json::text",
+          "name": "col_indices_json",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "deleteColumnsInCols",
+      "result_type": "Void",
+      "sql": "delete from datasette_sheets_column\nwhere sheet_id = $sheet_id::text\n  and col_idx in (\n    select cast(value as integer) from json_each($col_indices_json::text)\n  );",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$col_indices_json::text",
+          "name": "col_indices_json",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "shiftCellColsToBuffer",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_cell\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::text\n  and col_idx > (\n    select min(cast(value as integer)) from json_each($col_indices_json::text)\n  );",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$col_indices_json::text",
+          "name": "col_indices_json",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "shiftCellColsFromBuffer",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_cell\nset col_idx = (-col_idx - 1) - (\n    select count(*) from json_each($col_indices_json::text)\n    where cast(value as integer) < (-datasette_sheets_cell.col_idx - 1)\n)\nwhere sheet_id = $sheet_id::text\n  and col_idx < 0;",
+      "parameters": [
+        {
+          "full_name": "$col_indices_json::text",
+          "name": "col_indices_json",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "shiftColumnColsToBuffer",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_column\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::text\n  and col_idx > (\n    select min(cast(value as integer)) from json_each($col_indices_json::text)\n  );",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$col_indices_json::text",
+          "name": "col_indices_json",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "shiftColumnColsFromBuffer",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_column\nset col_idx = (-col_idx - 1) - (\n    select count(*) from json_each($col_indices_json::text)\n    where cast(value as integer) < (-datasette_sheets_column.col_idx - 1)\n)\nwhere sheet_id = $sheet_id::text\n  and col_idx < 0;",
+      "parameters": [
+        {
+          "full_name": "$col_indices_json::text",
+          "name": "col_indices_json",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "insertShiftCellColsToBuffer",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_cell\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::text\n  and col_idx >= $at::integer;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$at::integer",
+          "name": "at",
+          "annotated_type": "integer",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "insertShiftCellColsFromBuffer",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_cell\nset col_idx = (-col_idx - 1) + $count::integer\nwhere sheet_id = $sheet_id::text\n  and col_idx < 0;",
+      "parameters": [
+        {
+          "full_name": "$count::integer",
+          "name": "count",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "insertShiftColumnColsToBuffer",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_column\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::text\n  and col_idx >= $at::integer;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$at::integer",
+          "name": "at",
+          "annotated_type": "integer",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "insertShiftColumnColsFromBuffer",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_column\nset col_idx = (-col_idx - 1) + $count::integer\nwhere sheet_id = $sheet_id::text\n  and col_idx < 0;",
+      "parameters": [
+        {
+          "full_name": "$count::integer",
+          "name": "count",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "moveCellColsToBuffer",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_cell\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::text\n  and col_idx between $low::integer and $high::integer;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$low::integer",
+          "name": "low",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$high::integer",
+          "name": "high",
+          "annotated_type": "integer",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "moveCellColsFromBuffer",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_cell\nset col_idx = case\n  when (-col_idx - 1) between $src_start::integer and $src_end::integer\n    then (-col_idx - 1) - $src_start::integer + $final_start::integer\n  when (-col_idx - 1) < $src_start::integer\n    then (-col_idx - 1) + $width::integer\n  else (-col_idx - 1) - $width::integer\nend\nwhere sheet_id = $sheet_id::text\n  and col_idx < 0;",
+      "parameters": [
+        {
+          "full_name": "$src_start::integer",
+          "name": "src_start",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$src_end::integer",
+          "name": "src_end",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$final_start::integer",
+          "name": "final_start",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$width::integer",
+          "name": "width",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "moveColumnMetaToBuffer",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_column\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::text\n  and col_idx between $low::integer and $high::integer;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$low::integer",
+          "name": "low",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$high::integer",
+          "name": "high",
+          "annotated_type": "integer",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "moveColumnMetaFromBuffer",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_column\nset col_idx = case\n  when (-col_idx - 1) between $src_start::integer and $src_end::integer\n    then (-col_idx - 1) - $src_start::integer + $final_start::integer\n  when (-col_idx - 1) < $src_start::integer\n    then (-col_idx - 1) + $width::integer\n  else (-col_idx - 1) - $width::integer\nend\nwhere sheet_id = $sheet_id::text\n  and col_idx < 0;",
+      "parameters": [
+        {
+          "full_name": "$src_start::integer",
+          "name": "src_start",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$src_end::integer",
+          "name": "src_end",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$final_start::integer",
+          "name": "final_start",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$width::integer",
+          "name": "width",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "moveCellRowsToBuffer",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_cell\nset row_idx = -(row_idx + 1)\nwhere sheet_id = $sheet_id::text\n  and row_idx between $low::integer and $high::integer;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$low::integer",
+          "name": "low",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$high::integer",
+          "name": "high",
+          "annotated_type": "integer",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "moveCellRowsFromBuffer",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_cell\nset row_idx = case\n  when (-row_idx - 1) between $src_start::integer and $src_end::integer\n    then (-row_idx - 1) - $src_start::integer + $final_start::integer\n  when (-row_idx - 1) < $src_start::integer\n    then (-row_idx - 1) + $width::integer\n  else (-row_idx - 1) - $width::integer\nend\nwhere sheet_id = $sheet_id::text\n  and row_idx < 0;",
+      "parameters": [
+        {
+          "full_name": "$src_start::integer",
+          "name": "src_start",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$src_end::integer",
+          "name": "src_end",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$final_start::integer",
+          "name": "final_start",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$width::integer",
+          "name": "width",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "listNamedRanges",
+      "result_type": "Rows",
+      "sql": "select sheet_id, name, definition, updated_at\nfrom datasette_sheets_named_range\nwhere sheet_id = $sheet_id::text\norder by name collate nocase;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "sheet_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_named_range",
+          "origin_column": "sheet_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_named_range",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "definition",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_named_range",
+          "origin_column": "definition",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_named_range",
+          "origin_column": "updated_at",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": "NamedRange"
+    },
+    {
+      "name": "upsertNamedRange",
+      "result_type": "Row",
+      "sql": "insert into datasette_sheets_named_range\n    (sheet_id, name, definition, updated_at)\nvalues\n    ($sheet_id::text, $name::text, $definition::text,\n     strftime('%Y-%m-%dT%H:%M:%f', 'now'))\non conflict(sheet_id, name) do update set\n    definition = excluded.definition,\n    updated_at = excluded.updated_at\nreturning sheet_id, name, definition, updated_at;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$name::text",
+          "name": "name",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$definition::text",
+          "name": "definition",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "sheet_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_named_range",
+          "origin_column": "sheet_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_named_range",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "definition",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_named_range",
+          "origin_column": "definition",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_named_range",
+          "origin_column": "updated_at",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": "NamedRange"
+    },
+    {
+      "name": "deleteNamedRange",
+      "result_type": "Row",
+      "sql": "delete from datasette_sheets_named_range\nwhere sheet_id = $sheet_id::text\n  and name = $name::text collate nocase\nreturning name;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$name::text",
+          "name": "name",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_named_range",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": null
+    },
+    {
+      "name": "updateNamedRangeDefinition",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_named_range\nset definition = $definition::text,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere sheet_id = $sheet_id::text\n  and name = $name::text collate nocase;",
+      "parameters": [
+        {
+          "full_name": "$definition::text",
+          "name": "definition",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$name::text",
+          "name": "name",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "listDropdownRules",
+      "result_type": "Rows",
+      "sql": "select id, workbook_id, name, multi, options_json, updated_at\nfrom datasette_sheets_dropdown_rule\nwhere workbook_id = $workbook_id::text\norder by coalesce(name, ''), id;",
+      "parameters": [
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "workbook_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "workbook_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "multi",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "multi",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "options_json",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "options_json",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "updated_at",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": "DropdownRule"
+    },
+    {
+      "name": "getDropdownRule",
+      "result_type": "Row",
+      "sql": "select id, workbook_id, name, multi, options_json, updated_at\nfrom datasette_sheets_dropdown_rule\nwhere id = $rule_id::text\n  and workbook_id = $workbook_id::text;",
+      "parameters": [
+        {
+          "full_name": "$rule_id::text",
+          "name": "rule_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "workbook_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "workbook_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "multi",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "multi",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "options_json",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "options_json",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "updated_at",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": "DropdownRule"
+    },
+    {
+      "name": "insertDropdownRule",
+      "result_type": "Row",
+      "sql": "insert into datasette_sheets_dropdown_rule\n    (id, workbook_id, name, multi, options_json, updated_at)\nvalues\n    ($rule_id::text, $workbook_id::text, $name::text::,\n     $multi::integer, $options_json::text,\n     strftime('%Y-%m-%dT%H:%M:%f', 'now'))\nreturning id, workbook_id, name, multi, options_json, updated_at;",
+      "parameters": [
+        {
+          "full_name": "$rule_id::text",
+          "name": "rule_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$name::text::",
+          "name": "name",
+          "annotated_type": "text",
+          "nullable": true
+        },
+        {
+          "full_name": "$multi::integer",
+          "name": "multi",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$options_json::text",
+          "name": "options_json",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "workbook_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "workbook_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "multi",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "multi",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "options_json",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "options_json",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "updated_at",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": "DropdownRule"
+    },
+    {
+      "name": "updateDropdownRule",
+      "result_type": "Row",
+      "sql": "update datasette_sheets_dropdown_rule\nset name = case\n        when $name_do_update::boolean then $name::text::\n        else name\n    end,\n    multi = case\n        when $multi_do_update::boolean then $multi::integer\n        else multi\n    end,\n    options_json = case\n        when $options_do_update::boolean then $options_json::text\n        else options_json\n    end,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $rule_id::text\n  and workbook_id = $workbook_id::text\nreturning id, workbook_id, name, multi, options_json, updated_at;",
+      "parameters": [
+        {
+          "full_name": "$name_do_update::boolean",
+          "name": "name_do_update",
+          "annotated_type": "boolean",
+          "nullable": false
+        },
+        {
+          "full_name": "$name::text::",
+          "name": "name",
+          "annotated_type": "text",
+          "nullable": true
+        },
+        {
+          "full_name": "$multi_do_update::boolean",
+          "name": "multi_do_update",
+          "annotated_type": "boolean",
+          "nullable": false
+        },
+        {
+          "full_name": "$multi::integer",
+          "name": "multi",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$options_do_update::boolean",
+          "name": "options_do_update",
+          "annotated_type": "boolean",
+          "nullable": false
+        },
+        {
+          "full_name": "$options_json::text",
+          "name": "options_json",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$rule_id::text",
+          "name": "rule_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "workbook_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "workbook_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "multi",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "multi",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "options_json",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "options_json",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "updated_at",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": "DropdownRule"
+    },
+    {
+      "name": "deleteDropdownRule",
+      "result_type": "Row",
+      "sql": "delete from datasette_sheets_dropdown_rule\nwhere id = $rule_id::text\n  and workbook_id = $workbook_id::text\nreturning id;",
+      "parameters": [
+        {
+          "full_name": "$rule_id::text",
+          "name": "rule_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_dropdown_rule",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": null
+    },
+    {
+      "name": "deleteWorkbookDropdownRules",
+      "result_type": "Void",
+      "sql": "delete from datasette_sheets_dropdown_rule\nwhere workbook_id = $workbook_id::text;",
+      "parameters": [
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "listViews",
+      "result_type": "Rows",
+      "sql": "select id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n       use_headers, color, created_at, enable_insert, enable_update,\n       enable_delete, delete_mode\nfrom datasette_sheets_view\nwhere sheet_id = $sheet_id::text\norder by created_at;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "sheet_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "sheet_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "view_name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "view_name",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "range_str",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "range_str",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "min_row",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "min_row",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "min_col",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "min_col",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "max_row",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "max_row",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "max_col",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "max_col",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "use_headers",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "use_headers",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "color",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "color",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "created_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "enable_insert",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "enable_insert",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "enable_update",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "enable_update",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "enable_delete",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "enable_delete",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "delete_mode",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "delete_mode",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": "View"
+    },
+    {
+      "name": "getView",
+      "result_type": "Row",
+      "sql": "select id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n       use_headers, color, created_at, enable_insert, enable_update,\n       enable_delete, delete_mode\nfrom datasette_sheets_view\nwhere id = $view_id::text;",
+      "parameters": [
+        {
+          "full_name": "$view_id::text",
+          "name": "view_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "sheet_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "sheet_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "view_name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "view_name",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "range_str",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "range_str",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "min_row",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "min_row",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "min_col",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "min_col",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "max_row",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "max_row",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "max_col",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "max_col",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "use_headers",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "use_headers",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "color",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "color",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "created_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "enable_insert",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "enable_insert",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "enable_update",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "enable_update",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "enable_delete",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "enable_delete",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "delete_mode",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "delete_mode",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": "View"
+    },
+    {
+      "name": "insertView",
+      "result_type": "Row",
+      "sql": "insert into datasette_sheets_view\n    (id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n     use_headers, color, enable_insert, enable_update, enable_delete, delete_mode)\nvalues\n    ($view_id::text, $sheet_id::text, $view_name::text, $range_str::text,\n     $min_row::integer, $min_col::integer, $max_row::integer, $max_col::integer,\n     $use_headers::integer, $color::text,\n     $enable_insert::integer, $enable_update::integer, $enable_delete::integer,\n     $delete_mode::text)\nreturning id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n          use_headers, color, created_at, enable_insert, enable_update,\n          enable_delete, delete_mode;",
+      "parameters": [
+        {
+          "full_name": "$view_id::text",
+          "name": "view_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$view_name::text",
+          "name": "view_name",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$range_str::text",
+          "name": "range_str",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$min_row::integer",
+          "name": "min_row",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$min_col::integer",
+          "name": "min_col",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$max_row::integer",
+          "name": "max_row",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$max_col::integer",
+          "name": "max_col",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$use_headers::integer",
+          "name": "use_headers",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$color::text",
+          "name": "color",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$enable_insert::integer",
+          "name": "enable_insert",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$enable_update::integer",
+          "name": "enable_update",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$enable_delete::integer",
+          "name": "enable_delete",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$delete_mode::text",
+          "name": "delete_mode",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "sheet_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "sheet_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "view_name",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "view_name",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "range_str",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "range_str",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "min_row",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "min_row",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "min_col",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "min_col",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "max_row",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "max_row",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "max_col",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "max_col",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "use_headers",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "use_headers",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "color",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "color",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "created_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "enable_insert",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "enable_insert",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "enable_update",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "enable_update",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "enable_delete",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "enable_delete",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "delete_mode",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_view",
+          "origin_column": "delete_mode",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": "View"
+    },
+    {
+      "name": "deleteView",
+      "result_type": "Void",
+      "sql": "delete from datasette_sheets_view where id = $view_id::text;",
+      "parameters": [
+        {
+          "full_name": "$view_id::text",
+          "name": "view_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "updateViewColBounds",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_view\nset min_col = $min_col::integer,\n    max_col = $max_col::integer\nwhere id = $view_id::text;",
+      "parameters": [
+        {
+          "full_name": "$min_col::integer",
+          "name": "min_col",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$max_col::integer",
+          "name": "max_col",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$view_id::text",
+          "name": "view_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "updateViewRowBounds",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_view\nset min_row = $min_row::integer,\n    max_row = $max_row::integer\nwhere id = $view_id::text;",
+      "parameters": [
+        {
+          "full_name": "$min_row::integer",
+          "name": "min_row",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$max_row::integer",
+          "name": "max_row",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$view_id::text",
+          "name": "view_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "checkNameExists",
+      "result_type": "Value",
+      "sql": "select name from sqlite_master\nwhere type in ('table', 'view') and name = $name::text;",
+      "parameters": [
+        {
+          "full_name": "$name::text",
+          "name": "name",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "name",
+          "origin_database": "main",
+          "origin_table": "sqlite_master",
+          "origin_column": "name",
+          "decltype": "TEXT",
+          "nullable": true
+        }
+      ],
+      "result_class": null
+    },
+    {
+      "name": "listCellsInRow",
+      "result_type": "Rows",
+      "sql": "select col_idx, computed_value\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::text\n  and row_idx = $row_idx::integer\n  and col_idx between $min_col::integer and $max_col::integer;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$row_idx::integer",
+          "name": "row_idx",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$min_col::integer",
+          "name": "min_col",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$max_col::integer",
+          "name": "max_col",
+          "annotated_type": "integer",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "col_idx",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "col_idx",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "computed_value",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "computed_value",
+          "decltype": null,
+          "nullable": true
+        }
+      ],
+      "result_class": null
+    },
+    {
+      "name": "getFilterBySheet",
+      "result_type": "Row",
+      "sql": "select id, sheet_id, min_row, min_col, max_row, max_col,\n       sort_col_idx, sort_direction, predicates_json,\n       created_at, updated_at\nfrom datasette_sheets_filter\nwhere sheet_id = $sheet_id::text;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "sheet_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "sheet_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "min_row",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "min_row",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "min_col",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "min_col",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "max_row",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "max_row",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "max_col",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "max_col",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "sort_col_idx",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "sort_col_idx",
+          "decltype": "INTEGER",
+          "nullable": true
+        },
+        {
+          "name": "sort_direction",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "sort_direction",
+          "decltype": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "predicates_json",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "predicates_json",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "created_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "updated_at",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": "Filter"
+    },
+    {
+      "name": "insertFilter",
+      "result_type": "Row",
+      "sql": "insert into datasette_sheets_filter\n    (id, sheet_id, min_row, min_col, max_row, max_col,\n     sort_col_idx, sort_direction, predicates_json)\nvalues\n    ($filter_id::text, $sheet_id::text,\n     $min_row::integer, $min_col::integer,\n     $max_row::integer, $max_col::integer,\n     $sort_col_idx::, $sort_direction::,\n     $predicates_json::text)\nreturning id, sheet_id, min_row, min_col, max_row, max_col,\n          sort_col_idx, sort_direction, predicates_json,\n          created_at, updated_at;",
+      "parameters": [
+        {
+          "full_name": "$filter_id::text",
+          "name": "filter_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$min_row::integer",
+          "name": "min_row",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$min_col::integer",
+          "name": "min_col",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$max_row::integer",
+          "name": "max_row",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$max_col::integer",
+          "name": "max_col",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$sort_col_idx::",
+          "name": "sort_col_idx",
+          "annotated_type": null,
+          "nullable": true
+        },
+        {
+          "full_name": "$sort_direction::",
+          "name": "sort_direction",
+          "annotated_type": null,
+          "nullable": true
+        },
+        {
+          "full_name": "$predicates_json::text",
+          "name": "predicates_json",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "sheet_id",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "sheet_id",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "min_row",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "min_row",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "min_col",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "min_col",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "max_row",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "max_row",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "max_col",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "max_col",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "sort_col_idx",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "sort_col_idx",
+          "decltype": "INTEGER",
+          "nullable": true
+        },
+        {
+          "name": "sort_direction",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "sort_direction",
+          "decltype": "TEXT",
+          "nullable": true
+        },
+        {
+          "name": "predicates_json",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "predicates_json",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "created_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "created_at",
+          "decltype": "TEXT",
+          "nullable": false
+        },
+        {
+          "name": "updated_at",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_filter",
+          "origin_column": "updated_at",
+          "decltype": "TEXT",
+          "nullable": false
+        }
+      ],
+      "result_class": "Filter"
+    },
+    {
+      "name": "updateFilterColBounds",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_filter\nset min_col = $min_col::integer,\n    max_col = $max_col::integer,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::text;",
+      "parameters": [
+        {
+          "full_name": "$min_col::integer",
+          "name": "min_col",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$max_col::integer",
+          "name": "max_col",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$filter_id::text",
+          "name": "filter_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "updateFilterRowBounds",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_filter\nset min_row = $min_row::integer,\n    max_row = $max_row::integer,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::text;",
+      "parameters": [
+        {
+          "full_name": "$min_row::integer",
+          "name": "min_row",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$max_row::integer",
+          "name": "max_row",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$filter_id::text",
+          "name": "filter_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "updateFilterSort",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_filter\nset sort_col_idx = $sort_col_idx::,\n    sort_direction = $sort_direction::,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::text;",
+      "parameters": [
+        {
+          "full_name": "$sort_col_idx::",
+          "name": "sort_col_idx",
+          "annotated_type": null,
+          "nullable": true
+        },
+        {
+          "full_name": "$sort_direction::",
+          "name": "sort_direction",
+          "annotated_type": null,
+          "nullable": true
+        },
+        {
+          "full_name": "$filter_id::text",
+          "name": "filter_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "updateFilterPredicates",
+      "result_type": "Void",
+      "sql": "update datasette_sheets_filter\nset predicates_json = $predicates_json::text,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::text;",
+      "parameters": [
+        {
+          "full_name": "$predicates_json::text",
+          "name": "predicates_json",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$filter_id::text",
+          "name": "filter_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "deleteFilterBySheet",
+      "result_type": "Void",
+      "sql": "delete from datasette_sheets_filter where sheet_id = $sheet_id::text;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "deleteWorkbookFilters",
+      "result_type": "Void",
+      "sql": "delete from datasette_sheets_filter\nwhere sheet_id in (\n    select id from datasette_sheets_sheet where workbook_id = $workbook_id::text\n);",
+      "parameters": [
+        {
+          "full_name": "$workbook_id::text",
+          "name": "workbook_id",
+          "annotated_type": "text",
+          "nullable": false
+        }
+      ],
+      "columns": [],
+      "result_class": null
+    },
+    {
+      "name": "listCellsInColRange",
+      "result_type": "Rows",
+      "sql": "select row_idx, computed_value, computed_value_kind\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::text\n  and col_idx = $col_idx::integer\n  and row_idx between $min_row::integer and $max_row::integer\norder by row_idx;",
+      "parameters": [
+        {
+          "full_name": "$sheet_id::text",
+          "name": "sheet_id",
+          "annotated_type": "text",
+          "nullable": false
+        },
+        {
+          "full_name": "$col_idx::integer",
+          "name": "col_idx",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$min_row::integer",
+          "name": "min_row",
+          "annotated_type": "integer",
+          "nullable": false
+        },
+        {
+          "full_name": "$max_row::integer",
+          "name": "max_row",
+          "annotated_type": "integer",
+          "nullable": false
+        }
+      ],
+      "columns": [
+        {
+          "name": "row_idx",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "row_idx",
+          "decltype": "INTEGER",
+          "nullable": false
+        },
+        {
+          "name": "computed_value",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "computed_value",
+          "decltype": null,
+          "nullable": true
+        },
+        {
+          "name": "computed_value_kind",
+          "origin_database": "main",
+          "origin_table": "datasette_sheets_cell",
+          "origin_column": "computed_value_kind",
+          "decltype": "TEXT",
+          "nullable": true
+        }
+      ],
+      "result_class": null
+    }
+  ]
+}

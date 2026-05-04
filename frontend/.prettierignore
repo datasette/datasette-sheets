@@ -1,0 +1,4 @@
+api.d.ts
+node_modules
+dist
+../datasette_sheets/static

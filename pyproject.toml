@@ -1,0 +1,58 @@
+[project]
+name = "datasette-sheets"
+version = "0.1"
+description = "Spreadsheets in Datasette"
+readme = "README.md"
+authors = [{name = "Alex Garcia"}]
+license = "Apache-2.0"
+classifiers=[
+    "Framework :: Datasette"
+]
+requires-python = ">=3.10"
+dependencies = [
+    "datasette>1a",
+    "datasette-plugin-router",
+    "sqlite-migrate>=0.1b0",
+    "sqlite-utils>=3.38",
+    "python-ulid>=3",
+    # Rust formula + range engine. PyPI package `liblotus`; importable
+    # module is `lotus`. Keep this pin in sync with the
+    # `LIBLOTUS_VERSION` in `Justfile` so the Python wheel and the wasm
+    # tarball land at the same liblotus release.
+    "liblotus==0.0.1a2",
+]
+
+[dependency-groups]
+dev = [
+    "pytest",
+    "pytest-asyncio",
+    "datasette-debug-gotham",
+    "datasette-sidebar",
+    "datasette-user-profiles",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+
+[project.urls]
+Homepage = "https://github.com/datasette/datasette-sheets"
+Changelog = "https://github.com/datasette/datasette-sheets/releases"
+Issues = "https://github.com/datasette/datasette-sheets/issues"
+CI = "https://github.com/datasette/datasette-sheets/actions"
+
+[project.entry-points.datasette]
+sheets = "datasette_sheets"
+
+[tool.pytest.ini_options]
+asyncio_mode = "strict"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+
+[tool.setuptools]
+packages = ["datasette_sheets"]
+
+[tool.setuptools.package-data]
+datasette_sheets = ["static/**/*", "templates/*"]
+
