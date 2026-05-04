@@ -50,9 +50,9 @@ asyncio_mode = "strict"
 asyncio_default_fixture_loop_scope = "function"
 testpaths = ["tests"]
 
-[tool.setuptools]
-packages = ["datasette_sheets"]
+[tool.setuptools.packages.find]
+include = ["datasette_sheets*"]
 
 [tool.setuptools.package-data]
-datasette_sheets = ["static/**/*", "templates/*"]
+datasette_sheets = ["static/**/*", "templates/*", "sql/*.sql", "sql/*.json"]
 
