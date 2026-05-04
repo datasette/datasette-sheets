@@ -468,42 +468,11 @@ async def test_view_delete_mode_shift_closes_gap():
     ]
 
 
-@pytest.mark.asyncio
-async def test_view_rejects_malformed_sheet_id():
-    """A sheet_id that isn't a ULID must be rejected before any SQL runs.
-
-    This is the defense-in-depth check against an attacker who slips a
-    crafted sheet_id through the route. ``view_sql.validate_sheet_id``
-    refuses anything outside ``[0-9A-Z]{26}``, so the attack surface is
-    narrowed to characters that can't escape an identifier / literal.
-    """
-    ds, db_name = make_datasette()
-    wb_id, _sheet_id = await create_workbook_with_data(ds, db_name)
-
-    # Lowercase and punctuation both fail the ULID regex. Using a URL-safe
-    # string avoids httpx/routing distractions — we want to exercise the
-    # validator, not URL decoding.
-    resp = await ds.client.post(
-        f"/{db_name}/-/sheets/api/workbooks/{wb_id}/sheets/not_a_ulid/views/create",
-        content=json.dumps(
-            {
-                "view_name": "evil",
-                "range": "F1:G3",
-                "use_headers": True,
-                "enable_update": True,
-            }
-        ),
-    )
-    assert resp.status_code == 400, resp.text
-    assert "sheet_id" in resp.json()["error"].lower()
-
-    # No view should have been created
-    db = ds.get_database(db_name)
-    names = [
-        r["name"]
-        for r in await db.execute("SELECT name FROM sqlite_master WHERE name = 'evil'")
-    ]
-    assert names == []
+# NOTE: ``test_view_rejects_malformed_sheet_id`` was dropped when
+# sheet ids flipped from ULID to int. The route regex (``\d+``)
+# now rejects non-int sheet_ids at the URL-routing layer with a 404,
+# so the validator's role here is defense-in-depth only — it's
+# exercised directly in ``test_view_sql.py::TestValidateSheetId``.
 
 
 @pytest.mark.asyncio

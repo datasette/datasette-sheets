@@ -64,7 +64,7 @@ export function unwrap<T>(result: {
 
 export async function updateWorkbook(
   database: string,
-  workbookId: string,
+  workbookId: number,
   updates: { name?: string; sort_order?: number },
 ): Promise<WorkbookMeta> {
   const data = unwrap(
@@ -83,7 +83,7 @@ export async function updateWorkbook(
 
 export async function listSheets(
   database: string,
-  workbookId: string,
+  workbookId: number,
 ): Promise<SheetMeta[]> {
   const data = unwrap(
     await client.GET(
@@ -96,7 +96,7 @@ export async function listSheets(
 
 export async function createSheet(
   database: string,
-  workbookId: string,
+  workbookId: number,
   name: string,
   color?: string,
 ): Promise<{ sheet: SheetMeta; columns: ColumnData[] }> {
@@ -113,8 +113,8 @@ export async function createSheet(
 
 export async function getSheet(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
 ): Promise<{ sheet: SheetMeta; columns: ColumnData[]; cells: CellData[] }> {
   return unwrap(
     await client.GET(
@@ -131,8 +131,8 @@ export async function getSheet(
 // TODO: migrate to PATCH/DELETE when datasette-plugin-router supports them
 export async function updateSheet(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   updates: { name?: string; color?: string; sort_order?: number },
 ): Promise<{ sheet: SheetMeta }> {
   return unwrap(
@@ -150,8 +150,8 @@ export async function updateSheet(
 
 export async function deleteSheet(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
 ): Promise<void> {
   unwrap(
     await client.POST(
@@ -167,8 +167,8 @@ export async function deleteSheet(
 
 export async function reorderSheets(
   database: string,
-  workbookId: string,
-  sheetIds: string[],
+  workbookId: number,
+  sheetIds: number[],
 ): Promise<SheetMeta[]> {
   const data = unwrap(
     await client.POST(
@@ -186,8 +186,8 @@ export async function reorderSheets(
 
 export async function deleteRows(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   rowIndices: number[],
   clientId?: string,
 ): Promise<number[]> {
@@ -207,8 +207,8 @@ export async function deleteRows(
 
 export async function deleteColumns(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   colIndices: number[],
   clientId?: string,
 ): Promise<number[]> {
@@ -228,8 +228,8 @@ export async function deleteColumns(
 
 export async function insertColumns(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   at: number,
   count: number,
   clientId?: string,
@@ -265,8 +265,8 @@ export interface MoveRowsResult {
 // [sheet.column.drag-reorder]
 export async function moveColumns(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   srcStart: number,
   srcEnd: number,
   destGap: number,
@@ -294,8 +294,8 @@ export async function moveColumns(
 // [sheet.row.drag-reorder]
 export async function moveRows(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   srcStart: number,
   srcEnd: number,
   destGap: number,
@@ -324,8 +324,8 @@ export async function moveRows(
 
 export async function saveCells(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   changes: CellChange[],
   clientId?: string,
 ): Promise<{ cells: CellData[] }> {
@@ -344,8 +344,8 @@ export async function saveCells(
 
 export async function saveColumns(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   columns: ColumnChange[],
 ): Promise<{ columns: ColumnData[] }> {
   return unwrap(
@@ -365,8 +365,8 @@ export async function saveColumns(
 
 export async function listViews(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
 ): Promise<SheetViewMeta[]> {
   const data = unwrap(
     await client.GET(
@@ -383,8 +383,8 @@ export async function listViews(
 
 export async function createView(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   body: {
     view_name: string;
     range: string;
@@ -413,8 +413,8 @@ export async function createView(
 
 export async function listNamedRanges(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
 ): Promise<NamedRangeMeta[]> {
   const data = unwrap(
     await client.GET(
@@ -431,8 +431,8 @@ export async function listNamedRanges(
 
 export async function setNamedRange(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   name: string,
   definition: string,
 ): Promise<NamedRangeMeta> {
@@ -452,8 +452,8 @@ export async function setNamedRange(
 
 export async function deleteNamedRange(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   name: string,
 ): Promise<void> {
   unwrap(
@@ -477,7 +477,7 @@ export async function deleteNamedRange(
 
 export async function listDropdownRules(
   database: string,
-  workbookId: string,
+  workbookId: number,
 ): Promise<DropdownRuleRecord[]> {
   const data = unwrap(
     await client.GET(
@@ -490,7 +490,7 @@ export async function listDropdownRules(
 
 export async function createDropdownRule(
   database: string,
-  workbookId: string,
+  workbookId: number,
   draft: {
     name?: string;
     multi: boolean;
@@ -515,8 +515,8 @@ export async function createDropdownRule(
 
 export async function updateDropdownRule(
   database: string,
-  workbookId: string,
-  ruleId: string,
+  workbookId: number,
+  ruleId: number,
   patch: {
     name?: string | null;
     nameSet?: boolean;
@@ -545,8 +545,8 @@ export async function updateDropdownRule(
 
 export async function deleteDropdownRule(
   database: string,
-  workbookId: string,
-  ruleId: string,
+  workbookId: number,
+  ruleId: number,
 ): Promise<void> {
   unwrap(
     await client.POST(
@@ -564,8 +564,8 @@ export async function deleteDropdownRule(
 
 export async function getFilter(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
 ): Promise<FilterMeta | null> {
   const data = unwrap(
     await client.GET(
@@ -585,8 +585,8 @@ export async function getFilter(
 
 export async function createFilter(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   range: string,
   clientId?: string,
 ): Promise<FilterMeta> {
@@ -606,8 +606,8 @@ export async function createFilter(
 
 export async function setFilterSort(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   colIdx: number | null,
   direction: "asc" | "desc" | null,
   clientId?: string,
@@ -633,8 +633,8 @@ export async function setFilterSort(
 
 export async function setFilterPredicate(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   colIdx: number,
   hidden: string[] | null,
   clientId?: string,
@@ -660,8 +660,8 @@ export async function setFilterPredicate(
 
 export async function deleteFilter(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
 ): Promise<void> {
   unwrap(
     await client.POST(
@@ -677,9 +677,9 @@ export async function deleteFilter(
 
 export async function deleteView(
   database: string,
-  workbookId: string,
-  sheetId: string,
-  viewId: string,
+  workbookId: number,
+  sheetId: number,
+  viewId: number,
 ): Promise<void> {
   unwrap(
     await client.POST(

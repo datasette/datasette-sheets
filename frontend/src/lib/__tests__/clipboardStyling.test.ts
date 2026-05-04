@@ -263,21 +263,21 @@ describe("buildCopyPayload + parseClipboardData — dropdown round-trip", () => 
         {
           value: "Doing",
           controlType: "dropdown",
-          dropdownRuleId: "rule-abc",
+          dropdownRuleId: 42,
         },
       ],
     ]);
     expect(html).toContain('data-sheets-control-type="dropdown"');
-    expect(html).toContain('data-sheets-dropdown-rule-id="rule-abc"');
+    expect(html).toContain('data-sheets-dropdown-rule-id="42"');
   });
 
   test("parses both attrs back out", () => {
     const html =
       `<table><tr><td data-sheets-control-type="dropdown" ` +
-      `data-sheets-dropdown-rule-id="rule-xyz">Done</td></tr></table>`;
+      `data-sheets-dropdown-rule-id="7">Done</td></tr></table>`;
     const { grid } = parseClipboardData(dt(html));
     expect(grid[0][0].controlType).toBe("dropdown");
-    expect(grid[0][0].dropdownRuleId).toBe("rule-xyz");
+    expect(grid[0][0].dropdownRuleId).toBe(7);
     expect(grid[0][0].value).toBe("Done");
   });
 

@@ -22,10 +22,10 @@
 
   interface Props {
     database?: string;
-    workbookId?: string;
+    workbookId?: number;
   }
 
-  let { database = "", workbookId = "" }: Props = $props();
+  let { database = "", workbookId = 0 }: Props = $props();
 
   let cell = $derived($selectedCell ? $cells.get($selectedCell) : null);
   let displayFormula = $derived(cell?.rawValue ?? "");

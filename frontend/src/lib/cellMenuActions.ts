@@ -19,8 +19,8 @@ import { openNamedRangesPanel } from "./stores/namedRanges";
 
 export interface BuildApiUrlArgs {
   database: string;
-  workbookId: string;
-  sheetId: string;
+  workbookId: number;
+  sheetId: number;
   range: string;
 }
 

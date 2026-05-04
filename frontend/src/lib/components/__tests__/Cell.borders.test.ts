@@ -80,7 +80,7 @@ test("borders unset leaves the default grid lines alone", () => {
 // skip emission on those sides so the view edge stays visible.
 test("user top-border on a view top-edge defers to the view edge", () => {
   const view: SheetViewMeta = {
-    id: "v1",
+    id: 1,
     view_name: "test",
     range_str: "A1:B2",
     min_row: 0,

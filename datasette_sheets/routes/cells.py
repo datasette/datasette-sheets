@@ -42,7 +42,7 @@ PRESENCE_COLORS = [
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/cells$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/cells$",
     output=UpdateCellsResponse,
 )
 @check_permission()
@@ -50,8 +50,8 @@ async def update_cells(
     datasette,
     request,
     database: str,
-    workbook_id: str,
-    sheet_id: str,
+    workbook_id: int,
+    sheet_id: int,
     body: Annotated[UpdateCellsBody, Body()],
 ):
     db = await ensure_db(datasette, database)
@@ -115,7 +115,7 @@ async def update_cells(
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/columns$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/columns$",
     output=UpdateColumnsResponse,
 )
 @check_permission()
@@ -123,8 +123,8 @@ async def update_columns(
     datasette,
     request,
     database: str,
-    workbook_id: str,
-    sheet_id: str,
+    workbook_id: int,
+    sheet_id: int,
     body: Annotated[UpdateColumnsBody, Body()],
 ):
     db = await ensure_db(datasette, database)
@@ -150,7 +150,7 @@ async def update_columns(
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/rows/delete$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/rows/delete$",
     output=DeleteRowsResponse,
 )
 @check_permission()
@@ -158,8 +158,8 @@ async def delete_rows(
     datasette,
     request,
     database: str,
-    workbook_id: str,
-    sheet_id: str,
+    workbook_id: int,
+    sheet_id: int,
     body: Annotated[DeleteRowsBody, Body()],
 ):
     db = await ensure_db(datasette, database)
@@ -185,7 +185,7 @@ async def delete_rows(
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/columns/delete$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/columns/delete$",
     output=DeleteColumnsResponse,
 )
 @check_permission()
@@ -193,8 +193,8 @@ async def delete_columns(
     datasette,
     request,
     database: str,
-    workbook_id: str,
-    sheet_id: str,
+    workbook_id: int,
+    sheet_id: int,
     body: Annotated[DeleteColumnsBody, Body()],
 ):
     db = await ensure_db(datasette, database)
@@ -219,7 +219,7 @@ async def delete_columns(
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/columns/insert$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/columns/insert$",
     output=InsertColumnsResponse,
 )
 @check_permission()
@@ -227,8 +227,8 @@ async def insert_columns(
     datasette,
     request,
     database: str,
-    workbook_id: str,
-    sheet_id: str,
+    workbook_id: int,
+    sheet_id: int,
     body: Annotated[InsertColumnsBody, Body()],
 ):
     db = await ensure_db(datasette, database)
@@ -254,7 +254,7 @@ async def insert_columns(
 
 # [sheet.column.drag-reorder]
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/columns/move$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/columns/move$",
     output=MoveColumnsResponse,
 )
 @check_permission()
@@ -262,8 +262,8 @@ async def move_columns(
     datasette,
     request,
     database: str,
-    workbook_id: str,
-    sheet_id: str,
+    workbook_id: int,
+    sheet_id: int,
     body: Annotated[MoveColumnsBody, Body()],
 ):
     db = await ensure_db(datasette, database)
@@ -297,7 +297,7 @@ async def move_columns(
 
 # [sheet.row.drag-reorder]
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/rows/move$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/rows/move$",
     output=MoveRowsResponse,
 )
 @check_permission()
@@ -305,8 +305,8 @@ async def move_rows(
     datasette,
     request,
     database: str,
-    workbook_id: str,
-    sheet_id: str,
+    workbook_id: int,
+    sheet_id: int,
     body: Annotated[MoveRowsBody, Body()],
 ):
     db = await ensure_db(datasette, database)
@@ -362,7 +362,7 @@ async def _resolve_actor_info(datasette, request) -> dict:
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/presence$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/presence$",
     output=OkResponse,
 )
 @check_permission()
@@ -370,8 +370,8 @@ async def presence(
     datasette,
     request,
     database: str,
-    workbook_id: str,
-    sheet_id: str,
+    workbook_id: int,
+    sheet_id: int,
     body: Annotated[PresenceBody, Body()],
 ):
     info = await _resolve_actor_info(datasette, request)

@@ -98,7 +98,7 @@ export type DropdownSource = {
  *  rejected server-side and rendered as muted "invalid" chips
  *  client-side. [sheet.data.dropdown] */
 export interface DropdownRule {
-  id: string;
+  id: number;
   name?: string;
   source: DropdownSource;
   /** When true, a cell's value is a comma-delimited list of option
@@ -134,7 +134,7 @@ export interface CellFormat {
   /** When ``controlType === "dropdown"``, the workbook-scoped
    *  ``DropdownRule.id`` whose options gate this cell. Ignored for
    *  any other ``controlType``. [sheet.data.dropdown] */
-  dropdownRuleId?: string;
+  dropdownRuleId?: number;
 }
 
 export interface CellPosition {

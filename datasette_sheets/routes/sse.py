@@ -11,7 +11,7 @@ HEARTBEAT_INTERVAL = 30
 async def api_events(datasette, request, send, receive):
     if not await datasette.allowed(action=PERMISSION_NAME, actor=request.actor):
         raise Forbidden("Permission denied")
-    sheet_id = request.url_vars["sheet_id"]
+    sheet_id = int(request.url_vars["sheet_id"])
     client_id = request.args.get("client_id", str(uuid.uuid4()))
     manager = get_channel_manager()
     channel = manager.get_channel(sheet_id)

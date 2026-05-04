@@ -14,12 +14,12 @@ from .schemas import (
 
 
 @router.GET(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/names$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/names$",
     output=ListNamedRangesResponse,
 )
 @check_permission()
 async def list_named_ranges(
-    datasette, request, database: str, workbook_id: str, sheet_id: str
+    datasette, request, database: str, workbook_id: int, sheet_id: int
 ):
     db = await ensure_db(datasette, database)
     names = await db.list_named_ranges(sheet_id)
@@ -38,7 +38,7 @@ async def list_named_ranges(
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/names/set$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/names/set$",
     output=SetNamedRangeResponse,
 )
 @check_permission()
@@ -46,8 +46,8 @@ async def set_named_range(
     datasette,
     request,
     database: str,
-    workbook_id: str,
-    sheet_id: str,
+    workbook_id: int,
+    sheet_id: int,
     body: Annotated[SetNamedRangeBody, Body()],
 ):
     db = await ensure_db(datasette, database)
@@ -70,7 +70,7 @@ async def set_named_range(
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/names/(?P<name>[^/]+)/delete$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/names/(?P<name>[^/]+)/delete$",
     output=OkResponse,
 )
 @check_permission()
@@ -78,8 +78,8 @@ async def delete_named_range(
     datasette,
     request,
     database: str,
-    workbook_id: str,
-    sheet_id: str,
+    workbook_id: int,
+    sheet_id: int,
     name: str,
 ):
     db = await ensure_db(datasette, database)

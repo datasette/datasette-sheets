@@ -50,7 +50,7 @@
 
   interface Props {
     database: string;
-    workbookId: string;
+    workbookId: number;
     workbookName?: string;
   }
 

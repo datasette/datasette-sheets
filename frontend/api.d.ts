@@ -87,7 +87,7 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
+                    workbook_id: number;
                 };
                 cookie?: never;
             };
@@ -125,7 +125,7 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
+                    workbook_id: number;
                 };
                 cookie?: never;
             };
@@ -180,7 +180,7 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
+                    workbook_id: number;
                 };
                 cookie?: never;
             };
@@ -214,7 +214,7 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
+                    workbook_id: number;
                 };
                 cookie?: never;
             };
@@ -257,7 +257,7 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
+                    workbook_id: number;
                 };
                 cookie?: never;
             };
@@ -314,7 +314,7 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
+                    workbook_id: number;
                 };
                 cookie?: never;
             };
@@ -322,7 +322,7 @@ export interface paths {
                 content: {
                     "application/json": {
                         /** Sheet Ids */
-                        sheet_ids?: string[];
+                        sheet_ids?: number[];
                     };
                 };
             };
@@ -360,8 +360,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -407,8 +407,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -468,8 +468,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -513,8 +513,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -567,8 +567,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -616,8 +616,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -670,8 +670,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -724,8 +724,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -783,8 +783,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -841,8 +841,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -899,8 +899,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -956,8 +956,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -993,8 +993,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                     cell_id: string;
                 };
                 cookie?: never;
@@ -1031,8 +1031,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -1075,8 +1075,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -1150,9 +1150,9 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
-                    view_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
+                    view_id: number;
                 };
                 cookie?: never;
             };
@@ -1194,8 +1194,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -1238,8 +1238,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -1288,8 +1288,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                     name: string;
                 };
                 cookie?: never;
@@ -1332,7 +1332,7 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
+                    workbook_id: number;
                 };
                 cookie?: never;
             };
@@ -1375,7 +1375,7 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
+                    workbook_id: number;
                 };
                 cookie?: never;
             };
@@ -1432,8 +1432,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    rule_id: string;
+                    workbook_id: number;
+                    rule_id: number;
                 };
                 cookie?: never;
             };
@@ -1498,8 +1498,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    rule_id: string;
+                    workbook_id: number;
+                    rule_id: number;
                 };
                 cookie?: never;
             };
@@ -1541,8 +1541,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -1585,8 +1585,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -1638,8 +1638,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -1719,8 +1719,8 @@ export interface paths {
                 header?: never;
                 path: {
                     database: string;
-                    workbook_id: string;
-                    sheet_id: string;
+                    workbook_id: number;
+                    sheet_id: number;
                 };
                 cookie?: never;
             };
@@ -1756,7 +1756,7 @@ export interface components {
         /** WorkbookRecord */
         WorkbookRecord: {
             /** Id */
-            id: string;
+            id: number;
             /** Name */
             name: string;
             /** Created At */
@@ -1767,7 +1767,7 @@ export interface components {
         /** SheetRecord */
         SheetRecord: {
             /** Id */
-            id: string;
+            id: number;
             /** Name */
             name: string;
             /** Color */
@@ -1877,7 +1877,7 @@ export interface components {
         /** ViewRecord */
         ViewRecord: {
             /** Id */
-            id: string;
+            id: number;
             /** View Name */
             view_name: string;
             /** Range Str */
@@ -1922,7 +1922,7 @@ export interface components {
         /** DropdownRuleRecord */
         DropdownRuleRecord: {
             /** Id */
-            id: string;
+            id: number;
             /**
              * Name
              * @default null
@@ -1954,7 +1954,7 @@ export interface components {
         /** FilterRecord */
         FilterRecord: {
             /** Id */
-            id: string;
+            id: number;
             /** Min Row */
             min_row: number;
             /** Min Col */

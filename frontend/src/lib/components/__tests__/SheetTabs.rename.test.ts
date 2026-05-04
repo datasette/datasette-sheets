@@ -5,7 +5,7 @@ import { get } from "svelte/store";
 
 const SHEETS = [
   {
-    id: "sheet-1",
+    id: 1,
     name: "Alpha",
     color: "#111",
     created_at: "t",
@@ -13,7 +13,7 @@ const SHEETS = [
     sort_order: 0,
   },
   {
-    id: "sheet-2",
+    id: 2,
     name: "Beta",
     color: "#222",
     created_at: "t",
@@ -29,7 +29,7 @@ vi.mock("../../api", async () => {
   return {
     ...actual,
     listSheets: vi.fn(async () => SHEETS),
-    getSheet: vi.fn(async (_d: string, _w: string, id: string) => ({
+    getSheet: vi.fn(async (_d: string, _w: number, id: number) => ({
       sheet: SHEETS.find((s) => s.id === id)!,
       columns: [],
       cells: [],
@@ -54,7 +54,7 @@ async function setup() {
   const api = await import("../../api");
   const persistence = await import("../../stores/persistence");
   persistence.setDatabase("db");
-  persistence.setWorkbookId("wb");
+  persistence.setWorkbookId(1);
   await persistence.initWorkbook();
   const SheetTabs = (await import("../SheetTabs.svelte")).default;
   render(SheetTabs);
@@ -103,7 +103,7 @@ test("Enter commits the edited name", async () => {
   await userEvent.keyboard("Gamma");
   await userEvent.keyboard("{Enter}");
 
-  expect(api.updateSheet).toHaveBeenCalledWith("db", "wb", "sheet-2", {
+  expect(api.updateSheet).toHaveBeenCalledWith("db", 1, 2, {
     name: "Gamma",
   });
   expect(get(persistence.sheets)[1].name).toBe("Gamma");

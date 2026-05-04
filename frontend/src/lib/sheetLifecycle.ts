@@ -53,7 +53,7 @@ const PRESENCE_DEBOUNCE_MS = 200;
 
 export interface SheetLifecycleOptions {
   database: string;
-  workbookId: string;
+  workbookId: number;
   clientId: string;
   /** Notified when SSE connection state flips, so the page header
    *  can render the connection dot. */
@@ -73,7 +73,7 @@ export function installSheetLifecycle(opts: SheetLifecycleOptions): () => void {
   let sseClient: SheetSSEClient | null = null;
   let presenceTimer: ReturnType<typeof setTimeout> | null = null;
 
-  function connectSSE(sheetId: string) {
+  function connectSSE(sheetId: number) {
     // Disconnect old SSE
     if (sseClient) {
       sseClient.disconnect();

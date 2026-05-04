@@ -98,14 +98,14 @@ describe("buildClipboardPayload — payload shape", () => {
     cells.setCellValue("A1", "Doing");
     cells.setCellFormat("A1", {
       controlType: "dropdown",
-      dropdownRuleId: "rule-1",
+      dropdownRuleId: 1,
     });
     selectedCell.set("A1");
     selectedCells.set(new Set(["A1" as CellId]));
 
     const payload = buildClipboardPayload();
     expect(payload!.html).toContain('data-sheets-control-type="dropdown"');
-    expect(payload!.html).toContain('data-sheets-dropdown-rule-id="rule-1"');
+    expect(payload!.html).toContain('data-sheets-dropdown-rule-id="1"');
   });
 
   test("currency formatting flows through to plain text", () => {
@@ -153,7 +153,7 @@ describe("buildClipboardPayload — payload shape", () => {
     cells.setCellFormat("A1", {
       bold: true,
       controlType: "dropdown",
-      dropdownRuleId: "rule-xyz",
+      dropdownRuleId: 99,
     });
     selectedCell.set("A1");
     selectedCells.set(new Set(["A1" as CellId]));
@@ -166,7 +166,7 @@ describe("buildClipboardPayload — payload shape", () => {
       value: "Doing",
       bold: true,
       controlType: "dropdown",
-      dropdownRuleId: "rule-xyz",
+      dropdownRuleId: 99,
     });
   });
 });
@@ -201,7 +201,7 @@ describe("applyPastedFormat", () => {
   // [tests-12] [sheet.data.dropdown]
   test("dropdown controlType + known rule id writes both fields", () => {
     const rule: DropdownRule = {
-      id: "rule-known",
+      id: 11,
       name: "Status",
       multi: false,
       source: { kind: "list", options: [{ value: "Todo", color: "#ccc" }] },
@@ -212,12 +212,12 @@ describe("applyPastedFormat", () => {
     applyPastedFormat("A1", {
       value: "Todo",
       controlType: "dropdown",
-      dropdownRuleId: "rule-known",
+      dropdownRuleId: 11,
     });
 
     const cell = get(cells).get("A1");
     expect(cell?.format.controlType).toBe("dropdown");
-    expect(cell?.format.dropdownRuleId).toBe("rule-known");
+    expect(cell?.format.dropdownRuleId).toBe(11);
   });
 
   // [tests-12] [sheet.data.dropdown]
@@ -230,7 +230,7 @@ describe("applyPastedFormat", () => {
       value: "Todo",
       bold: true, // benign attr that should still apply
       controlType: "dropdown",
-      dropdownRuleId: "rule-missing",
+      dropdownRuleId: 9999,
     });
 
     const cell = get(cells).get("A1");

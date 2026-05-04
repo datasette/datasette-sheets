@@ -6,7 +6,7 @@ import type { CellId } from "../../spreadsheet/types";
 // reachable.
 const SHEETS = [
   {
-    id: "sheet-1",
+    id: 1,
     name: "One",
     color: "#111",
     created_at: "t",
@@ -24,7 +24,7 @@ vi.mock("../../api", async () => {
   return {
     ...actual,
     listSheets: vi.fn(async () => SHEETS),
-    getSheet: vi.fn(async (_d: string, _w: string, id: string) => ({
+    getSheet: vi.fn(async (_d: string, _w: number, id: number) => ({
       sheet: SHEETS.find((s) => s.id === id)!,
       columns: [],
       cells: [],
@@ -35,8 +35,8 @@ vi.mock("../../api", async () => {
     saveCells: vi.fn(
       async (
         _d: string,
-        _w: string,
-        _s: string,
+        _w: number,
+        _s: number,
         changes: { row_idx: number; col_idx: number }[],
       ): Promise<{ cells: [] }> => {
         cellCalls.push({ changes });
@@ -50,7 +50,7 @@ vi.mock("../../api", async () => {
 async function load() {
   const persistence = await import("../persistence");
   persistence.setDatabase("testdb");
-  persistence.setWorkbookId("wb1");
+  persistence.setWorkbookId(1);
   await persistence.initWorkbook();
   return persistence;
 }

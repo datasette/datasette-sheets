@@ -14,7 +14,6 @@ import pytest
 from datasette_sheets.view_sql import (
     IDENTIFIER_RE,
     ROW_COL,
-    SHEET_ID_RE,
     VIEW_NAME_MAX,
     ViewSpec,
     build_delete_trigger_sql,
@@ -28,7 +27,7 @@ from datasette_sheets.view_sql import (
 )
 
 
-GOOD_SHEET_ID = "01HZZZZZZZZZZZZZZZZZZZZZZZ"
+GOOD_SHEET_ID = 1
 
 
 def make_spec(**overrides) -> ViewSpec:
@@ -87,37 +86,25 @@ class TestValidateViewName:
 
 
 class TestValidateSheetId:
-    @pytest.mark.parametrize(
-        "sid",
-        [
-            GOOD_SHEET_ID,
-            "0" * 26,
-            "ABCDEFGHJKMNPQRSTVWXYZ0123",
-        ],
-    )
+    @pytest.mark.parametrize("sid", [1, 42, 999_999_999])
     def test_accepts(self, sid):
         validate_sheet_id(sid)
 
     @pytest.mark.parametrize(
         "sid",
         [
-            "",
-            "short",
-            "a" * 25,
-            "a" * 27,
-            "abcdefghijklmnopqrstuvwxyz",  # lowercase
-            "0" * 25 + "'",  # injection attempt
-            "01HZZZ' OR '1'='1' --XX",
-            "01HZZZZZZZZZZZZZZZZZZZZZ; DROP TABLE users; --",
+            0,  # rowid is 1-based
+            -1,
+            "1",  # string-typed digits — rejected, must be int
+            "x' OR 1=1",  # injection-style payload, never accepted as int
+            None,
+            True,  # bool is an int subclass — explicitly rejected
+            1.5,
         ],
     )
     def test_rejects(self, sid):
         with pytest.raises(ValueError):
-            validate_sheet_id(sid)
-
-    def test_rejects_non_string(self):
-        with pytest.raises(ValueError):
-            validate_sheet_id(None)  # type: ignore[arg-type]
+            validate_sheet_id(sid)  # type: ignore[arg-type]
 
 
 # ---------------------------------------------------------------------------
@@ -198,7 +185,7 @@ class TestViewSpec:
 
     def test_bad_sheet_id(self):
         with pytest.raises(ValueError):
-            make_spec(sheet_id="not-a-ulid")
+            make_spec(sheet_id="not-an-int")
 
     def test_bad_column_alias(self):
         with pytest.raises(ValueError, match="Unsafe column alias"):
@@ -252,12 +239,12 @@ class TestBuildViewSql:
         assert "AS [Name]" in sql
         assert "AS [Age]" in sql
 
-    def test_sheet_id_is_quoted_literal(self):
+    def test_sheet_id_is_integer_literal(self):
         sql = build_view_sql(make_spec())
-        assert f"'{GOOD_SHEET_ID}'" in sql
-        # Only quoted form — no unquoted interpolation
-        assert GOOD_SHEET_ID + "," not in sql
-        assert GOOD_SHEET_ID + " " not in sql
+        # Embedded as a bare integer (no quoting needed — int isn't string).
+        assert f"sheet_id = {GOOD_SHEET_ID}" in sql
+        # No string-quoted form leaked into the DDL.
+        assert f"'{GOOD_SHEET_ID}'" not in sql
 
     def test_no_stray_injection_payloads_in_output(self):
         """The inputs are pre-validated, but if an attacker somehow got an
@@ -304,7 +291,7 @@ class TestBuildDeleteTrigger:
         assert "DELETE FROM datasette_sheets_cell" in sql
         assert "row_idx = OLD.[_sheet_row]" in sql
         assert "col_idx BETWEEN 5 AND 6" in sql
-        assert f"sheet_id = '{GOOD_SHEET_ID}'" in sql
+        assert f"sheet_id = {GOOD_SHEET_ID}" in sql
 
     def test_clear_mode_does_not_shift(self):
         sql = build_delete_trigger_sql(
@@ -382,7 +369,7 @@ def sqlite_conn():
     conn.executescript(
         """
         CREATE TABLE datasette_sheets_cell (
-            sheet_id TEXT NOT NULL,
+            sheet_id INTEGER NOT NULL,
             row_idx INTEGER NOT NULL,
             col_idx INTEGER NOT NULL,
             raw_value TEXT NOT NULL DEFAULT '',
@@ -490,9 +477,7 @@ class TestGeneratedSqlCompiles:
         ]
 
     def test_regex_constants_are_sane(self):
-        # Belt-and-braces: make sure the regexes haven't drifted into
-        # accepting something obviously unsafe.
+        # Belt-and-braces: make sure the identifier regex hasn't drifted
+        # into accepting something obviously unsafe.
         assert IDENTIFIER_RE.match("Name")
         assert not IDENTIFIER_RE.match("Name; --")
-        assert SHEET_ID_RE.match(GOOD_SHEET_ID)
-        assert not SHEET_ID_RE.match("x' OR 1=1")

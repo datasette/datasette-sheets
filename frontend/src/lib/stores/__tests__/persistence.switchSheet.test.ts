@@ -5,7 +5,7 @@ import type { CellId } from "../../spreadsheet/types";
 // Two sheets — the switch tests need somewhere to switch *to*.
 const SHEETS = [
   {
-    id: "sheet-1",
+    id: 1,
     name: "One",
     color: "#111",
     created_at: "t",
@@ -13,7 +13,7 @@ const SHEETS = [
     sort_order: 0,
   },
   {
-    id: "sheet-2",
+    id: 2,
     name: "Two",
     color: "#222",
     created_at: "t",
@@ -32,15 +32,15 @@ vi.mock("../../api", async () => {
   return {
     ...actual,
     listSheets: vi.fn(async () => SHEETS),
-    getSheet: vi.fn(async (_d: string, _w: string, id: string) => ({
+    getSheet: vi.fn(async (_d: string, _w: number, id: number) => ({
       sheet: SHEETS.find((s) => s.id === id)!,
       columns: [],
       cells: [],
     })),
     createSheet: vi.fn(
-      async (_d: string, _w: string, name: string, color?: string) => ({
+      async (_d: string, _w: number, name: string, color?: string) => ({
         sheet: {
-          id: `sheet-new-${name}`,
+          id: SHEETS.length + 100,
           name,
           color: color ?? "#000",
           created_at: "t",
@@ -65,7 +65,7 @@ vi.mock("../../api", async () => {
 async function load() {
   const persistence = await import("../persistence");
   persistence.setDatabase("testdb");
-  persistence.setWorkbookId("wb1");
+  persistence.setWorkbookId(1);
   await persistence.initWorkbook();
   return persistence;
 }
@@ -95,12 +95,12 @@ describe("switchSheet — save failure", () => {
 
     saveCellsShouldFail = true;
 
-    await expect(persistence.switchSheet("sheet-2")).rejects.toThrow(
+    await expect(persistence.switchSheet(2)).rejects.toThrow(
       persistence.SaveBeforeSwitchError,
     );
 
-    // Active sheet did not advance to sheet-2.
-    expect(get(persistence.activeSheetId)).toBe("sheet-1");
+    // Active sheet did not advance to sheet 2.
+    expect(get(persistence.activeSheetId)).toBe(1);
     // Dirty marker for A1 is preserved so the next flush still
     // targets the original sheet's cell.
     expect(persistence._getDirtyCellIdsForTest().has("A1" as CellId)).toBe(
@@ -142,10 +142,10 @@ describe("deleteSheet — clears scoped state", () => {
     engine.pinValue("E1", [["pin"]]);
     engine.setEngineName("Total", "A1:A10");
 
-    await persistence.deleteSheet("sheet-1");
+    await persistence.deleteSheet(1);
 
     // Active sheet swapped to the remaining one.
-    expect(get(persistence.activeSheetId)).toBe("sheet-2");
+    expect(get(persistence.activeSheetId)).toBe(2);
     // Undo stack reset — undoing now must not resurrect cells from
     // the deleted sheet.
     expect(canUndo()).toBe(false);

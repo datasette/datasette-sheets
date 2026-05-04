@@ -25,7 +25,7 @@
   import { DROPDOWN_PALETTE } from "../spreadsheet/palettes";
   import ColorPicker from "./ColorPicker.svelte";
 
-  let { database, workbookId }: { database: string; workbookId: string } =
+  let { database, workbookId }: { database: string; workbookId: number } =
     $props();
 
   function defaultColor(index: number): string {
@@ -34,7 +34,7 @@
 
   // ---- Editor state -----------------------------------------------------
   // ``editingId`` non-null = editing an existing rule; null = create mode.
-  let editingId: string | null = $state(null);
+  let editingId: number | null = $state(null);
   let name: string = $state("");
   let multi: boolean = $state(false);
   let options: DropdownOption[] = $state([]);
@@ -53,7 +53,7 @@
     }
   });
 
-  function syncForm(ruleId: string | null) {
+  function syncForm(ruleId: number | null) {
     error = null;
     pickerOpenFor = null;
     if (ruleId === null) {

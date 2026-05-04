@@ -5,7 +5,9 @@ import SheetsPage from "./SheetsPage.svelte";
 const target = document.getElementById("sheets-app");
 if (target) {
   const database = target.dataset.database ?? "";
-  const workbookId = target.dataset.workbookId ?? "";
+  // ``data-workbook-id`` is a digit string emitted server-side; the
+  // backend regex (`\d+`) guarantees it parses cleanly.
+  const workbookId = Number(target.dataset.workbookId ?? "0");
   const workbookName = target.dataset.workbookName ?? "";
   mount(SheetsPage, {
     target,

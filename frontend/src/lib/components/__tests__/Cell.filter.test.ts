@@ -18,7 +18,7 @@ afterEach(() => {
 });
 
 const FILTER: FilterMeta = {
-  id: "01HZ-cell-filter",
+  id: 1,
   min_row: 1,
   min_col: 1,
   max_row: 4,

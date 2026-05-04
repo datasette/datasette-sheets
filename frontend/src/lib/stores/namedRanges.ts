@@ -50,8 +50,8 @@ function sortByName(list: NamedRangeMeta[]): NamedRangeMeta[] {
 /** Fetch all named ranges for a sheet + push them into the WASM engine. */
 export async function loadNamedRanges(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
 ): Promise<void> {
   const list = await listNamedRanges(database, workbookId, sheetId);
   const sorted = sortByName(list);
@@ -72,8 +72,8 @@ export async function loadNamedRanges(
  *  name change. See ticket stores-07. */
 export async function upsertNamedRange(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   name: string,
   definition: string,
 ): Promise<NamedRangeMeta> {
@@ -93,8 +93,8 @@ export async function upsertNamedRange(
  *  path as ``upsertNamedRange``. */
 export async function removeNamedRange(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   name: string,
 ): Promise<void> {
   await apiDelete(database, workbookId, sheetId, name);

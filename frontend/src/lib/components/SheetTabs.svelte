@@ -12,7 +12,7 @@
     moveSheet,
   } from "../stores/persistence";
 
-  let editingTabId: string | null = $state(null);
+  let editingTabId: number | null = $state(null);
   let editingName = $state("");
   // Set briefly when Escape cancels a rename so the implicit blur
   // that fires when the input unmounts can't re-enter commit-on-blur
@@ -23,7 +23,7 @@
   // on ``.tabs-scroll`` clips ::after/pseudo menus vertically too),
   // so we render it as a ``position: fixed`` pop-up anchored to the
   // right-click coordinates — mirrors Grid.svelte's row/col menus.
-  let tabMenu: { id: string; name: string; x: number; y: number } | null =
+  let tabMenu: { id: number; name: string; x: number; y: number } | null =
     $state(null);
   let showColorPicker = $state(false);
 
@@ -31,12 +31,12 @@
   // operation started; ``dropTargetId`` + ``dropSide`` describe where
   // the pointer currently is over *another* tab so we can paint the
   // indicator bar on the right side of the target.
-  let draggingId: string | null = $state(null);
-  let dropTargetId: string | null = $state(null);
+  let draggingId: number | null = $state(null);
+  let dropTargetId: number | null = $state(null);
   let dropSide: "before" | "after" = $state("before");
 
   // [sheet.tabs.click-switch]
-  function handleTabClick(id: string) {
+  function handleTabClick(id: number) {
     if (editingTabId === id) return;
     tabMenu = null;
     showColorPicker = false;
@@ -49,7 +49,7 @@
   }
 
   // [sheet.tabs.right-click-menu]
-  function handleContextMenu(e: MouseEvent, id: string, name: string) {
+  function handleContextMenu(e: MouseEvent, id: number, name: string) {
     e.preventDefault();
     // Toggle closed if right-clicking the same tab.
     if (tabMenu && tabMenu.id === id) {
@@ -62,7 +62,7 @@
   }
 
   // [sheet.tabs.double-click-rename]
-  function startRename(id: string, currentName: string) {
+  function startRename(id: number, currentName: string) {
     editingTabId = id;
     editingName = currentName;
     tabMenu = null;
@@ -98,7 +98,7 @@
   }
 
   // [sheet.tabs.delete]
-  function handleDelete(id: string, name: string) {
+  function handleDelete(id: number, name: string) {
     // Destructive + server-roundtrip: gate behind a native confirm.
     // Always close the menu even on cancel so the UI doesn't get
     // stuck open if the user backs out.
@@ -114,7 +114,7 @@
     showColorPicker = !showColorPicker;
   }
 
-  function handleSetColor(id: string, color: string) {
+  function handleSetColor(id: number, color: string) {
     setSheetColor(id, color);
     showColorPicker = false;
     tabMenu = null;
@@ -128,7 +128,7 @@
   }
 
   // [sheet.tabs.drag-reorder]
-  function handleDragStart(e: DragEvent, id: string) {
+  function handleDragStart(e: DragEvent, id: number) {
     if (editingTabId === id || !e.dataTransfer) {
       e.preventDefault();
       return;
@@ -138,10 +138,10 @@
     // is simpler) but DnD spec requires *some* data to be set or
     // Firefox suppresses the drag.
     e.dataTransfer.effectAllowed = "move";
-    e.dataTransfer.setData("text/plain", id);
+    e.dataTransfer.setData("text/plain", String(id));
   }
 
-  function handleDragOver(e: DragEvent, targetId: string) {
+  function handleDragOver(e: DragEvent, targetId: number) {
     if (!draggingId || draggingId === targetId) {
       dropTargetId = null;
       return;
@@ -154,7 +154,7 @@
     dropTargetId = targetId;
   }
 
-  function handleDragLeave(e: DragEvent, targetId: string) {
+  function handleDragLeave(e: DragEvent, targetId: number) {
     // Only clear if we actually left this element (dragleave fires on
     // children too). Comparing relatedTarget lets us ignore the
     // inner-span transitions.
@@ -167,7 +167,7 @@
     }
   }
 
-  function handleDrop(e: DragEvent, targetId: string) {
+  function handleDrop(e: DragEvent, targetId: number) {
     e.preventDefault();
     const source = draggingId;
     const target = dropTargetId ?? targetId;
@@ -192,7 +192,7 @@
   }
 
   // [sheet.tabs.move-left-right]
-  function handleMove(id: string, direction: -1 | 1) {
+  function handleMove(id: number, direction: -1 | 1) {
     tabMenu = null;
     showColorPicker = false;
     void moveSheet(id, direction);

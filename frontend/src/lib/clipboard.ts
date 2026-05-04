@@ -34,7 +34,7 @@ export interface ClipboardCell {
    *  also fails to resolve (the destination workbook has its own
    *  rule namespace) and the cell will degrade to plain text on the
    *  next render. [sheet.data.dropdown] */
-  dropdownRuleId?: string;
+  dropdownRuleId?: number;
 }
 
 /** A cell being *written* to the clipboard. `numeric` controls right-align
@@ -62,7 +62,7 @@ export interface CopyCell {
   /** Rule id for ``controlType: "dropdown"`` cells. Round-trips
    *  via ``data-sheets-dropdown-rule-id``. Only resolves inside the
    *  source workbook. [sheet.data.dropdown] */
-  dropdownRuleId?: string;
+  dropdownRuleId?: number;
 }
 
 /**
@@ -147,8 +147,16 @@ function parseHtmlTable(html: string): ParsedClipboard | null {
           : controlTypeRaw === "dropdown"
             ? "dropdown"
             : undefined;
-      const dropdownRuleId =
-        el.getAttribute("data-sheets-dropdown-rule-id") ?? undefined;
+      // ``data-sheets-dropdown-rule-id`` was emitted as a digit string;
+      // parse back to a number so the rule lookup keys match the
+      // store's number-keyed map.
+      const dropdownRuleIdRaw = el.getAttribute("data-sheets-dropdown-rule-id");
+      const dropdownRuleIdNum = dropdownRuleIdRaw
+        ? Number(dropdownRuleIdRaw)
+        : NaN;
+      const dropdownRuleId = Number.isFinite(dropdownRuleIdNum)
+        ? dropdownRuleIdNum
+        : undefined;
 
       row.push({
         value,
@@ -407,7 +415,7 @@ export function buildCopyPayload(
             ? ` data-sheets-control-type="${escapeHtml(cell.controlType)}"`
             : "";
           const dropdownAttr = cell.dropdownRuleId
-            ? ` data-sheets-dropdown-rule-id="${escapeHtml(cell.dropdownRuleId)}"`
+            ? ` data-sheets-dropdown-rule-id="${escapeHtml(String(cell.dropdownRuleId))}"`
             : "";
           return (
             `<td style="overflow:hidden;padding:2px 3px 2px 3px;` +

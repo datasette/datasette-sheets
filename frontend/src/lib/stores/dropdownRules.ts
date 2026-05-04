@@ -42,18 +42,18 @@ export function closeDropdownPopover() {
  *  store update so the ~1500 cells in a sheet don't each .find()
  *  the array. */
 export const dropdownRulesById = derived(dropdownRules, ($rules) => {
-  const map = new Map<string, DropdownRule>();
+  const map = new Map<number, DropdownRule>();
   for (const r of $rules) map.set(r.id, r);
   return map;
 });
 
 /** Side-panel state. ``null`` = closed. ``ruleId`` non-null edits an
  *  existing rule; ``ruleId === null`` opens a fresh-create form. */
-export type DropdownPanelState = { ruleId: string | null } | null;
+export type DropdownPanelState = { ruleId: number | null } | null;
 
 export const dropdownRulesPanel = writable<DropdownPanelState>(null);
 
-export function openDropdownRulesPanel(ruleId: string | null = null) {
+export function openDropdownRulesPanel(ruleId: number | null = null) {
   dropdownRulesPanel.set({ ruleId });
 }
 
@@ -68,7 +68,7 @@ function sortRules(list: DropdownRule[]): DropdownRule[] {
     if (an && bn) return an.localeCompare(bn, "en", { sensitivity: "base" });
     if (an) return -1;
     if (bn) return 1;
-    return a.id.localeCompare(b.id);
+    return a.id - b.id;
   });
 }
 
@@ -93,7 +93,7 @@ function fromRecord(record: DropdownRuleRecord): DropdownRule {
 
 export async function loadDropdownRules(
   database: string,
-  workbookId: string,
+  workbookId: number,
 ): Promise<void> {
   const list = await apiList(database, workbookId);
   dropdownRules.set(sortRules(list.map(fromRecord)));
@@ -101,7 +101,7 @@ export async function loadDropdownRules(
 
 export async function createDropdownRule(
   database: string,
-  workbookId: string,
+  workbookId: number,
   draft: {
     name?: string;
     options: DropdownOption[];
@@ -120,8 +120,8 @@ export async function createDropdownRule(
 
 export async function updateDropdownRule(
   database: string,
-  workbookId: string,
-  ruleId: string,
+  workbookId: number,
+  ruleId: number,
   patch: {
     name?: string;
     nameSet?: boolean;
@@ -149,8 +149,8 @@ export async function updateDropdownRule(
 
 export async function deleteDropdownRule(
   database: string,
-  workbookId: string,
-  ruleId: string,
+  workbookId: number,
+  ruleId: number,
 ): Promise<void> {
   await apiDelete(database, workbookId, ruleId);
   dropdownRules.update((list) => list.filter((r) => r.id !== ruleId));

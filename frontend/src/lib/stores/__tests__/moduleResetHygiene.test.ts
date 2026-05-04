@@ -6,7 +6,7 @@ import type { CellId } from "../../spreadsheet/types";
 // reset, not the network round-trip.
 const SHEETS = [
   {
-    id: "sheet-1",
+    id: 1,
     name: "One",
     color: "#111",
     created_at: "t",
@@ -20,7 +20,7 @@ vi.mock("../../api", async () => {
   return {
     ...actual,
     listSheets: vi.fn(async () => SHEETS),
-    getSheet: vi.fn(async (_d: string, _w: string, id: string) => ({
+    getSheet: vi.fn(async (_d: string, _w: number, id: number) => ({
       sheet: SHEETS.find((s) => s.id === id)!,
       columns: [],
       cells: [],
@@ -51,7 +51,7 @@ describe("resetPersistenceStateForTests", () => {
 
     // Set up the full surface of mutable state.
     persistence.setDatabase("db");
-    persistence.setWorkbookId("wb");
+    persistence.setWorkbookId(1);
     persistence.setClientId("client");
     persistence.markCellDirty("A1" as CellId);
     persistence.markCellDirty("B2" as CellId);
@@ -63,7 +63,7 @@ describe("resetPersistenceStateForTests", () => {
     expect(persistence._getDirtyCellIdsForTest().size).toBe(0);
     expect(persistence.getClientId()).toBe("");
     expect(get(persistence.sheets)).toEqual([]);
-    expect(get(persistence.activeSheetId)).toBe("");
+    expect(get(persistence.activeSheetId)).toBe(0);
     expect(get(persistence.saveStatus)).toBe("idle");
   });
 
@@ -73,10 +73,10 @@ describe("resetPersistenceStateForTests", () => {
 
     const persistence = await import("../persistence");
     persistence.setDatabase("db");
-    persistence.setWorkbookId("wb");
+    persistence.setWorkbookId(1);
     await persistence.initWorkbook();
     expect(listSheetsMock).toHaveBeenCalledTimes(1);
-    expect(get(persistence.activeSheetId)).toBe("sheet-1");
+    expect(get(persistence.activeSheetId)).toBe(1);
 
     // Reset and re-init from a clean slate. Pre-fix, the
     // ``_hashSyncInstalled`` flag never reset, so a second
@@ -84,13 +84,13 @@ describe("resetPersistenceStateForTests", () => {
     // that exercise the URL-hash reader could see stale wiring
     // depending on which test ran first.
     persistence.resetPersistenceStateForTests();
-    expect(get(persistence.activeSheetId)).toBe("");
+    expect(get(persistence.activeSheetId)).toBe(0);
 
     persistence.setDatabase("db");
-    persistence.setWorkbookId("wb");
+    persistence.setWorkbookId(1);
     await persistence.initWorkbook();
     expect(listSheetsMock).toHaveBeenCalledTimes(2);
-    expect(get(persistence.activeSheetId)).toBe("sheet-1");
+    expect(get(persistence.activeSheetId)).toBe(1);
   });
 
   test("clipboard mark survives module init without microtask deferral", async () => {

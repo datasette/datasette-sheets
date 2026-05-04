@@ -41,12 +41,12 @@ def _serialize(row) -> dict:
 
 
 @router.GET(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/dropdown-rules$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/dropdown-rules$",
     output=ListDropdownRulesResponse,
 )
 @check_permission()
 async def list_dropdown_rules(
-    datasette, request, database: str, workbook_id: str
+    datasette, request, database: str, workbook_id: int
 ):
     db = await ensure_db(datasette, database)
     rules = await db.list_dropdown_rules(workbook_id)
@@ -56,7 +56,7 @@ async def list_dropdown_rules(
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/dropdown-rules/create$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/dropdown-rules/create$",
     output=DropdownRuleResponse,
 )
 @check_permission()
@@ -64,7 +64,7 @@ async def create_dropdown_rule(
     datasette,
     request,
     database: str,
-    workbook_id: str,
+    workbook_id: int,
     body: Annotated[CreateDropdownRuleBody, Body()],
 ):
     db = await ensure_db(datasette, database)
@@ -84,7 +84,7 @@ async def create_dropdown_rule(
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/dropdown-rules/(?P<rule_id>[^/]+)/update$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/dropdown-rules/(?P<rule_id>\d+)/update$",
     output=DropdownRuleResponse,
 )
 @check_permission()
@@ -92,8 +92,8 @@ async def update_dropdown_rule(
     datasette,
     request,
     database: str,
-    workbook_id: str,
-    rule_id: str,
+    workbook_id: int,
+    rule_id: int,
     body: Annotated[UpdateDropdownRuleBody, Body()],
 ):
     db = await ensure_db(datasette, database)
@@ -118,12 +118,12 @@ async def update_dropdown_rule(
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/dropdown-rules/(?P<rule_id>[^/]+)/delete$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/dropdown-rules/(?P<rule_id>\d+)/delete$",
     output=OkResponse,
 )
 @check_permission()
 async def delete_dropdown_rule(
-    datasette, request, database: str, workbook_id: str, rule_id: str
+    datasette, request, database: str, workbook_id: int, rule_id: int
 ):
     db = await ensure_db(datasette, database)
     removed = await db.delete_dropdown_rule(workbook_id, rule_id)

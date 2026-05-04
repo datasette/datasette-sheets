@@ -7,7 +7,6 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
-from ulid import ULID
 import lotus
 
 from . import _queries
@@ -73,12 +72,8 @@ class SheetDB:
     async def create_workbook(
         self, name: str, actor_id: str | None = None
     ) -> _queries.Workbook:
-        workbook_id = str(ULID())
-
         def write(conn):
-            row = _queries.insert_workbook(
-                conn, workbook_id=workbook_id, name=name, created_by=actor_id
-            )
+            row = _queries.insert_workbook(conn, name=name, created_by=actor_id)
             assert row is not None  # INSERT ... RETURNING on a fresh id
             return row
 
@@ -87,14 +82,14 @@ class SheetDB:
     async def list_workbooks(self) -> list[_queries.Workbook]:
         return await self.database.execute_write_fn(_queries.list_workbooks)
 
-    async def get_workbook(self, workbook_id: str) -> _queries.Workbook | None:
+    async def get_workbook(self, workbook_id: int) -> _queries.Workbook | None:
         def read(conn):
             return _queries.get_workbook(conn, workbook_id=workbook_id)
 
         return await self.database.execute_write_fn(read)
 
     async def update_workbook(
-        self, workbook_id: str, **kwargs
+        self, workbook_id: int, **kwargs
     ) -> _queries.Workbook | None:
         # Partial patch: only fields present in ``kwargs`` get
         # overwritten. The codegened SQL uses sqlc-style
@@ -122,7 +117,7 @@ class SheetDB:
 
         return await self.database.execute_write_fn(write)
 
-    async def delete_workbook(self, workbook_id: str) -> None:
+    async def delete_workbook(self, workbook_id: int) -> None:
         # Six-step cascade — see queries.sql::deleteWorkbook* for
         # why this isn't a single DELETE with FK cascade. Each child
         # DELETE is one statement with ``IN (SELECT ...)`` rather than
@@ -141,14 +136,11 @@ class SheetDB:
     # --- Sheets (within a workbook) ---
 
     async def create_sheet(
-        self, workbook_id: str, name: str, color: str = "#8b774f"
+        self, workbook_id: int, name: str, color: str = "#8b774f"
     ) -> _queries.Sheet:
-        sheet_id = str(ULID())
-
         def write(conn):
             row = _queries.insert_sheet(
                 conn,
-                sheet_id=sheet_id,
                 workbook_id=workbook_id,
                 name=name,
                 color=color,
@@ -160,7 +152,7 @@ class SheetDB:
             for col in DEFAULT_COLUMNS:
                 _queries.insert_default_column(
                     conn,
-                    sheet_id=sheet_id,
+                    sheet_id=row.id,
                     col_idx=col["col_idx"],
                     name=col["name"],
                     width=col["width"],
@@ -169,19 +161,19 @@ class SheetDB:
 
         return await self.database.execute_write_fn(write)
 
-    async def list_sheets(self, workbook_id: str) -> list[_queries.Sheet]:
+    async def list_sheets(self, workbook_id: int) -> list[_queries.Sheet]:
         def read(conn):
             return _queries.list_sheets(conn, workbook_id=workbook_id)
 
         return await self.database.execute_write_fn(read)
 
-    async def get_sheet(self, sheet_id: str) -> _queries.Sheet | None:
+    async def get_sheet(self, sheet_id: int) -> _queries.Sheet | None:
         def read(conn):
             return _queries.get_sheet(conn, sheet_id=sheet_id)
 
         return await self.database.execute_write_fn(read)
 
-    async def update_sheet(self, sheet_id: str, **kwargs) -> _queries.Sheet | None:
+    async def update_sheet(self, sheet_id: int, **kwargs) -> _queries.Sheet | None:
         name_do_update = "name" in kwargs
         color_do_update = "color" in kwargs
         sort_order_do_update = "sort_order" in kwargs
@@ -205,7 +197,7 @@ class SheetDB:
 
         return await self.database.execute_write_fn(write)
 
-    async def delete_sheet(self, sheet_id: str) -> None:
+    async def delete_sheet(self, sheet_id: int) -> None:
         # Five-step cascade — FK cascade isn't on; see deleteWorkbook*
         # for the rationale. Also see queries.sql's note that view
         # records are deliberately NOT cleaned up (pre-existing parity).
@@ -219,7 +211,7 @@ class SheetDB:
         await self.database.execute_write_fn(write)
 
     async def reorder_sheets(
-        self, workbook_id: str, sheet_ids: list[str]
+        self, workbook_id: int, sheet_ids: list[int]
     ) -> list[_queries.Sheet]:
         """Assign sort_order 0..N-1 to the given sheet ids in order.
 
@@ -251,7 +243,7 @@ class SheetDB:
 
     # --- Columns ---
 
-    async def get_columns(self, sheet_id: str) -> list[_queries.Column]:
+    async def get_columns(self, sheet_id: int) -> list[_queries.Column]:
         def read(conn):
             return _queries.list_columns(conn, sheet_id=sheet_id)
 
@@ -259,7 +251,7 @@ class SheetDB:
 
     async def set_column(
         self,
-        sheet_id: str,
+        sheet_id: int,
         col_idx: int,
         name: str | None = None,
         width: int | None = None,
@@ -287,14 +279,14 @@ class SheetDB:
 
     # --- Cells ---
 
-    async def get_cells(self, sheet_id: str) -> list[_queries.Cell]:
+    async def get_cells(self, sheet_id: int) -> list[_queries.Cell]:
         def read(conn):
             return _queries.list_cells(conn, sheet_id=sheet_id)
 
         return await self.database.execute_write_fn(read)
 
     async def set_cells(
-        self, sheet_id: str, changes: list[CellChange], actor_id: str | None = None
+        self, sheet_id: int, changes: list[CellChange], actor_id: str | None = None
     ) -> list[_queries.Cell]:
         def write(conn):
             # Strict-mode dropdown validation runs *before* any
@@ -351,7 +343,7 @@ class SheetDB:
 
         return await self.database.execute_write_fn(write)
 
-    async def delete_rows(self, sheet_id: str, row_indices: list[int]) -> list[int]:
+    async def delete_rows(self, sheet_id: int, row_indices: list[int]) -> list[int]:
         """Delete whole rows and shift every subsequent row up so there's no gap.
 
         The shift is a single ``UPDATE``: each surviving row's new
@@ -400,7 +392,7 @@ class SheetDB:
 
         return await self.database.execute_write_fn(write)
 
-    async def delete_columns(self, sheet_id: str, col_indices: list[int]) -> list[int]:
+    async def delete_columns(self, sheet_id: int, col_indices: list[int]) -> list[int]:
         """Delete whole columns and shift every subsequent column left.
 
         Mirrors :meth:`delete_rows` but operates on ``col_idx``. Two tables
@@ -457,7 +449,7 @@ class SheetDB:
 
     async def move_columns(
         self,
-        sheet_id: str,
+        sheet_id: int,
         src_start: int,
         src_end: int,
         dest_gap: int,
@@ -579,7 +571,7 @@ class SheetDB:
     # [sheet.row.drag-reorder]
     async def move_rows(
         self,
-        sheet_id: str,
+        sheet_id: int,
         src_start: int,
         src_end: int,
         dest_gap: int,
@@ -679,7 +671,7 @@ class SheetDB:
 
         return await self.database.execute_write_fn(write)
 
-    async def insert_columns(self, sheet_id: str, at: int, count: int = 1) -> list[int]:
+    async def insert_columns(self, sheet_id: int, at: int, count: int = 1) -> list[int]:
         """Insert ``count`` blank columns at index ``at``, shifting every
         column at or past ``at`` right by ``count``.
 
@@ -725,14 +717,14 @@ class SheetDB:
 
     # --- Named ranges ---
 
-    async def list_named_ranges(self, sheet_id: str) -> list[_queries.NamedRange]:
+    async def list_named_ranges(self, sheet_id: int) -> list[_queries.NamedRange]:
         def read(conn):
             return _queries.list_named_ranges(conn, sheet_id=sheet_id)
 
         return await self.database.execute_write_fn(read)
 
     async def set_named_range(
-        self, sheet_id: str, name: str, definition: str
+        self, sheet_id: int, name: str, definition: str
     ) -> _queries.NamedRange:
         """Define or overwrite a named range. Validates the definition via the
         Rust engine (which raises ValueError on invalid name or definition)
@@ -751,7 +743,7 @@ class SheetDB:
 
         return await self.database.execute_write_fn(write)
 
-    async def delete_named_range(self, sheet_id: str, name: str) -> bool:
+    async def delete_named_range(self, sheet_id: int, name: str) -> bool:
         # DELETE ... RETURNING tells us "was anything removed" without a
         # pre-SELECT; the row count used to come from ``cursor.rowcount``
         # but codegened helpers don't expose that, so ``deleteNamedRange``
@@ -769,7 +761,7 @@ class SheetDB:
     # --- Dropdown rules ---
 
     async def list_dropdown_rules(
-        self, workbook_id: str
+        self, workbook_id: int
     ) -> list[_queries.DropdownRule]:
         def read(conn):
             return _queries.list_dropdown_rules(conn, workbook_id=workbook_id)
@@ -778,7 +770,7 @@ class SheetDB:
 
     async def create_dropdown_rule(
         self,
-        workbook_id: str,
+        workbook_id: int,
         name: str | None,
         multi: bool,
         options: list[dict],
@@ -793,13 +785,11 @@ class SheetDB:
         any bad option.
         """
         _validate_dropdown_options(options)
-        rule_id = str(ULID())
         options_json = json.dumps(_normalise_dropdown_options(options))
 
         def write(conn):
             row = _queries.insert_dropdown_rule(
                 conn,
-                rule_id=rule_id,
                 workbook_id=workbook_id,
                 name=name,
                 multi=1 if multi else 0,
@@ -812,8 +802,8 @@ class SheetDB:
 
     async def update_dropdown_rule(
         self,
-        workbook_id: str,
-        rule_id: str,
+        workbook_id: int,
+        rule_id: int,
         *,
         name: str | None = None,
         name_set: bool = False,
@@ -854,7 +844,7 @@ class SheetDB:
 
         return await self.database.execute_write_fn(write)
 
-    async def delete_dropdown_rule(self, workbook_id: str, rule_id: str) -> bool:
+    async def delete_dropdown_rule(self, workbook_id: int, rule_id: int) -> bool:
         def write(conn):
             deleted = _queries.delete_dropdown_rule(
                 conn, rule_id=rule_id, workbook_id=workbook_id
@@ -874,7 +864,7 @@ class SheetDB:
     # ``get_filter`` returns a Pydantic ``FilterRecord`` so the
     # route layer can hand it back via ``model_dump()``.
 
-    async def get_filter(self, sheet_id: str):
+    async def get_filter(self, sheet_id: int):
         """Return the sheet's filter as a ``FilterRecord``, or
         ``None`` if no filter is configured. Decodes
         ``predicates_json`` into the typed ``FilterPredicate`` shape
@@ -910,7 +900,7 @@ class SheetDB:
 
     async def create_filter(
         self,
-        sheet_id: str,
+        sheet_id: int,
         *,
         min_row: int,
         min_col: int,
@@ -929,15 +919,12 @@ class SheetDB:
         if min_row < 0 or min_col < 0 or max_row < min_row or max_col < min_col:
             raise ValueError("invalid filter bounds")
 
-        filter_id = str(ULID())
-
         def write(conn):
             existing = _queries.get_filter_by_sheet(conn, sheet_id=sheet_id)
             if existing is not None:
                 raise FilterAlreadyExists(f"sheet {sheet_id} already has a filter")
             row = _queries.insert_filter(
                 conn,
-                filter_id=filter_id,
                 sheet_id=sheet_id,
                 min_row=min_row,
                 min_col=min_col,
@@ -964,7 +951,7 @@ class SheetDB:
 
     async def update_filter_predicate(
         self,
-        sheet_id: str,
+        sheet_id: int,
         col_idx: int,
         hidden: list[str] | None,
     ):
@@ -1017,7 +1004,7 @@ class SheetDB:
 
     async def sort_filter(
         self,
-        sheet_id: str,
+        sheet_id: int,
         col_idx: int,
         direction: str,
     ):
@@ -1131,7 +1118,7 @@ class SheetDB:
         return await self.get_filter(sheet_id)
 
     async def _set_filter_sort_metadata(
-        self, sheet_id: str, col_idx: int | None, direction: str | None
+        self, sheet_id: int, col_idx: int | None, direction: str | None
     ):
         def write(conn):
             f = _queries.get_filter_by_sheet(conn, sheet_id=sheet_id)
@@ -1147,7 +1134,7 @@ class SheetDB:
 
         await self.database.execute_write_fn(write)
 
-    async def delete_filter(self, sheet_id: str) -> bool:
+    async def delete_filter(self, sheet_id: int) -> bool:
         """Delete the sheet's filter. Returns True if a filter row
         was removed, False if there was nothing to remove."""
 
@@ -1165,7 +1152,7 @@ class SheetDB:
 
     async def create_view(
         self,
-        sheet_id: str,
+        sheet_id: int,
         view_name: str,
         range_str: str,
         min_row: int,
@@ -1184,7 +1171,6 @@ class SheetDB:
         view_sql.validate_view_name(view_name)
         view_sql.validate_sheet_id(sheet_id)
 
-        view_id = str(ULID())
         color = "#6366f1"
         writable = enable_insert or enable_update or enable_delete
         data_start_row = min_row + 1 if use_headers else min_row
@@ -1248,7 +1234,6 @@ class SheetDB:
 
             row = _queries.insert_view(
                 conn,
-                view_id=view_id,
                 sheet_id=sheet_id,
                 view_name=view_name,
                 range_str=range_str,
@@ -1268,13 +1253,13 @@ class SheetDB:
 
         return await self.database.execute_write_fn(write)
 
-    async def list_views(self, sheet_id: str) -> list[_queries.View]:
+    async def list_views(self, sheet_id: int) -> list[_queries.View]:
         def read(conn):
             return _queries.list_views(conn, sheet_id=sheet_id)
 
         return await self.database.execute_write_fn(read)
 
-    async def delete_view(self, view_id: str) -> None:
+    async def delete_view(self, view_id: int) -> None:
         def write(conn):
             view = _queries.get_view(conn, view_id=view_id)
             if view is not None:
@@ -1327,7 +1312,7 @@ def _validate_dropdown_changes(conn, changes: list[CellChange]) -> None:
     distinct rule_id; rules without a ``controlType === "dropdown"``
     flag are skipped (the cell is a plain text cell that happens to
     carry a stale rule reference)."""
-    rule_ids: dict[str, dict] = {}  # rule_id → parsed rule (lazy fetched)
+    rule_ids: dict[int, dict] = {}  # rule_id → parsed rule (lazy fetched)
     for change in changes:
         if change.format_json is None:
             continue
@@ -1338,7 +1323,13 @@ def _validate_dropdown_changes(conn, changes: list[CellChange]) -> None:
         if fmt.get("controlType") != "dropdown":
             continue
         rule_id = fmt.get("dropdownRuleId")
-        if not isinstance(rule_id, str) or not rule_id:
+        # ``isinstance(True, int)`` is true (bool is an int subclass), so
+        # the explicit ``not isinstance(rule_id, bool)`` excludes it.
+        if (
+            not isinstance(rule_id, int)
+            or isinstance(rule_id, bool)
+            or rule_id < 1
+        ):
             raise ValueError("controlType='dropdown' requires a dropdownRuleId")
         if rule_id not in rule_ids:
             row = _lookup_rule_anywhere(conn, rule_id)
@@ -1371,12 +1362,11 @@ def _validate_dropdown_changes(conn, changes: list[CellChange]) -> None:
                 )
 
 
-def _lookup_rule_anywhere(conn, rule_id: str) -> tuple[int, str] | None:
+def _lookup_rule_anywhere(conn, rule_id: int) -> tuple[int, str] | None:
     """Lookup a rule's ``(multi, options_json)`` by id alone. The cell's
     ``format_json`` carries only the rule id; the rule's parent
     workbook is implied by the cell's sheet → workbook chain, but
-    walking that chain per-validation is more SQL than necessary —
-    rule ids are ULIDs, collision is essentially zero.
+    walking that chain per-validation is more SQL than necessary.
 
     Returns ``None`` when no rule exists (caller raises so the cell
     write is rejected — a stale ``dropdownRuleId`` against a
@@ -1465,7 +1455,7 @@ def _build_cell_input(row) -> dict:
     return {"kind": "raw", "value": row.raw_value}
 
 
-def _recalculate_sheet(conn, sheet_id: str) -> None:
+def _recalculate_sheet(conn, sheet_id: int) -> None:
     rows = _queries.list_cells_for_recalc(conn, sheet_id=sheet_id)
     if not rows:
         return
@@ -1523,7 +1513,7 @@ def _recalculate_sheet(conn, sheet_id: str) -> None:
 
 def _rewrite_formulas_for_deletion(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     *,
     deleted_cols: list[int] | None = None,
     deleted_rows: list[int] | None = None,
@@ -1551,7 +1541,7 @@ def _rewrite_formulas_for_deletion(
 
 def _rewrite_formulas_for_insertion(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     *,
     inserted_cols: list[int] | None = None,
     inserted_rows: list[int] | None = None,
@@ -1576,7 +1566,7 @@ def _rewrite_formulas_for_insertion(
     )
 
 
-def _rewrite_formulas(conn, sheet_id: str, adjust_fn, **adjust_kwargs) -> None:
+def _rewrite_formulas(conn, sheet_id: int, adjust_fn, **adjust_kwargs) -> None:
     """Shared inner loop for the deletion / insertion rewrite passes.
 
     ``list_formula_cells`` filters to ``raw_value LIKE '=%'`` so only
@@ -1595,7 +1585,7 @@ def _rewrite_formulas(conn, sheet_id: str, adjust_fn, **adjust_kwargs) -> None:
             )
 
 
-def _rewrite_named_ranges(conn, sheet_id: str, adjust_fn, **adjust_kwargs) -> None:
+def _rewrite_named_ranges(conn, sheet_id: int, adjust_fn, **adjust_kwargs) -> None:
     """Shared inner loop for named-range definition rewrites under
     structural ops. Mirrors :func:`_rewrite_formulas` but iterates
     named-range definitions instead of cell formulas.
@@ -1625,7 +1615,7 @@ def _rewrite_named_ranges(conn, sheet_id: str, adjust_fn, **adjust_kwargs) -> No
 
 def _rewrite_named_ranges_for_deletion(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     *,
     deleted_cols: list[int] | None = None,
     deleted_rows: list[int] | None = None,
@@ -1648,7 +1638,7 @@ def _rewrite_named_ranges_for_deletion(
 
 def _rewrite_named_ranges_for_insertion(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     *,
     inserted_cols: list[int] | None = None,
     inserted_rows: list[int] | None = None,
@@ -1670,7 +1660,7 @@ def _rewrite_named_ranges_for_insertion(
 
 def _rewrite_formulas_for_move(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     *,
     src_start: int,
     src_end: int,
@@ -1701,7 +1691,7 @@ def _rewrite_formulas_for_move(
 
 def _rewrite_named_ranges_for_move(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     *,
     src_start: int,
     src_end: int,
@@ -1730,7 +1720,7 @@ def _rewrite_named_ranges_for_move(
 
 def _update_views(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     fwd_col,
     fwd_row,
 ) -> None:
@@ -1790,7 +1780,7 @@ def _update_views(
 
 def _update_views_for_move(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     *,
     src_start: int,
     src_end: int,
@@ -1819,7 +1809,7 @@ def _update_views_for_move(
 # [sheet.row.drag-reorder]
 def _rewrite_formulas_for_row_move(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     *,
     src_start: int,
     src_end: int,
@@ -1842,7 +1832,7 @@ def _rewrite_formulas_for_row_move(
 # [sheet.row.drag-reorder]
 def _rewrite_named_ranges_for_row_move(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     *,
     src_start: int,
     src_end: int,
@@ -1867,7 +1857,7 @@ def _rewrite_named_ranges_for_row_move(
 # [sheet.row.drag-reorder]
 def _update_views_for_row_move(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     *,
     src_start: int,
     src_end: int,
@@ -1896,7 +1886,7 @@ def _update_views_for_row_move(
 
 def _update_views_for_deletion(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     *,
     deleted_cols: list[int] | None = None,
     deleted_rows: list[int] | None = None,
@@ -1928,7 +1918,7 @@ def _update_views_for_deletion(
 
 def _update_views_for_insertion(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     *,
     inserted_cols: list[int] | None = None,
     inserted_rows: list[int] | None = None,
@@ -1972,7 +1962,7 @@ def _update_views_for_insertion(
 # gate a ``filter-update`` / ``filter-delete`` SSE broadcast.
 
 
-def _update_filter(conn, sheet_id: str, fwd_col, fwd_row) -> str | None:
+def _update_filter(conn, sheet_id: int, fwd_col, fwd_row) -> str | None:
     """Inner loop. Returns:
 
     - ``"deleted"`` if the filter was fully erased and dropped.
@@ -2062,7 +2052,7 @@ def _update_filter(conn, sheet_id: str, fwd_col, fwd_row) -> str | None:
 
 def _update_filter_for_deletion(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     *,
     deleted_cols: list[int] | None = None,
     deleted_rows: list[int] | None = None,
@@ -2089,7 +2079,7 @@ def _update_filter_for_deletion(
 
 def _update_filter_for_insertion(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     *,
     inserted_cols: list[int] | None = None,
     inserted_rows: list[int] | None = None,
@@ -2112,7 +2102,7 @@ def _update_filter_for_insertion(
 
 def _update_filter_for_move(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     *,
     src_start: int,
     src_end: int,
@@ -2167,7 +2157,7 @@ def _filter_sort_key(value, kind):
 
 def _maybe_expand_filter(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     changes: list[CellChange],
 ) -> bool:
     """Bump the filter's ``max_row`` when a non-empty write lands
@@ -2206,7 +2196,7 @@ def _maybe_expand_filter(
 
 def _update_filter_for_row_move(
     conn,
-    sheet_id: str,
+    sheet_id: int,
     *,
     src_start: int,
     src_end: int,

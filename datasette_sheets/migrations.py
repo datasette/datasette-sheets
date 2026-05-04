@@ -6,13 +6,16 @@ migrations = Migrations("datasette-sheets")
 
 @migrations()
 def m001_schema(db: Database):
-    # Initial schema. Schema changes after this point land as new
-    # ``m00N_*`` migration steps below — never edit existing steps.
-    # Doc comments use sqlite-docs format (asg017/sqlite-docs):
+    # Initial schema for the datasette-sheets plugin. Doc comments use
+    # sqlite-docs format (asg017/sqlite-docs):
     #   --! table description
     #   --- column description
     #   --- @example 'literal value'
     #   --- @details free-form notes / link
+    #
+    # Pre-alpha consolidation: all prior m00N_* steps have been folded
+    # in here. Future schema changes land as new ``m00N_*`` migration
+    # steps below — never edit this step.
     db.executescript(
         """
         CREATE TABLE IF NOT EXISTS datasette_sheets_workbook(
@@ -22,15 +25,15 @@ def m001_schema(db: Database):
             --! @details Rows live in the end-user's database, not
             --! Datasette's internal DB.
 
-            --- ULID for the workbook. Explicit NOT NULL because
-            --- SQLite's historical quirk lets a TEXT PRIMARY KEY
-            --- hold NULL otherwise.
-            --- @example '01HZZZZZZZZZZZZZZZZZZZZZZZ'
-            id TEXT PRIMARY KEY NOT NULL,
+            --- Autoincrement integer id (alias for SQLite's rowid).
+            --- @example 1
+            id INTEGER PRIMARY KEY NOT NULL,
 
-            --- Human-readable workbook name shown in the UI.
+            --- Human-readable workbook name shown in the UI. UNIQUE
+            --- across the database so name collisions can't make the
+            --- workbook list ambiguous.
             --- @example 'Q3 Budget'
-            name TEXT NOT NULL,
+            name TEXT NOT NULL UNIQUE,
 
             --- ISO-8601 UTC timestamp when the workbook was created.
             --- @example '2026-04-17T12:34:56.789'
@@ -54,15 +57,17 @@ def m001_schema(db: Database):
             --! A single tab within a workbook. Holds cells, column
             --! metadata, and views.
 
-            --- ULID for the sheet.
-            --- @example '01HZZZZZZZZZZZZZZZZZZZZZZZ'
-            id TEXT PRIMARY KEY NOT NULL,
+            --- Autoincrement integer id (alias for SQLite's rowid).
+            --- @example 1
+            id INTEGER PRIMARY KEY NOT NULL,
 
             --- Parent workbook id. Cascades on delete.
-            --- @example '01HZZZZZZZZZZZZZZZZZZZZZZZ'
-            workbook_id TEXT NOT NULL REFERENCES datasette_sheets_workbook(id) ON DELETE CASCADE,
+            --- @example 1
+            workbook_id INTEGER NOT NULL REFERENCES datasette_sheets_workbook(id) ON DELETE CASCADE,
 
-            --- Tab name shown in the UI.
+            --- Tab name shown in the UI. UNIQUE per workbook so the
+            --- combination (workbook_id, name) identifies a sheet
+            --- unambiguously.
             --- @example 'Sheet1'
             name TEXT NOT NULL,
 
@@ -80,7 +85,9 @@ def m001_schema(db: Database):
 
             --- ISO-8601 UTC timestamp of the last cell or metadata edit.
             --- @example '2026-04-17T12:34:56.789'
-            updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%f', 'now'))
+            updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%f', 'now')),
+
+            UNIQUE(workbook_id, name)
         );
 
         CREATE TABLE IF NOT EXISTS datasette_sheets_column(
@@ -89,8 +96,8 @@ def m001_schema(db: Database):
             --! rows use DEFAULT_COLUMNS in db.py.
 
             --- Parent sheet id. Cascades on delete.
-            --- @example '01HZZZZZZZZZZZZZZZZZZZZZZZ'
-            sheet_id TEXT NOT NULL REFERENCES datasette_sheets_sheet(id) ON DELETE CASCADE,
+            --- @example 1
+            sheet_id INTEGER NOT NULL REFERENCES datasette_sheets_sheet(id) ON DELETE CASCADE,
 
             --- Zero-based column index. 0 is column A, 1 is B, etc.
             --- @example 0
@@ -120,8 +127,8 @@ def m001_schema(db: Database):
             --! literal text).
 
             --- Parent sheet id. Cascades on delete.
-            --- @example '01HZZZZZZZZZZZZZZZZZZZZZZZ'
-            sheet_id TEXT NOT NULL REFERENCES datasette_sheets_sheet(id) ON DELETE CASCADE,
+            --- @example 1
+            sheet_id INTEGER NOT NULL REFERENCES datasette_sheets_sheet(id) ON DELETE CASCADE,
 
             --- Zero-based row index (0 == row 1 in A1 notation).
             --- @example 0
@@ -145,6 +152,42 @@ def m001_schema(db: Database):
             --- classification.
             --- @example 42
             computed_value,
+
+            --- Type discriminator for ``computed_value``. SQLite has no
+            --- boolean storage class — ``CellValue::Boolean`` adapts to
+            --- INTEGER 0/1 and is indistinguishable from ``Number(1.0)``
+            --- on read. NULL for the common case (Number → INTEGER /
+            --- REAL, String → TEXT, Empty → NULL); ``'bool'`` when the
+            --- engine returned a Boolean; ``'custom'`` when the engine
+            --- returned a Custom({type_tag, data}) value JSON-encoded
+            --- into ``computed_value``. Set + read in lockstep with
+            --- ``computed_value`` — see ``_split_typed`` /
+            --- ``reconstruct_typed`` in db.py.
+            --- @example 'bool'
+            computed_value_kind TEXT,
+
+            --- Per-cell typed-input override. NULL means the engine
+            --- auto-classifies ``raw_value`` on every recalc; non-NULL
+            --- bypasses that and rebuilds the cell as a
+            --- ``set_cells_typed`` input so the typed value survives.
+            --- v1 producer: leading-`'` force-text UX
+            --- ([sheet.cell.force-text]) writes ``'string'``. Future
+            --- kinds (``'number'`` / ``'boolean'`` / ``'custom'``) plug
+            --- into this same column.
+            --- @value 'string'
+            --- @value 'number'
+            --- @value 'boolean'
+            --- @value 'custom'
+            typed_kind TEXT,
+
+            --- Companion to ``typed_kind``. Only carries content when
+            --- ``typed_kind == 'custom'`` — JSON-encoded
+            --- ``{type_tag, data}`` payload. For string/number/boolean
+            --- the value is already in ``raw_value`` (engine renders
+            --- the typed value back to display text), so a second copy
+            --- here would be redundant.
+            --- @example '{"type_tag":"jdate","data":"2026-04-17"}'
+            typed_data TEXT,
 
             --- JSON override of cell-level formatting. Falls back to the
             --- column's ``format_json`` when NULL.
@@ -173,13 +216,13 @@ def m001_schema(db: Database):
             --! view (and any INSTEAD OF triggers) lives alongside this
             --! row in sqlite_master; this table is the plugin's registry.
 
-            --- ULID for the view record.
-            --- @example '01HZZZZZZZZZZZZZZZZZZZZZZZ'
-            id TEXT PRIMARY KEY NOT NULL,
+            --- Autoincrement integer id (alias for SQLite's rowid).
+            --- @example 1
+            id INTEGER PRIMARY KEY NOT NULL,
 
             --- Parent sheet id. Cascades on delete.
-            --- @example '01HZZZZZZZZZZZZZZZZZZZZZZZ'
-            sheet_id TEXT NOT NULL REFERENCES datasette_sheets_sheet(id) ON DELETE CASCADE,
+            --- @example 1
+            sheet_id INTEGER NOT NULL REFERENCES datasette_sheets_sheet(id) ON DELETE CASCADE,
 
             --- Name of the generated SQL VIEW in the database. Must be a
             --- safe SQL identifier; enforced by view_sql.validate_view_name.
@@ -257,8 +300,8 @@ def m001_schema(db: Database):
             --! engine uppercases on storage.
 
             --- Parent sheet id. Cascades on delete.
-            --- @example '01HZZZZZZZZZZZZZZZZZZZZZZZ'
-            sheet_id TEXT NOT NULL REFERENCES datasette_sheets_sheet(id) ON DELETE CASCADE,
+            --- @example 1
+            sheet_id INTEGER NOT NULL REFERENCES datasette_sheets_sheet(id) ON DELETE CASCADE,
 
             --- Name as the user typed it. The primary key uses
             --- ``COLLATE NOCASE`` so lookups match the engine's
@@ -280,42 +323,7 @@ def m001_schema(db: Database):
 
         CREATE INDEX IF NOT EXISTS idx_sheets_named_range_sheet
             ON datasette_sheets_named_range(sheet_id);
-        """
-    )
 
-
-@migrations()
-def m002_computed_value_kind(db: Database):
-    # SQLite has no boolean storage class, so ``CellValue::Boolean``
-    # adapts to INTEGER 0/1 — indistinguishable from a Number(1.0)
-    # cell on the way back out. ``computed_value_kind`` is the type
-    # discriminator: NULL for the common case (Number → INTEGER /
-    # REAL, String → TEXT, Empty → NULL); ``'bool'`` when the engine
-    # returned a Boolean (still stored as INTEGER 0/1). Set + read
-    # in lockstep with ``computed_value`` — see ``_split_typed`` /
-    # ``reconstruct_typed`` in db.py.
-    #
-    # Existing rows get NULL — every cell whose formula now produces
-    # a Boolean will repopulate the kind on the next recalc (the
-    # ``listCellsForRecalc`` query selects on (value, kind), so a
-    # Number(1.0) → Boolean(true) flip writes through).
-    db.executescript(
-        """
-        ALTER TABLE datasette_sheets_cell
-            ADD COLUMN computed_value_kind TEXT;
-        """
-    )
-
-
-@migrations()
-def m003_dropdown_rules(db: Database):
-    # Workbook-scoped data-validation rules. Cells reference these by
-    # id from their ``format_json`` (``controlType: "dropdown"`` +
-    # ``dropdownRuleId``); the strict-mode validator in
-    # ``db.py::set_cells`` enforces option membership at write time.
-    # See specs/sheet.data.dropdown.md.
-    db.executescript(
-        """
         CREATE TABLE IF NOT EXISTS datasette_sheets_dropdown_rule(
             --! A workbook-scoped data-validation dropdown rule. Cells
             --! point at one of these via their ``format_json``
@@ -325,16 +333,16 @@ def m003_dropdown_rules(db: Database):
             --! @details Strict-mode-only in v1: values not in the
             --! option list are rejected server-side at write time.
 
-            --- ULID for the rule. Workbook-scoped so multiple sheets
-            --- can share one rule.
-            --- @example '01HZZZZZZZZZZZZZZZZZZZZZZZ'
-            id TEXT PRIMARY KEY NOT NULL,
+            --- Autoincrement integer id (alias for SQLite's rowid).
+            --- Workbook-scoped so multiple sheets can share one rule.
+            --- @example 1
+            id INTEGER PRIMARY KEY NOT NULL,
 
             --- Parent workbook id. Cascades on workbook delete (the
             --- delete is a manual DELETE in db.py mirroring the rest
             --- of the cascade — see deleteWorkbook* in queries.sql).
-            --- @example '01HZZZZZZZZZZZZZZZZZZZZZZZ'
-            workbook_id TEXT NOT NULL REFERENCES datasette_sheets_workbook(id) ON DELETE CASCADE,
+            --- @example 1
+            workbook_id INTEGER NOT NULL REFERENCES datasette_sheets_workbook(id) ON DELETE CASCADE,
 
             --- Optional human label shown in the rule list / editor.
             --- @example 'Status'
@@ -360,55 +368,7 @@ def m003_dropdown_rules(db: Database):
 
         CREATE INDEX IF NOT EXISTS idx_sheets_dropdown_rule_workbook
             ON datasette_sheets_dropdown_rule(workbook_id);
-        """
-    )
 
-
-@migrations()
-def m004_typed_input(db: Database):
-    # Per-cell typed override — Phase B of the engine-typed-cells epic.
-    # Phase A's m002 added ``computed_value_kind`` for the engine's
-    # *output* discriminator; this migration adds the matching *input*
-    # override columns. When ``typed_kind`` is NULL the cell is raw
-    # text and the engine auto-classifies it on every recalc; when
-    # set, the recalc rebuilds the cell as a ``set_cells_typed`` input
-    # so the typed value survives across passes. The frontend
-    # ``'``-prefix affordance is the first user-visible producer;
-    # future surfaces (column-level type hints, "Format → Plain text"
-    # toggle, etc.) plug into the same columns.
-    #
-    # ``typed_data`` only carries content when ``typed_kind == 'custom'``
-    # — the JSON-encoded ``{type_tag, data}`` payload. For
-    # ``string`` / ``number`` / ``boolean`` the value is already in
-    # ``raw_value`` (engine renders the typed value back to display
-    # text), so a second copy in ``typed_data`` would be redundant.
-    #
-    # Existing rows get NULL → behave exactly as before. A subsequent
-    # ``upsertCell`` with NULL typed_kind keeps the column NULL,
-    # preserving the auto-classify default.
-    db.executescript(
-        """
-        ALTER TABLE datasette_sheets_cell
-            ADD COLUMN typed_kind TEXT;
-        ALTER TABLE datasette_sheets_cell
-            ADD COLUMN typed_data TEXT;
-        """
-    )
-
-
-@migrations()
-def m005_filter(db: Database):
-    # Google-Sheets-style "Basic Filter" applied to a contiguous
-    # rectangle on a sheet. At most one filter per sheet
-    # (UNIQUE(sheet_id) below); multi-filter / saved "filter views"
-    # is deferred. The first row of the rectangle is the header;
-    # rows below up to ``max_row`` are filterable.
-    #
-    # Predicates per column and the active sort live as JSON inside
-    # the same row to keep load + write a single round-trip — same
-    # rationale as ``dropdown_rule.options_json``.
-    db.executescript(
-        """
         CREATE TABLE IF NOT EXISTS datasette_sheets_filter(
             --! A "Basic Filter" applied to a contiguous rectangle on
             --! a sheet. At most one per sheet — multi-filter / saved
@@ -416,15 +376,15 @@ def m005_filter(db: Database):
             --! with row/col delete / insert / move via the same
             --! forward-map helper that updates ``datasette_sheets_view``.
 
-            --- ULID for the filter.
-            --- @example '01HZZZZZZZZZZZZZZZZZZZZZZZ'
-            id TEXT PRIMARY KEY NOT NULL,
+            --- Autoincrement integer id (alias for SQLite's rowid).
+            --- @example 1
+            id INTEGER PRIMARY KEY NOT NULL,
 
             --- Parent sheet id. Cascades on sheet delete (the cascade
             --- is a manual DELETE in db.py mirroring the rest of the
             --- cascade — see ``deleteSheet*`` in queries.sql).
-            --- @example '01HZZZZZZZZZZZZZZZZZZZZZZZ'
-            sheet_id TEXT NOT NULL UNIQUE
+            --- @example 1
+            sheet_id INTEGER NOT NULL UNIQUE
                 REFERENCES datasette_sheets_sheet(id) ON DELETE CASCADE,
 
             --- Zero-based first row of the filter (the header row).

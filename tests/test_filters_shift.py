@@ -66,7 +66,6 @@ async def setup_filter(
     def insert(conn):
         return _queries.insert_filter(
             conn,
-            filter_id="01HZZZSHIFT00000000000000A",
             sheet_id=sheet_id,
             min_row=min_row,
             min_col=min_col,

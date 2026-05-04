@@ -66,7 +66,7 @@ describe("SheetSSEClient connection lifecycle", () => {
     const onDisconnect = vi.fn();
     const onReconnect = vi.fn();
 
-    const client = new SheetSSEClient("db", "wb", "sh", "client-1", {
+    const client = new SheetSSEClient("db", 1, 2, "client-1", {
       onConnected,
       onDisconnect,
       onReconnect,
@@ -99,7 +99,7 @@ describe("SheetSSEClient connection lifecycle", () => {
 
   test("onerror does not fire onDisconnect a second time without an intervening connected event", () => {
     const onDisconnect = vi.fn();
-    const client = new SheetSSEClient("db", "wb", "sh", "client-1", {
+    const client = new SheetSSEClient("db", 1, 2, "client-1", {
       onDisconnect,
     });
     client.connect();
@@ -115,7 +115,7 @@ describe("SheetSSEClient connection lifecycle", () => {
 
   test("disconnect() clears the eventSource and a fresh connect() treats the next open as initial", () => {
     const onReconnect = vi.fn();
-    const client = new SheetSSEClient("db", "wb", "sh", "client-1", {
+    const client = new SheetSSEClient("db", 1, 2, "client-1", {
       onReconnect,
     });
 
@@ -156,7 +156,7 @@ describe("SheetSSEClient event dispatch", () => {
     const onColumnsInserted = vi.fn();
     const onConnected = vi.fn();
 
-    const client = new SheetSSEClient("db", "wb", "sh", "c1", {
+    const client = new SheetSSEClient("db", 1, 2, "c1", {
       onCellUpdate,
       onSheetMeta,
       onPresence,
@@ -243,7 +243,7 @@ describe("SheetSSEClient event dispatch", () => {
   // refactor is a deliberate decision, not a drift.
   test("a malformed JSON payload throws out of the event listener", () => {
     const onCellUpdate = vi.fn();
-    const client = new SheetSSEClient("db", "wb", "sh", "c1", { onCellUpdate });
+    const client = new SheetSSEClient("db", 1, 2, "c1", { onCellUpdate });
     client.connect();
     const es = FakeEventSource.last!;
 

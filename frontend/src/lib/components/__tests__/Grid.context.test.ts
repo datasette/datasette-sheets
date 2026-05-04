@@ -192,7 +192,7 @@ test("cell context menu's 'Clear formatting' button dispatches clearAllFormat", 
   headerSelection.clear("col");
   headerSelection.clear("row");
 
-  render(Grid, { props: { database: "db", workbookId: "wb" } });
+  render(Grid, { props: { database: "db", workbookId: 1 } });
   await flushFrames();
 
   // Right-click the cell — the per-cell on:contextmenu lives on the

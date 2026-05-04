@@ -69,7 +69,6 @@ async def test_insert_and_get_round_trip():
     def insert(conn):
         return _queries.insert_filter(
             conn,
-            filter_id="01HZZZTEST0000000000000001",
             sheet_id=sheet_id,
             min_row=1,
             min_col=1,
@@ -82,7 +81,7 @@ async def test_insert_and_get_round_trip():
 
     row = await db_obj.execute_write_fn(insert)
     assert row is not None
-    assert row.id == "01HZZZTEST0000000000000001"
+    assert isinstance(row.id, int) and row.id >= 1
 
     resp = await ds.client.get(
         f"/{db_name}/-/sheets/api/workbooks/{wb_id}/sheets/{sheet_id}/filter"
@@ -106,26 +105,22 @@ async def test_unique_sheet_id_constraint():
     _, sheet_id = await create_workbook_and_sheet(ds, db_name)
     db_obj = ds.get_database(db_name)
 
-    def insert(filter_id):
-        def _do(conn):
-            return _queries.insert_filter(
-                conn,
-                filter_id=filter_id,
-                sheet_id=sheet_id,
-                min_row=0,
-                min_col=0,
-                max_row=5,
-                max_col=5,
-                sort_col_idx=None,
-                sort_direction=None,
-                predicates_json="{}",
-            )
+    def insert(conn):
+        return _queries.insert_filter(
+            conn,
+            sheet_id=sheet_id,
+            min_row=0,
+            min_col=0,
+            max_row=5,
+            max_col=5,
+            sort_col_idx=None,
+            sort_direction=None,
+            predicates_json="{}",
+        )
 
-        return _do
-
-    await db_obj.execute_write_fn(insert("01HZZZUNIQ00000000000000A1"))
+    await db_obj.execute_write_fn(insert)
     with pytest.raises(sqlite3.IntegrityError):
-        await db_obj.execute_write_fn(insert("01HZZZUNIQ00000000000000A2"))
+        await db_obj.execute_write_fn(insert)
 
 
 @pytest.mark.asyncio
@@ -143,7 +138,6 @@ async def test_sheet_delete_cascades_filter():
     def insert(conn):
         return _queries.insert_filter(
             conn,
-            filter_id="01HZZZCASC000000000000000A",
             sheet_id=sheet_id,
             min_row=0,
             min_col=0,
@@ -184,7 +178,6 @@ async def test_workbook_delete_cascades_filter():
     def insert(conn):
         _queries.insert_filter(
             conn,
-            filter_id="01HZZZWBCASC0000000000000A",
             sheet_id=sheet_id,
             min_row=0,
             min_col=0,
@@ -760,7 +753,6 @@ async def test_get_filter_with_malformed_predicates_json_falls_back():
     def insert(conn):
         return _queries.insert_filter(
             conn,
-            filter_id="01HZZZMALF0000000000000001",
             sheet_id=sheet_id,
             min_row=0,
             min_col=0,

@@ -181,7 +181,7 @@ test("controlType=dropdown + bold: chip renders, bold class follows the cell-val
   // chip-uses-bold rule has the data. Pin current behavior so a
   // change to either side is intentional.
   const rule: DropdownRule = {
-    id: "r1",
+    id: 1,
     name: "Status",
     multi: false,
     source: {
@@ -193,7 +193,7 @@ test("controlType=dropdown + bold: chip renders, bold class follows the cell-val
   cells.setCellValue("A1", "Doing");
   cells.setCellFormat("A1", {
     controlType: "dropdown",
-    dropdownRuleId: "r1",
+    dropdownRuleId: 1,
     bold: true,
   });
   render(Cell, { props: { cellId: "A1" as CellId } });

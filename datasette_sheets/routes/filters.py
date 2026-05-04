@@ -27,12 +27,12 @@ from .schemas import (
 
 
 @router.GET(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/filter$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/filter$",
     output=GetFilterResponse,
 )
 @check_permission()
 async def get_filter(
-    datasette, request, database: str, workbook_id: str, sheet_id: str
+    datasette, request, database: str, workbook_id: int, sheet_id: int
 ):
     db = await ensure_db(datasette, database)
     f = await db.get_filter(sheet_id)
@@ -40,7 +40,7 @@ async def get_filter(
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/filter/create$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/filter/create$",
     output=FilterResponse,
 )
 @check_permission()
@@ -48,8 +48,8 @@ async def create_filter(
     datasette,
     request,
     database: str,
-    workbook_id: str,
-    sheet_id: str,
+    workbook_id: int,
+    sheet_id: int,
     body: Annotated[CreateFilterBody, Body()],
 ):
     db = await ensure_db(datasette, database)
@@ -85,7 +85,7 @@ async def create_filter(
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/filter/update$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/filter/update$",
     output=FilterResponse,
 )
 @check_permission()
@@ -93,8 +93,8 @@ async def update_filter(
     datasette,
     request,
     database: str,
-    workbook_id: str,
-    sheet_id: str,
+    workbook_id: int,
+    sheet_id: int,
     body: Annotated[UpdateFilterBody, Body()],
 ):
     db = await ensure_db(datasette, database)
@@ -157,7 +157,7 @@ async def update_filter(
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/filter/delete$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/filter/delete$",
     output=OkResponse,
 )
 @check_permission()
@@ -165,8 +165,8 @@ async def delete_filter(
     datasette,
     request,
     database: str,
-    workbook_id: str,
-    sheet_id: str,
+    workbook_id: int,
+    sheet_id: int,
 ):
     db = await ensure_db(datasette, database)
     removed = await db.delete_filter(sheet_id)

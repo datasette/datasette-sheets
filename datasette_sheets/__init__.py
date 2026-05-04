@@ -70,7 +70,7 @@ async def workbook_list_page(datasette, request):
 
 async def workbook_page(datasette, request):
     database = request.url_vars["database"]
-    workbook_id = request.url_vars["workbook_id"]
+    workbook_id = int(request.url_vars["workbook_id"])
     if not await datasette.allowed(action=PERMISSION_NAME, actor=request.actor):
         raise Forbidden("Permission denied")
     try:
@@ -99,8 +99,8 @@ async def workbook_page(datasette, request):
 
 
 DB = r"(?P<database>[^/]+)"
-WB = r"(?P<workbook_id>[^/]+)"
-SH = r"(?P<sheet_id>[^/]+)"
+WB = r"(?P<workbook_id>\d+)"
+SH = r"(?P<sheet_id>\d+)"
 BASE = f"/{DB}/-/sheets"
 
 

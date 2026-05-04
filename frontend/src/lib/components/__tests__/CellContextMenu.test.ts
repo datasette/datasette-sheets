@@ -7,7 +7,7 @@ import { render } from "vitest-browser-svelte";
 // preset — the real module exposes it as a derived store, and the
 // CellContextMenu's API-URL helper early-returns when it's empty.
 vi.mock("../../stores/persistence", () => ({
-  activeSheetId: writable("sheet-1"),
+  activeSheetId: writable(7),
 }));
 
 // Format command spies: the Bold/Italic/Underline/Clear-formatting
@@ -63,7 +63,7 @@ const baseProps = {
   range: "A1",
   cellId: "A1" as CellId,
   database: "db",
-  workbookId: "wb",
+  workbookId: 5,
   onCut: async () => {},
   onCopy: async () => {},
   onPaste: async () => {},
@@ -126,7 +126,7 @@ test("SQL cell exposes 'Refresh data' and clicking calls refreshSqlCell", async 
 // [sheet.data.dropdown]
 test("dropdown cell exposes 'Edit dropdown…' and clicking calls openDropdownRulesPanel", async () => {
   const rule: DropdownRule = {
-    id: "rule-1",
+    id: 13,
     name: "Status",
     multi: false,
     source: { kind: "list", options: [{ value: "Todo", color: "#cccccc" }] },
@@ -201,7 +201,7 @@ test("Copy API URL builds the data-API URL and writes it to the clipboard", asyn
 
   expect(writeText).toHaveBeenCalledTimes(1);
   expect(writeText.mock.calls[0][0]).toContain(
-    "/db/-/sheets/api/workbooks/wb/sheets/sheet-1/data/A1",
+    "/db/-/sheets/api/workbooks/5/sheets/7/data/A1",
   );
 });
 

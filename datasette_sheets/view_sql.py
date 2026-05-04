@@ -30,11 +30,6 @@ IDENTIFIER_RE = re.compile(r"^[a-zA-Z_][a-zA-Z0-9_]*$")
 # append `_insert`/`_update`/`_delete` without blowing past SQLite's comfort
 # zone. We verify the user-facing cap in validate_view_name.
 VIEW_NAME_MAX = 63
-# ULID format: 26 chars, Crockford base32 is uppercase alphanumeric.
-# We accept the superset `[0-9A-Z]{26}` to stay compatible with any ULID
-# library that uses the same fixed alphabet; digits-only input is still
-# rejected by the length check against real ULIDs produced by python-ulid.
-SHEET_ID_RE = re.compile(r"^[0-9A-Z]{26}$")
 RESERVED_VIEW_PREFIXES = ("datasette_sheets_", "sqlite_")
 ROW_COL = "_sheet_row"
 
@@ -54,12 +49,13 @@ def _ident(name: str) -> str:
     return f"[{name}]"
 
 
-def _sheet_literal(sheet_id: str) -> str:
-    """Quote a sheet_id as a SQL string literal. We've already restricted
-    the character set to ``[0-9A-Z]`` so no escaping is needed — this just
-    asserts the invariant holds."""
+def _sheet_literal(sheet_id: int) -> str:
+    """Embed a sheet_id as a SQL integer literal. We've already
+    restricted the type to ``int`` (and rejected non-positive values
+    in :func:`validate_sheet_id`), so the bare ``str(int)`` form is
+    safe in DDL — there's no character set to escape."""
     validate_sheet_id(sheet_id)
-    return f"'{sheet_id}'"
+    return str(sheet_id)
 
 
 # Public validators -----------------------------------------------------------
@@ -76,9 +72,15 @@ def validate_view_name(name: str) -> None:
         raise ValueError("Reserved prefix in view name")
 
 
-def validate_sheet_id(sheet_id: str) -> None:
-    if not isinstance(sheet_id, str) or not SHEET_ID_RE.match(sheet_id):
-        raise ValueError("Invalid sheet_id: must be a 26-char ULID")
+def validate_sheet_id(sheet_id: int) -> None:
+    # ``isinstance(True, int)`` is true (bool is an int subclass) — exclude
+    # it explicitly so a stray boolean can't masquerade as a sheet id.
+    if (
+        not isinstance(sheet_id, int)
+        or isinstance(sheet_id, bool)
+        or sheet_id < 1
+    ):
+        raise ValueError("Invalid sheet_id: must be a positive integer")
 
 
 def sanitize_column_names(
@@ -124,7 +126,7 @@ class ViewSpec:
     """
 
     view_name: str
-    sheet_id: str
+    sheet_id: int
     min_row: int
     min_col: int
     max_row: int

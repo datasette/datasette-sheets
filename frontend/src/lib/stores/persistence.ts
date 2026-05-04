@@ -53,7 +53,7 @@ import {
 
 // The database name, workbook ID, and client ID are set during init
 let _database = "";
-let _workbookId = "";
+let _workbookId = 0;
 let _clientId = "";
 
 export function setDatabase(database: string) {
@@ -61,7 +61,7 @@ export function setDatabase(database: string) {
   setSqlDefaultDatabase(database);
 }
 
-export function setWorkbookId(workbookId: string) {
+export function setWorkbookId(workbookId: number) {
   _workbookId = workbookId;
 }
 
@@ -74,7 +74,7 @@ export function getClientId(): string {
 }
 
 export interface LocalSheetMeta {
-  id: string;
+  id: number;
   name: string;
   color: string;
 }
@@ -92,7 +92,9 @@ const DEFAULT_COLORS = [
 
 // Stores
 const _sheets = writable<LocalSheetMeta[]>([]);
-const _activeSheetId = writable<string>("");
+// 0 means "no active sheet" — sheet ids are autoincrement integers and
+// will always be >= 1, so 0 is a safe sentinel.
+const _activeSheetId = writable<number>(0);
 
 // Cut marker is scoped to the active sheet — cell IDs like "B2" mean
 // different things on different sheets, so a dashed border pinned to
@@ -108,20 +110,24 @@ _activeSheetId.subscribe(() => {
 // format (rather than bare ``#<id>``) leaves room for other
 // per-session state (cursor, selection) to piggyback later.
 // [sheet.tabs.url-hash-remembers]
-function readSheetFromHash(): string | null {
+function readSheetFromHash(): number | null {
   if (typeof window === "undefined") return null;
   const hash = window.location.hash.replace(/^#/, "");
   if (!hash) return null;
   const params = new URLSearchParams(hash);
-  return params.get("sheet");
+  const raw = params.get("sheet");
+  if (!raw) return null;
+  const id = Number(raw);
+  return Number.isFinite(id) && id > 0 ? id : null;
 }
 
-function writeSheetToHash(sheetId: string) {
+function writeSheetToHash(sheetId: number) {
   if (typeof window === "undefined") return;
   const hash = window.location.hash.replace(/^#/, "");
   const params = new URLSearchParams(hash);
-  if (params.get("sheet") === sheetId) return;
-  params.set("sheet", sheetId);
+  const value = String(sheetId);
+  if (params.get("sheet") === value) return;
+  params.set("sheet", value);
   const next = "#" + params.toString();
   // ``replaceState`` — don't pollute history with one entry per
   // sheet switch; Back should leave the workbook, not step through
@@ -242,7 +248,7 @@ export class SaveBeforeSwitchError extends Error {
  * 5. Load named ranges + views in parallel; replay any ``=SQL(...)``
  *    cells the load surfaced.
  */
-async function transitionToSheet(newSheetId: string): Promise<void> {
+async function transitionToSheet(newSheetId: number): Promise<void> {
   try {
     await saveCellsToWorkbook();
   } catch (e) {
@@ -296,7 +302,7 @@ async function transitionToSheet(newSheetId: string): Promise<void> {
 /** Load a sheet's cells into the cell store. Used at cold start
  *  (``initWorkbook``) where the active id is already set and there
  *  is no prior sheet to flush. */
-async function loadSheetCells(sheetId: string) {
+async function loadSheetCells(sheetId: number) {
   const data = await getSheet(_database, _workbookId, sheetId);
 
   resetSheetScopedState();
@@ -387,7 +393,7 @@ function installHashSync() {
   // they are.
   window.addEventListener("hashchange", () => {
     const hashId = readSheetFromHash();
-    if (!hashId) return;
+    if (hashId == null) return;
     if (hashId === get(_activeSheetId)) return;
     const known = get(_sheets).some((s) => s.id === hashId);
     if (!known) return;
@@ -398,12 +404,12 @@ function installHashSync() {
 /** Switch to a different sheet. Throws ``SaveBeforeSwitchError`` if
  *  the pre-switch flush failed — in that case the active sheet is
  *  unchanged and the dirty set is preserved for the next flush. */
-export async function switchSheet(sheetId: string) {
+export async function switchSheet(sheetId: number) {
   await transitionToSheet(sheetId);
 }
 
 /** Add a new sheet */
-export async function addSheet(name?: string): Promise<string> {
+export async function addSheet(name?: string): Promise<number> {
   try {
     await saveCellsToWorkbook();
   } catch (e) {
@@ -437,7 +443,7 @@ export async function addSheet(name?: string): Promise<string> {
 }
 
 /** Delete a sheet */
-export async function deleteSheet(sheetId: string) {
+export async function deleteSheet(sheetId: number) {
   const currentSheets = get(_sheets);
   if (currentSheets.length <= 1) return;
 
@@ -460,7 +466,7 @@ export async function deleteSheet(sheetId: string) {
 }
 
 /** Rename a sheet */
-export async function renameSheet(sheetId: string, newName: string) {
+export async function renameSheet(sheetId: number, newName: string) {
   await updateSheet(_database, _workbookId, sheetId, { name: newName });
   _sheets.update((s) =>
     s.map((sheet) =>
@@ -470,7 +476,7 @@ export async function renameSheet(sheetId: string, newName: string) {
 }
 
 /** Set sheet tab color */
-export async function setSheetColor(sheetId: string, color: string) {
+export async function setSheetColor(sheetId: number, color: string) {
   await updateSheet(_database, _workbookId, sheetId, { color });
   _sheets.update((s) =>
     s.map((sheet) => (sheet.id === sheetId ? { ...sheet, color } : sheet)),
@@ -483,7 +489,7 @@ export async function setSheetColor(sheetId: string, color: string) {
  * then POSTs the full permutation. On failure the original order is
  * restored.
  */
-export async function reorderSheets(orderedIds: string[]) {
+export async function reorderSheets(orderedIds: number[]) {
   const before = get(_sheets);
   const byId = new Map(before.map((s) => [s.id, s]));
   const reordered = orderedIds
@@ -503,7 +509,7 @@ export async function reorderSheets(orderedIds: string[]) {
 }
 
 /** Move a single sheet one slot left/right, clamped at the ends. */
-export async function moveSheet(sheetId: string, direction: -1 | 1) {
+export async function moveSheet(sheetId: number, direction: -1 | 1) {
   const current = get(_sheets);
   const idx = current.findIndex((s) => s.id === sheetId);
   if (idx < 0) return;
@@ -994,7 +1000,7 @@ export async function removeRows(rowIndices: number[]): Promise<number[]> {
  */
 export function resetPersistenceStateForTests(): void {
   _database = "";
-  _workbookId = "";
+  _workbookId = 0;
   _clientId = "";
   setSqlDefaultDatabase("");
   _dirtyCellIds.clear();
@@ -1015,6 +1021,6 @@ export function resetPersistenceStateForTests(): void {
   // of listeners, in tests that exercise the hash sync.
   _hashSyncInstalled = false;
   _sheets.set([]);
-  _activeSheetId.set("");
+  _activeSheetId.set(0);
   _saveStatus.set("idle");
 }

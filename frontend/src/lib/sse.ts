@@ -79,7 +79,7 @@ export interface FilterUpdateEvent {
   filter: FilterMeta;
 }
 export interface FilterDeleteEvent {
-  sheet_id: string;
+  sheet_id: number;
 }
 
 export interface SSECallbacks {
@@ -102,8 +102,8 @@ export interface SSECallbacks {
 export class SheetSSEClient {
   private eventSource: EventSource | null = null;
   private database: string;
-  private workbookId: string;
-  private sheetId: string;
+  private workbookId: number;
+  private sheetId: number;
   private clientId: string;
   private callbacks: SSECallbacks;
   private _connected = false;
@@ -111,8 +111,8 @@ export class SheetSSEClient {
 
   constructor(
     database: string,
-    workbookId: string,
-    sheetId: string,
+    workbookId: number,
+    sheetId: number,
     clientId: string,
     callbacks: SSECallbacks,
   ) {
@@ -230,8 +230,8 @@ import { client as presenceClient } from "./client";
  */
 export async function sendPresence(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   clientId: string,
   cursor: { row: number; col: number } | null,
   selection: string[] = [],

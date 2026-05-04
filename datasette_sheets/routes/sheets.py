@@ -20,11 +20,11 @@ from .schemas import (
 
 
 @router.GET(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets$",
     output=ListSheetsResponse,
 )
 @check_permission()
-async def list_sheets(datasette, request, database: str, workbook_id: str):
+async def list_sheets(datasette, request, database: str, workbook_id: int):
     db = await ensure_db(datasette, database)
     sheets = await db.list_sheets(workbook_id)
     return Response.json(
@@ -45,7 +45,7 @@ async def list_sheets(datasette, request, database: str, workbook_id: str):
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/create$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/create$",
     output=SheetWithColumnsResponse,
 )
 @check_permission()
@@ -53,7 +53,7 @@ async def create_sheet(
     datasette,
     request,
     database: str,
-    workbook_id: str,
+    workbook_id: int,
     body: Annotated[CreateSheetBody, Body()],
 ):
     db = await ensure_db(datasette, database)
@@ -79,7 +79,7 @@ async def create_sheet(
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/reorder$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/reorder$",
     output=ReorderSheetsResponse,
 )
 @check_permission()
@@ -87,7 +87,7 @@ async def reorder_sheets(
     datasette,
     request,
     database: str,
-    workbook_id: str,
+    workbook_id: int,
     body: Annotated[ReorderSheetsBody, Body()],
 ):
     # Must be registered BEFORE the `/sheets/{sheet_id}$` GET below —
@@ -116,11 +116,11 @@ async def reorder_sheets(
 
 
 @router.GET(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)$",
     output=GetSheetResponse,
 )
 @check_permission()
-async def get_sheet(datasette, request, database: str, workbook_id: str, sheet_id: str):
+async def get_sheet(datasette, request, database: str, workbook_id: int, sheet_id: int):
     db = await ensure_db(datasette, database)
     sheet = await db.get_sheet(sheet_id)
     if not sheet:
@@ -162,7 +162,7 @@ async def get_sheet(datasette, request, database: str, workbook_id: str, sheet_i
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/update$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/update$",
     output=SheetResponse,
 )
 @check_permission()
@@ -170,8 +170,8 @@ async def update_sheet(
     datasette,
     request,
     database: str,
-    workbook_id: str,
-    sheet_id: str,
+    workbook_id: int,
+    sheet_id: int,
     body: Annotated[UpdateSheetBody, Body()],
 ):
     db = await ensure_db(datasette, database)
@@ -199,12 +199,12 @@ async def update_sheet(
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/delete$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/delete$",
     output=OkResponse,
 )
 @check_permission()
 async def delete_sheet(
-    datasette, request, database: str, workbook_id: str, sheet_id: str
+    datasette, request, database: str, workbook_id: int, sheet_id: int
 ):
     db = await ensure_db(datasette, database)
     sheet = await db.get_sheet(sheet_id)

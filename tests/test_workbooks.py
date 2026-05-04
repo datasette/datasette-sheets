@@ -205,10 +205,13 @@ async def test_reorder_sheets():
     )
     assert resp.status_code == 400
 
-    # Unknown ids are rejected.
+    # Unknown ids are rejected. Using a high integer that won't collide
+    # with the autoincrement ids assigned to first/second/third — the
+    # route's "ids don't match the workbook's sheets" branch fires
+    # before any DB writes.
     resp = await ds.client.post(
         f"/{db_name}/-/sheets/api/workbooks/{wb_id}/sheets/reorder",
-        content=json.dumps({"sheet_ids": [first_id, second_id, "bogus"]}),
+        content=json.dumps({"sheet_ids": [first_id, second_id, 999_999]}),
     )
     assert resp.status_code == 400
 

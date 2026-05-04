@@ -17,7 +17,7 @@ from pydantic import BaseModel, Field
 
 
 class SheetRecord(BaseModel):
-    id: str
+    id: int
     name: str
     color: str
     created_at: str
@@ -45,7 +45,7 @@ class CellRecord(BaseModel):
 
 
 class WorkbookRecord(BaseModel):
-    id: str
+    id: int
     name: str
     created_at: str
     updated_at: str
@@ -61,7 +61,7 @@ class WorkbookResponse(BaseModel):
 
 
 class ViewRecord(BaseModel):
-    id: str
+    id: int
     view_name: str
     range_str: str
     min_row: int
@@ -113,7 +113,7 @@ class ReorderSheetsBody(BaseModel):
     # Full permutation of the workbook's current sheet ids in their
     # desired left-to-right order. Partial lists are rejected — the
     # server assigns sort_order = 0..N-1 based on position.
-    sheet_ids: list[str] = Field(default_factory=list)
+    sheet_ids: list[int] = Field(default_factory=list)
 
 
 class ReorderSheetsResponse(BaseModel):
@@ -343,7 +343,7 @@ class DropdownRuleSource(BaseModel):
 
 
 class DropdownRuleRecord(BaseModel):
-    id: str
+    id: int
     name: str | None = None
     multi: bool
     source: DropdownRuleSource
@@ -386,7 +386,7 @@ class FilterPredicate(BaseModel):
 
 
 class FilterRecord(BaseModel):
-    id: str
+    id: int
     min_row: int
     min_col: int
     max_row: int

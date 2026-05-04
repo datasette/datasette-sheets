@@ -45,7 +45,7 @@
     // Database + workbook ids are needed to build the data-API URL
     // the cell context menu copies / opens. Provided by SheetsPage.
     database?: string;
-    workbookId?: string;
+    workbookId?: number;
     // Cut/Copy/Paste handlers come from SheetsPage so the right-click
     // menu reuses the same payload-building / clipboard-applying
     // logic that Cmd+C/X/V uses.
@@ -56,7 +56,7 @@
 
   let {
     database = "",
-    workbookId = "",
+    workbookId = 0,
     onCutFromMenu = async () => {},
     onCopyFromMenu = async () => {},
     onPasteFromMenu = async () => {},

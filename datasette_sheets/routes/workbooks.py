@@ -8,7 +8,7 @@ from .helpers import ensure_db, actor_id, read_json_body
 from .schemas import UpdateWorkbookBody, WorkbookResponse
 
 DB = r"/(?P<database>[^/]+)/-/sheets/api/workbooks"
-WB = DB + r"/(?P<workbook_id>[^/]+)"
+WB = DB + r"/(?P<workbook_id>\d+)"
 
 
 @router.GET(DB + r"$")
@@ -57,7 +57,7 @@ async def create_workbook(datasette, request, database: str):
 
 @router.GET(WB + r"$")
 @check_permission()
-async def get_workbook(datasette, request, database: str, workbook_id: str):
+async def get_workbook(datasette, request, database: str, workbook_id: int):
     db = await ensure_db(datasette, database)
     workbook = await db.get_workbook(workbook_id)
     if not workbook:
@@ -86,7 +86,7 @@ async def get_workbook(datasette, request, database: str, workbook_id: str):
 
 # TODO: migrate to PATCH/DELETE when datasette-plugin-router adds support
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/update$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/update$",
     output=WorkbookResponse,
 )
 @check_permission()
@@ -94,7 +94,7 @@ async def update_workbook(
     datasette,
     request,
     database: str,
-    workbook_id: str,
+    workbook_id: int,
     body: Annotated[UpdateWorkbookBody, Body()],
 ):
     db = await ensure_db(datasette, database)
@@ -117,7 +117,7 @@ async def update_workbook(
 
 @router.POST(WB + r"/delete" + r"$")
 @check_permission()
-async def delete_workbook(datasette, request, database: str, workbook_id: str):
+async def delete_workbook(datasette, request, database: str, workbook_id: int):
     db = await ensure_db(datasette, database)
     workbook = await db.get_workbook(workbook_id)
     if not workbook:

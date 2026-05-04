@@ -10,7 +10,7 @@ import time
 class SheetChannel:
     """A broadcast channel for a single sheet. Subscribers each get an asyncio.Queue."""
 
-    def __init__(self, sheet_id: str):
+    def __init__(self, sheet_id: int):
         self.sheet_id = sheet_id
         self._subscribers: dict[str, asyncio.Queue] = {}
 
@@ -41,14 +41,14 @@ class ChannelManager:
     """Manages SheetChannels, one per sheet_id. Singleton per Datasette instance."""
 
     def __init__(self):
-        self._channels: dict[str, SheetChannel] = {}
+        self._channels: dict[int, SheetChannel] = {}
 
-    def get_channel(self, sheet_id: str) -> SheetChannel:
+    def get_channel(self, sheet_id: int) -> SheetChannel:
         if sheet_id not in self._channels:
             self._channels[sheet_id] = SheetChannel(sheet_id)
         return self._channels[sheet_id]
 
-    def cleanup(self, sheet_id: str) -> None:
+    def cleanup(self, sheet_id: int) -> None:
         channel = self._channels.get(sheet_id)
         if channel and channel.subscriber_count == 0:
             del self._channels[sheet_id]

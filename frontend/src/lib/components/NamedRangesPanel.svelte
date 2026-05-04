@@ -15,7 +15,7 @@
     initialDefinition = "",
   }: {
     database: string;
-    workbookId: string;
+    workbookId: number;
     onClose: () => void;
     /** Prefill the editor when the panel opens (e.g. from the cell
      * context-menu "Define named range" command). */

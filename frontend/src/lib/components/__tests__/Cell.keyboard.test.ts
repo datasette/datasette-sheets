@@ -38,7 +38,7 @@ import { dropdownRules, dropdownPopoverFor } from "../../stores/dropdownRules";
 import type { CellId, DropdownRule } from "../../spreadsheet/types";
 
 const ruleSingle: DropdownRule = {
-  id: "rule-single",
+  id: 1,
   name: "Status",
   multi: false,
   source: {

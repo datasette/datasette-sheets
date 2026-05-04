@@ -12,7 +12,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_workbook",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -61,12 +61,12 @@
     {
       "name": "getWorkbook",
       "result_type": "Row",
-      "sql": "select\n    id,\n    name,\n    created_at,\n    updated_at,\n    created_by,\n    sort_order\nfrom datasette_sheets_workbook\nwhere id = $workbook_id::text;",
+      "sql": "select\n    id,\n    name,\n    created_at,\n    updated_at,\n    created_by,\n    sort_order\nfrom datasette_sheets_workbook\nwhere id = $workbook_id::integer;",
       "parameters": [
         {
-          "full_name": "$workbook_id::text",
+          "full_name": "$workbook_id::integer",
           "name": "workbook_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -76,7 +76,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_workbook",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -125,14 +125,8 @@
     {
       "name": "insertWorkbook",
       "result_type": "Row",
-      "sql": "insert into datasette_sheets_workbook (id, name, created_by)\nvalues ($workbook_id::text, $name::text, $created_by::text::)\nreturning id, name, created_at, updated_at, created_by, sort_order;",
+      "sql": "insert into datasette_sheets_workbook (name, created_by)\nvalues ($name::text, $created_by::text::)\nreturning id, name, created_at, updated_at, created_by, sort_order;",
       "parameters": [
-        {
-          "full_name": "$workbook_id::text",
-          "name": "workbook_id",
-          "annotated_type": "text",
-          "nullable": false
-        },
         {
           "full_name": "$name::text",
           "name": "name",
@@ -152,7 +146,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_workbook",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -201,7 +195,7 @@
     {
       "name": "updateWorkbook",
       "result_type": "Row",
-      "sql": "update datasette_sheets_workbook\nset name = case when $name_do_update::boolean then $name::text else name end,\n    sort_order = case\n        when $sort_order_do_update::boolean then $sort_order::integer\n        else sort_order\n    end,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $workbook_id::text\nreturning id, name, created_at, updated_at, created_by, sort_order;",
+      "sql": "update datasette_sheets_workbook\nset name = case when $name_do_update::boolean then $name::text else name end,\n    sort_order = case\n        when $sort_order_do_update::boolean then $sort_order::integer\n        else sort_order\n    end,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $workbook_id::integer\nreturning id, name, created_at, updated_at, created_by, sort_order;",
       "parameters": [
         {
           "full_name": "$name_do_update::boolean",
@@ -228,9 +222,9 @@
           "nullable": false
         },
         {
-          "full_name": "$workbook_id::text",
+          "full_name": "$workbook_id::integer",
           "name": "workbook_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -240,7 +234,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_workbook",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -289,12 +283,12 @@
     {
       "name": "deleteWorkbookCells",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_cell\nwhere sheet_id in (\n    select id from datasette_sheets_sheet where workbook_id = $workbook_id::text\n);",
+      "sql": "delete from datasette_sheets_cell\nwhere sheet_id in (\n    select id from datasette_sheets_sheet where workbook_id = $workbook_id::integer\n);",
       "parameters": [
         {
-          "full_name": "$workbook_id::text",
+          "full_name": "$workbook_id::integer",
           "name": "workbook_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -304,12 +298,12 @@
     {
       "name": "deleteWorkbookColumns",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_column\nwhere sheet_id in (\n    select id from datasette_sheets_sheet where workbook_id = $workbook_id::text\n);",
+      "sql": "delete from datasette_sheets_column\nwhere sheet_id in (\n    select id from datasette_sheets_sheet where workbook_id = $workbook_id::integer\n);",
       "parameters": [
         {
-          "full_name": "$workbook_id::text",
+          "full_name": "$workbook_id::integer",
           "name": "workbook_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -319,12 +313,12 @@
     {
       "name": "deleteWorkbookNamedRanges",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_named_range\nwhere sheet_id in (\n    select id from datasette_sheets_sheet where workbook_id = $workbook_id::text\n);",
+      "sql": "delete from datasette_sheets_named_range\nwhere sheet_id in (\n    select id from datasette_sheets_sheet where workbook_id = $workbook_id::integer\n);",
       "parameters": [
         {
-          "full_name": "$workbook_id::text",
+          "full_name": "$workbook_id::integer",
           "name": "workbook_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -334,12 +328,12 @@
     {
       "name": "deleteWorkbookSheets",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_sheet where workbook_id = $workbook_id::text;",
+      "sql": "delete from datasette_sheets_sheet where workbook_id = $workbook_id::integer;",
       "parameters": [
         {
-          "full_name": "$workbook_id::text",
+          "full_name": "$workbook_id::integer",
           "name": "workbook_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -349,12 +343,12 @@
     {
       "name": "deleteWorkbookRow",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_workbook where id = $workbook_id::text;",
+      "sql": "delete from datasette_sheets_workbook where id = $workbook_id::integer;",
       "parameters": [
         {
-          "full_name": "$workbook_id::text",
+          "full_name": "$workbook_id::integer",
           "name": "workbook_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -364,12 +358,12 @@
     {
       "name": "listSheets",
       "result_type": "Rows",
-      "sql": "select id, workbook_id, name, color, sort_order, created_at, updated_at\nfrom datasette_sheets_sheet\nwhere workbook_id = $workbook_id::text\norder by sort_order, created_at;",
+      "sql": "select id, workbook_id, name, color, sort_order, created_at, updated_at\nfrom datasette_sheets_sheet\nwhere workbook_id = $workbook_id::integer\norder by sort_order, created_at;",
       "parameters": [
         {
-          "full_name": "$workbook_id::text",
+          "full_name": "$workbook_id::integer",
           "name": "workbook_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -379,7 +373,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_sheet",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -387,7 +381,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_sheet",
           "origin_column": "workbook_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -436,12 +430,12 @@
     {
       "name": "getSheet",
       "result_type": "Row",
-      "sql": "select id, workbook_id, name, color, sort_order, created_at, updated_at\nfrom datasette_sheets_sheet\nwhere id = $sheet_id::text;",
+      "sql": "select id, workbook_id, name, color, sort_order, created_at, updated_at\nfrom datasette_sheets_sheet\nwhere id = $sheet_id::integer;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -451,7 +445,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_sheet",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -459,7 +453,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_sheet",
           "origin_column": "workbook_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -508,18 +502,12 @@
     {
       "name": "insertSheet",
       "result_type": "Row",
-      "sql": "insert into datasette_sheets_sheet (id, workbook_id, name, color)\nvalues ($sheet_id::text, $workbook_id::text, $name::text, $color::text)\nreturning id, workbook_id, name, color, sort_order, created_at, updated_at;",
+      "sql": "insert into datasette_sheets_sheet (workbook_id, name, color)\nvalues ($workbook_id::integer, $name::text, $color::text)\nreturning id, workbook_id, name, color, sort_order, created_at, updated_at;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
-          "name": "sheet_id",
-          "annotated_type": "text",
-          "nullable": false
-        },
-        {
-          "full_name": "$workbook_id::text",
+          "full_name": "$workbook_id::integer",
           "name": "workbook_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -541,7 +529,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_sheet",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -549,7 +537,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_sheet",
           "origin_column": "workbook_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -598,7 +586,7 @@
     {
       "name": "updateSheet",
       "result_type": "Row",
-      "sql": "update datasette_sheets_sheet\nset name = case when $name_do_update::boolean then $name::text else name end,\n    color = case when $color_do_update::boolean then $color::text else color end,\n    sort_order = case\n        when $sort_order_do_update::boolean then $sort_order::integer\n        else sort_order\n    end,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $sheet_id::text\nreturning id, workbook_id, name, color, sort_order, created_at, updated_at;",
+      "sql": "update datasette_sheets_sheet\nset name = case when $name_do_update::boolean then $name::text else name end,\n    color = case when $color_do_update::boolean then $color::text else color end,\n    sort_order = case\n        when $sort_order_do_update::boolean then $sort_order::integer\n        else sort_order\n    end,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $sheet_id::integer\nreturning id, workbook_id, name, color, sort_order, created_at, updated_at;",
       "parameters": [
         {
           "full_name": "$name_do_update::boolean",
@@ -637,9 +625,9 @@
           "nullable": false
         },
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -649,7 +637,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_sheet",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -657,7 +645,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_sheet",
           "origin_column": "workbook_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -706,12 +694,12 @@
     {
       "name": "insertDefaultColumn",
       "result_type": "Void",
-      "sql": "insert into datasette_sheets_column (sheet_id, col_idx, name, width)\nvalues ($sheet_id::text, $col_idx::integer, $name::text, $width::integer);",
+      "sql": "insert into datasette_sheets_column (sheet_id, col_idx, name, width)\nvalues ($sheet_id::integer, $col_idx::integer, $name::text, $width::integer);",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -739,12 +727,12 @@
     {
       "name": "deleteSheetCells",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_cell where sheet_id = $sheet_id::text;",
+      "sql": "delete from datasette_sheets_cell where sheet_id = $sheet_id::integer;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -754,12 +742,12 @@
     {
       "name": "deleteSheetColumns",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_column where sheet_id = $sheet_id::text;",
+      "sql": "delete from datasette_sheets_column where sheet_id = $sheet_id::integer;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -769,12 +757,12 @@
     {
       "name": "deleteSheetNamedRanges",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_named_range where sheet_id = $sheet_id::text;",
+      "sql": "delete from datasette_sheets_named_range where sheet_id = $sheet_id::integer;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -784,12 +772,12 @@
     {
       "name": "deleteSheetRow",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_sheet where id = $sheet_id::text;",
+      "sql": "delete from datasette_sheets_sheet where id = $sheet_id::integer;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -799,7 +787,7 @@
     {
       "name": "reorderSheet",
       "result_type": "Void",
-      "sql": "update datasette_sheets_sheet\nset sort_order = $sort_order::integer,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $sheet_id::text\n  and workbook_id = $workbook_id::text;",
+      "sql": "update datasette_sheets_sheet\nset sort_order = $sort_order::integer,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $sheet_id::integer\n  and workbook_id = $workbook_id::integer;",
       "parameters": [
         {
           "full_name": "$sort_order::integer",
@@ -808,15 +796,15 @@
           "nullable": false
         },
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
-          "full_name": "$workbook_id::text",
+          "full_name": "$workbook_id::integer",
           "name": "workbook_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -826,12 +814,12 @@
     {
       "name": "touchSheet",
       "result_type": "Void",
-      "sql": "update datasette_sheets_sheet\nset updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $sheet_id::text;",
+      "sql": "update datasette_sheets_sheet\nset updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $sheet_id::integer;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -841,12 +829,12 @@
     {
       "name": "listColumns",
       "result_type": "Rows",
-      "sql": "select sheet_id, col_idx, name, width, format_json\nfrom datasette_sheets_column\nwhere sheet_id = $sheet_id::text\norder by col_idx;",
+      "sql": "select sheet_id, col_idx, name, width, format_json\nfrom datasette_sheets_column\nwhere sheet_id = $sheet_id::integer\norder by col_idx;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -856,7 +844,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_column",
           "origin_column": "sheet_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -897,7 +885,7 @@
     {
       "name": "setColumn",
       "result_type": "Row",
-      "sql": "update datasette_sheets_column\nset name = case when $name_do_update::boolean then $name::text else name end,\n    width = case\n        when $width_do_update::boolean then $width::integer\n        else width\n    end\nwhere sheet_id = $sheet_id::text\n  and col_idx = $col_idx::integer\nreturning sheet_id, col_idx, name, width, format_json;",
+      "sql": "update datasette_sheets_column\nset name = case when $name_do_update::boolean then $name::text else name end,\n    width = case\n        when $width_do_update::boolean then $width::integer\n        else width\n    end\nwhere sheet_id = $sheet_id::integer\n  and col_idx = $col_idx::integer\nreturning sheet_id, col_idx, name, width, format_json;",
       "parameters": [
         {
           "full_name": "$name_do_update::boolean",
@@ -924,9 +912,9 @@
           "nullable": false
         },
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -942,7 +930,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_column",
           "origin_column": "sheet_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -983,12 +971,12 @@
     {
       "name": "listCells",
       "result_type": "Rows",
-      "sql": "select sheet_id, row_idx, col_idx, raw_value, computed_value,\n       computed_value_kind, typed_kind, typed_data, format_json,\n       updated_at, updated_by\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::text\norder by row_idx, col_idx;",
+      "sql": "select sheet_id, row_idx, col_idx, raw_value, computed_value,\n       computed_value_kind, typed_kind, typed_data, format_json,\n       updated_at, updated_by\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\norder by row_idx, col_idx;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -998,7 +986,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_cell",
           "origin_column": "sheet_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -1087,12 +1075,12 @@
     {
       "name": "deleteCell",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_cell\nwhere sheet_id = $sheet_id::text\n  and row_idx = $row_idx::integer\n  and col_idx = $col_idx::integer;",
+      "sql": "delete from datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and row_idx = $row_idx::integer\n  and col_idx = $col_idx::integer;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -1114,12 +1102,12 @@
     {
       "name": "upsertCell",
       "result_type": "Void",
-      "sql": "insert into datasette_sheets_cell\n    (sheet_id, row_idx, col_idx, raw_value, format_json,\n     typed_kind, typed_data, updated_by, updated_at)\nvalues\n    ($sheet_id::text, $row_idx::integer, $col_idx::integer,\n     $raw_value::text, $format_json::text::,\n     $typed_kind::text::, $typed_data::text::,\n     $updated_by::text::, strftime('%Y-%m-%dT%H:%M:%f', 'now'))\non conflict(sheet_id, row_idx, col_idx) do update set\n    raw_value = excluded.raw_value,\n    format_json = excluded.format_json,\n    typed_kind = excluded.typed_kind,\n    typed_data = excluded.typed_data,\n    updated_by = excluded.updated_by,\n    updated_at = excluded.updated_at;",
+      "sql": "insert into datasette_sheets_cell\n    (sheet_id, row_idx, col_idx, raw_value, format_json,\n     typed_kind, typed_data, updated_by, updated_at)\nvalues\n    ($sheet_id::integer, $row_idx::integer, $col_idx::integer,\n     $raw_value::text, $format_json::text::,\n     $typed_kind::text::, $typed_data::text::,\n     $updated_by::text::, strftime('%Y-%m-%dT%H:%M:%f', 'now'))\non conflict(sheet_id, row_idx, col_idx) do update set\n    raw_value = excluded.raw_value,\n    format_json = excluded.format_json,\n    typed_kind = excluded.typed_kind,\n    typed_data = excluded.typed_data,\n    updated_by = excluded.updated_by,\n    updated_at = excluded.updated_at;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -1171,12 +1159,12 @@
     {
       "name": "listCellsForRecalc",
       "result_type": "Rows",
-      "sql": "select row_idx, col_idx, raw_value, typed_kind, typed_data,\n       computed_value, computed_value_kind\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::text;",
+      "sql": "select row_idx, col_idx, raw_value, typed_kind, typed_data,\n       computed_value, computed_value_kind\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -1243,12 +1231,12 @@
     {
       "name": "listNamedRangesForRecalc",
       "result_type": "Rows",
-      "sql": "select name, definition\nfrom datasette_sheets_named_range\nwhere sheet_id = $sheet_id::text;",
+      "sql": "select name, definition\nfrom datasette_sheets_named_range\nwhere sheet_id = $sheet_id::integer;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -1275,7 +1263,7 @@
     {
       "name": "updateCellComputed",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset computed_value = $value::,\n    computed_value_kind = $kind::text::\nwhere sheet_id = $sheet_id::text\n  and row_idx = $row_idx::integer\n  and col_idx = $col_idx::integer;",
+      "sql": "update datasette_sheets_cell\nset computed_value = $value::,\n    computed_value_kind = $kind::text::\nwhere sheet_id = $sheet_id::integer\n  and row_idx = $row_idx::integer\n  and col_idx = $col_idx::integer;",
       "parameters": [
         {
           "full_name": "$value::",
@@ -1290,9 +1278,9 @@
           "nullable": true
         },
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -1314,12 +1302,12 @@
     {
       "name": "listFormulaCells",
       "result_type": "Rows",
-      "sql": "select row_idx, col_idx, raw_value\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::text\n  and raw_value like '=%';",
+      "sql": "select row_idx, col_idx, raw_value\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and raw_value like '=%';",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -1354,7 +1342,7 @@
     {
       "name": "updateCellRaw",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset raw_value = $raw_value::text\nwhere sheet_id = $sheet_id::text\n  and row_idx = $row_idx::integer\n  and col_idx = $col_idx::integer;",
+      "sql": "update datasette_sheets_cell\nset raw_value = $raw_value::text\nwhere sheet_id = $sheet_id::integer\n  and row_idx = $row_idx::integer\n  and col_idx = $col_idx::integer;",
       "parameters": [
         {
           "full_name": "$raw_value::text",
@@ -1363,9 +1351,9 @@
           "nullable": false
         },
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -1387,12 +1375,12 @@
     {
       "name": "deleteCellsInRows",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_cell\nwhere sheet_id = $sheet_id::text\n  and row_idx in (\n    select cast(value as integer) from json_each($row_indices_json::text)\n  );",
+      "sql": "delete from datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and row_idx in (\n    select cast(value as integer) from json_each($row_indices_json::text)\n  );",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -1408,12 +1396,12 @@
     {
       "name": "shiftCellRowsToBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset row_idx = -(row_idx + 1)\nwhere sheet_id = $sheet_id::text\n  and row_idx > (\n    select min(cast(value as integer)) from json_each($row_indices_json::text)\n  );",
+      "sql": "update datasette_sheets_cell\nset row_idx = -(row_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and row_idx > (\n    select min(cast(value as integer)) from json_each($row_indices_json::text)\n  );",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -1429,7 +1417,7 @@
     {
       "name": "shiftCellRowsFromBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset row_idx = (-row_idx - 1) - (\n    select count(*) from json_each($row_indices_json::text)\n    where cast(value as integer) < (-datasette_sheets_cell.row_idx - 1)\n)\nwhere sheet_id = $sheet_id::text\n  and row_idx < 0;",
+      "sql": "update datasette_sheets_cell\nset row_idx = (-row_idx - 1) - (\n    select count(*) from json_each($row_indices_json::text)\n    where cast(value as integer) < (-datasette_sheets_cell.row_idx - 1)\n)\nwhere sheet_id = $sheet_id::integer\n  and row_idx < 0;",
       "parameters": [
         {
           "full_name": "$row_indices_json::text",
@@ -1438,9 +1426,9 @@
           "nullable": false
         },
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -1450,12 +1438,12 @@
     {
       "name": "deleteCellsInCols",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_cell\nwhere sheet_id = $sheet_id::text\n  and col_idx in (\n    select cast(value as integer) from json_each($col_indices_json::text)\n  );",
+      "sql": "delete from datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and col_idx in (\n    select cast(value as integer) from json_each($col_indices_json::text)\n  );",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -1471,12 +1459,12 @@
     {
       "name": "deleteColumnsInCols",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_column\nwhere sheet_id = $sheet_id::text\n  and col_idx in (\n    select cast(value as integer) from json_each($col_indices_json::text)\n  );",
+      "sql": "delete from datasette_sheets_column\nwhere sheet_id = $sheet_id::integer\n  and col_idx in (\n    select cast(value as integer) from json_each($col_indices_json::text)\n  );",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -1492,12 +1480,12 @@
     {
       "name": "shiftCellColsToBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::text\n  and col_idx > (\n    select min(cast(value as integer)) from json_each($col_indices_json::text)\n  );",
+      "sql": "update datasette_sheets_cell\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx > (\n    select min(cast(value as integer)) from json_each($col_indices_json::text)\n  );",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -1513,7 +1501,7 @@
     {
       "name": "shiftCellColsFromBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset col_idx = (-col_idx - 1) - (\n    select count(*) from json_each($col_indices_json::text)\n    where cast(value as integer) < (-datasette_sheets_cell.col_idx - 1)\n)\nwhere sheet_id = $sheet_id::text\n  and col_idx < 0;",
+      "sql": "update datasette_sheets_cell\nset col_idx = (-col_idx - 1) - (\n    select count(*) from json_each($col_indices_json::text)\n    where cast(value as integer) < (-datasette_sheets_cell.col_idx - 1)\n)\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
       "parameters": [
         {
           "full_name": "$col_indices_json::text",
@@ -1522,9 +1510,9 @@
           "nullable": false
         },
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -1534,12 +1522,12 @@
     {
       "name": "shiftColumnColsToBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_column\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::text\n  and col_idx > (\n    select min(cast(value as integer)) from json_each($col_indices_json::text)\n  );",
+      "sql": "update datasette_sheets_column\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx > (\n    select min(cast(value as integer)) from json_each($col_indices_json::text)\n  );",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -1555,7 +1543,7 @@
     {
       "name": "shiftColumnColsFromBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_column\nset col_idx = (-col_idx - 1) - (\n    select count(*) from json_each($col_indices_json::text)\n    where cast(value as integer) < (-datasette_sheets_column.col_idx - 1)\n)\nwhere sheet_id = $sheet_id::text\n  and col_idx < 0;",
+      "sql": "update datasette_sheets_column\nset col_idx = (-col_idx - 1) - (\n    select count(*) from json_each($col_indices_json::text)\n    where cast(value as integer) < (-datasette_sheets_column.col_idx - 1)\n)\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
       "parameters": [
         {
           "full_name": "$col_indices_json::text",
@@ -1564,9 +1552,9 @@
           "nullable": false
         },
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -1576,12 +1564,12 @@
     {
       "name": "insertShiftCellColsToBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::text\n  and col_idx >= $at::integer;",
+      "sql": "update datasette_sheets_cell\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx >= $at::integer;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -1597,7 +1585,7 @@
     {
       "name": "insertShiftCellColsFromBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset col_idx = (-col_idx - 1) + $count::integer\nwhere sheet_id = $sheet_id::text\n  and col_idx < 0;",
+      "sql": "update datasette_sheets_cell\nset col_idx = (-col_idx - 1) + $count::integer\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
       "parameters": [
         {
           "full_name": "$count::integer",
@@ -1606,9 +1594,9 @@
           "nullable": false
         },
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -1618,12 +1606,12 @@
     {
       "name": "insertShiftColumnColsToBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_column\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::text\n  and col_idx >= $at::integer;",
+      "sql": "update datasette_sheets_column\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx >= $at::integer;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -1639,7 +1627,7 @@
     {
       "name": "insertShiftColumnColsFromBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_column\nset col_idx = (-col_idx - 1) + $count::integer\nwhere sheet_id = $sheet_id::text\n  and col_idx < 0;",
+      "sql": "update datasette_sheets_column\nset col_idx = (-col_idx - 1) + $count::integer\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
       "parameters": [
         {
           "full_name": "$count::integer",
@@ -1648,9 +1636,9 @@
           "nullable": false
         },
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -1660,12 +1648,12 @@
     {
       "name": "moveCellColsToBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::text\n  and col_idx between $low::integer and $high::integer;",
+      "sql": "update datasette_sheets_cell\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx between $low::integer and $high::integer;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -1687,7 +1675,7 @@
     {
       "name": "moveCellColsFromBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset col_idx = case\n  when (-col_idx - 1) between $src_start::integer and $src_end::integer\n    then (-col_idx - 1) - $src_start::integer + $final_start::integer\n  when (-col_idx - 1) < $src_start::integer\n    then (-col_idx - 1) + $width::integer\n  else (-col_idx - 1) - $width::integer\nend\nwhere sheet_id = $sheet_id::text\n  and col_idx < 0;",
+      "sql": "update datasette_sheets_cell\nset col_idx = case\n  when (-col_idx - 1) between $src_start::integer and $src_end::integer\n    then (-col_idx - 1) - $src_start::integer + $final_start::integer\n  when (-col_idx - 1) < $src_start::integer\n    then (-col_idx - 1) + $width::integer\n  else (-col_idx - 1) - $width::integer\nend\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
       "parameters": [
         {
           "full_name": "$src_start::integer",
@@ -1714,9 +1702,9 @@
           "nullable": false
         },
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -1726,12 +1714,12 @@
     {
       "name": "moveColumnMetaToBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_column\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::text\n  and col_idx between $low::integer and $high::integer;",
+      "sql": "update datasette_sheets_column\nset col_idx = -(col_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and col_idx between $low::integer and $high::integer;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -1753,7 +1741,7 @@
     {
       "name": "moveColumnMetaFromBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_column\nset col_idx = case\n  when (-col_idx - 1) between $src_start::integer and $src_end::integer\n    then (-col_idx - 1) - $src_start::integer + $final_start::integer\n  when (-col_idx - 1) < $src_start::integer\n    then (-col_idx - 1) + $width::integer\n  else (-col_idx - 1) - $width::integer\nend\nwhere sheet_id = $sheet_id::text\n  and col_idx < 0;",
+      "sql": "update datasette_sheets_column\nset col_idx = case\n  when (-col_idx - 1) between $src_start::integer and $src_end::integer\n    then (-col_idx - 1) - $src_start::integer + $final_start::integer\n  when (-col_idx - 1) < $src_start::integer\n    then (-col_idx - 1) + $width::integer\n  else (-col_idx - 1) - $width::integer\nend\nwhere sheet_id = $sheet_id::integer\n  and col_idx < 0;",
       "parameters": [
         {
           "full_name": "$src_start::integer",
@@ -1780,9 +1768,9 @@
           "nullable": false
         },
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -1792,12 +1780,12 @@
     {
       "name": "moveCellRowsToBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset row_idx = -(row_idx + 1)\nwhere sheet_id = $sheet_id::text\n  and row_idx between $low::integer and $high::integer;",
+      "sql": "update datasette_sheets_cell\nset row_idx = -(row_idx + 1)\nwhere sheet_id = $sheet_id::integer\n  and row_idx between $low::integer and $high::integer;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -1819,7 +1807,7 @@
     {
       "name": "moveCellRowsFromBuffer",
       "result_type": "Void",
-      "sql": "update datasette_sheets_cell\nset row_idx = case\n  when (-row_idx - 1) between $src_start::integer and $src_end::integer\n    then (-row_idx - 1) - $src_start::integer + $final_start::integer\n  when (-row_idx - 1) < $src_start::integer\n    then (-row_idx - 1) + $width::integer\n  else (-row_idx - 1) - $width::integer\nend\nwhere sheet_id = $sheet_id::text\n  and row_idx < 0;",
+      "sql": "update datasette_sheets_cell\nset row_idx = case\n  when (-row_idx - 1) between $src_start::integer and $src_end::integer\n    then (-row_idx - 1) - $src_start::integer + $final_start::integer\n  when (-row_idx - 1) < $src_start::integer\n    then (-row_idx - 1) + $width::integer\n  else (-row_idx - 1) - $width::integer\nend\nwhere sheet_id = $sheet_id::integer\n  and row_idx < 0;",
       "parameters": [
         {
           "full_name": "$src_start::integer",
@@ -1846,9 +1834,9 @@
           "nullable": false
         },
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -1858,12 +1846,12 @@
     {
       "name": "listNamedRanges",
       "result_type": "Rows",
-      "sql": "select sheet_id, name, definition, updated_at\nfrom datasette_sheets_named_range\nwhere sheet_id = $sheet_id::text\norder by name collate nocase;",
+      "sql": "select sheet_id, name, definition, updated_at\nfrom datasette_sheets_named_range\nwhere sheet_id = $sheet_id::integer\norder by name collate nocase;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -1873,7 +1861,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_named_range",
           "origin_column": "sheet_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -1906,12 +1894,12 @@
     {
       "name": "upsertNamedRange",
       "result_type": "Row",
-      "sql": "insert into datasette_sheets_named_range\n    (sheet_id, name, definition, updated_at)\nvalues\n    ($sheet_id::text, $name::text, $definition::text,\n     strftime('%Y-%m-%dT%H:%M:%f', 'now'))\non conflict(sheet_id, name) do update set\n    definition = excluded.definition,\n    updated_at = excluded.updated_at\nreturning sheet_id, name, definition, updated_at;",
+      "sql": "insert into datasette_sheets_named_range\n    (sheet_id, name, definition, updated_at)\nvalues\n    ($sheet_id::integer, $name::text, $definition::text,\n     strftime('%Y-%m-%dT%H:%M:%f', 'now'))\non conflict(sheet_id, name) do update set\n    definition = excluded.definition,\n    updated_at = excluded.updated_at\nreturning sheet_id, name, definition, updated_at;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -1933,7 +1921,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_named_range",
           "origin_column": "sheet_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -1966,12 +1954,12 @@
     {
       "name": "deleteNamedRange",
       "result_type": "Row",
-      "sql": "delete from datasette_sheets_named_range\nwhere sheet_id = $sheet_id::text\n  and name = $name::text collate nocase\nreturning name;",
+      "sql": "delete from datasette_sheets_named_range\nwhere sheet_id = $sheet_id::integer\n  and name = $name::text collate nocase\nreturning name;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -1996,7 +1984,7 @@
     {
       "name": "updateNamedRangeDefinition",
       "result_type": "Void",
-      "sql": "update datasette_sheets_named_range\nset definition = $definition::text,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere sheet_id = $sheet_id::text\n  and name = $name::text collate nocase;",
+      "sql": "update datasette_sheets_named_range\nset definition = $definition::text,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere sheet_id = $sheet_id::integer\n  and name = $name::text collate nocase;",
       "parameters": [
         {
           "full_name": "$definition::text",
@@ -2005,9 +1993,9 @@
           "nullable": false
         },
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -2023,12 +2011,12 @@
     {
       "name": "listDropdownRules",
       "result_type": "Rows",
-      "sql": "select id, workbook_id, name, multi, options_json, updated_at\nfrom datasette_sheets_dropdown_rule\nwhere workbook_id = $workbook_id::text\norder by coalesce(name, ''), id;",
+      "sql": "select id, workbook_id, name, multi, options_json, updated_at\nfrom datasette_sheets_dropdown_rule\nwhere workbook_id = $workbook_id::integer\norder by coalesce(name, ''), id;",
       "parameters": [
         {
-          "full_name": "$workbook_id::text",
+          "full_name": "$workbook_id::integer",
           "name": "workbook_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -2038,7 +2026,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_dropdown_rule",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -2046,7 +2034,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_dropdown_rule",
           "origin_column": "workbook_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -2087,18 +2075,18 @@
     {
       "name": "getDropdownRule",
       "result_type": "Row",
-      "sql": "select id, workbook_id, name, multi, options_json, updated_at\nfrom datasette_sheets_dropdown_rule\nwhere id = $rule_id::text\n  and workbook_id = $workbook_id::text;",
+      "sql": "select id, workbook_id, name, multi, options_json, updated_at\nfrom datasette_sheets_dropdown_rule\nwhere id = $rule_id::integer\n  and workbook_id = $workbook_id::integer;",
       "parameters": [
         {
-          "full_name": "$rule_id::text",
+          "full_name": "$rule_id::integer",
           "name": "rule_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
-          "full_name": "$workbook_id::text",
+          "full_name": "$workbook_id::integer",
           "name": "workbook_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -2108,7 +2096,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_dropdown_rule",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -2116,7 +2104,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_dropdown_rule",
           "origin_column": "workbook_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -2157,18 +2145,12 @@
     {
       "name": "insertDropdownRule",
       "result_type": "Row",
-      "sql": "insert into datasette_sheets_dropdown_rule\n    (id, workbook_id, name, multi, options_json, updated_at)\nvalues\n    ($rule_id::text, $workbook_id::text, $name::text::,\n     $multi::integer, $options_json::text,\n     strftime('%Y-%m-%dT%H:%M:%f', 'now'))\nreturning id, workbook_id, name, multi, options_json, updated_at;",
+      "sql": "insert into datasette_sheets_dropdown_rule\n    (workbook_id, name, multi, options_json, updated_at)\nvalues\n    ($workbook_id::integer, $name::text::,\n     $multi::integer, $options_json::text,\n     strftime('%Y-%m-%dT%H:%M:%f', 'now'))\nreturning id, workbook_id, name, multi, options_json, updated_at;",
       "parameters": [
         {
-          "full_name": "$rule_id::text",
-          "name": "rule_id",
-          "annotated_type": "text",
-          "nullable": false
-        },
-        {
-          "full_name": "$workbook_id::text",
+          "full_name": "$workbook_id::integer",
           "name": "workbook_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -2196,7 +2178,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_dropdown_rule",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -2204,7 +2186,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_dropdown_rule",
           "origin_column": "workbook_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -2245,7 +2227,7 @@
     {
       "name": "updateDropdownRule",
       "result_type": "Row",
-      "sql": "update datasette_sheets_dropdown_rule\nset name = case\n        when $name_do_update::boolean then $name::text::\n        else name\n    end,\n    multi = case\n        when $multi_do_update::boolean then $multi::integer\n        else multi\n    end,\n    options_json = case\n        when $options_do_update::boolean then $options_json::text\n        else options_json\n    end,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $rule_id::text\n  and workbook_id = $workbook_id::text\nreturning id, workbook_id, name, multi, options_json, updated_at;",
+      "sql": "update datasette_sheets_dropdown_rule\nset name = case\n        when $name_do_update::boolean then $name::text::\n        else name\n    end,\n    multi = case\n        when $multi_do_update::boolean then $multi::integer\n        else multi\n    end,\n    options_json = case\n        when $options_do_update::boolean then $options_json::text\n        else options_json\n    end,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $rule_id::integer\n  and workbook_id = $workbook_id::integer\nreturning id, workbook_id, name, multi, options_json, updated_at;",
       "parameters": [
         {
           "full_name": "$name_do_update::boolean",
@@ -2284,15 +2266,15 @@
           "nullable": false
         },
         {
-          "full_name": "$rule_id::text",
+          "full_name": "$rule_id::integer",
           "name": "rule_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
-          "full_name": "$workbook_id::text",
+          "full_name": "$workbook_id::integer",
           "name": "workbook_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -2302,7 +2284,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_dropdown_rule",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -2310,7 +2292,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_dropdown_rule",
           "origin_column": "workbook_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -2351,18 +2333,18 @@
     {
       "name": "deleteDropdownRule",
       "result_type": "Row",
-      "sql": "delete from datasette_sheets_dropdown_rule\nwhere id = $rule_id::text\n  and workbook_id = $workbook_id::text\nreturning id;",
+      "sql": "delete from datasette_sheets_dropdown_rule\nwhere id = $rule_id::integer\n  and workbook_id = $workbook_id::integer\nreturning id;",
       "parameters": [
         {
-          "full_name": "$rule_id::text",
+          "full_name": "$rule_id::integer",
           "name": "rule_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
-          "full_name": "$workbook_id::text",
+          "full_name": "$workbook_id::integer",
           "name": "workbook_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -2372,7 +2354,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_dropdown_rule",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         }
       ],
@@ -2381,12 +2363,12 @@
     {
       "name": "deleteWorkbookDropdownRules",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_dropdown_rule\nwhere workbook_id = $workbook_id::text;",
+      "sql": "delete from datasette_sheets_dropdown_rule\nwhere workbook_id = $workbook_id::integer;",
       "parameters": [
         {
-          "full_name": "$workbook_id::text",
+          "full_name": "$workbook_id::integer",
           "name": "workbook_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -2396,12 +2378,12 @@
     {
       "name": "listViews",
       "result_type": "Rows",
-      "sql": "select id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n       use_headers, color, created_at, enable_insert, enable_update,\n       enable_delete, delete_mode\nfrom datasette_sheets_view\nwhere sheet_id = $sheet_id::text\norder by created_at;",
+      "sql": "select id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n       use_headers, color, created_at, enable_insert, enable_update,\n       enable_delete, delete_mode\nfrom datasette_sheets_view\nwhere sheet_id = $sheet_id::integer\norder by created_at;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -2411,7 +2393,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_view",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -2419,7 +2401,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_view",
           "origin_column": "sheet_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -2532,12 +2514,12 @@
     {
       "name": "getView",
       "result_type": "Row",
-      "sql": "select id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n       use_headers, color, created_at, enable_insert, enable_update,\n       enable_delete, delete_mode\nfrom datasette_sheets_view\nwhere id = $view_id::text;",
+      "sql": "select id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n       use_headers, color, created_at, enable_insert, enable_update,\n       enable_delete, delete_mode\nfrom datasette_sheets_view\nwhere id = $view_id::integer;",
       "parameters": [
         {
-          "full_name": "$view_id::text",
+          "full_name": "$view_id::integer",
           "name": "view_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -2547,7 +2529,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_view",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -2555,7 +2537,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_view",
           "origin_column": "sheet_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -2668,18 +2650,12 @@
     {
       "name": "insertView",
       "result_type": "Row",
-      "sql": "insert into datasette_sheets_view\n    (id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n     use_headers, color, enable_insert, enable_update, enable_delete, delete_mode)\nvalues\n    ($view_id::text, $sheet_id::text, $view_name::text, $range_str::text,\n     $min_row::integer, $min_col::integer, $max_row::integer, $max_col::integer,\n     $use_headers::integer, $color::text,\n     $enable_insert::integer, $enable_update::integer, $enable_delete::integer,\n     $delete_mode::text)\nreturning id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n          use_headers, color, created_at, enable_insert, enable_update,\n          enable_delete, delete_mode;",
+      "sql": "insert into datasette_sheets_view\n    (sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n     use_headers, color, enable_insert, enable_update, enable_delete, delete_mode)\nvalues\n    ($sheet_id::integer, $view_name::text, $range_str::text,\n     $min_row::integer, $min_col::integer, $max_row::integer, $max_col::integer,\n     $use_headers::integer, $color::text,\n     $enable_insert::integer, $enable_update::integer, $enable_delete::integer,\n     $delete_mode::text)\nreturning id, sheet_id, view_name, range_str, min_row, min_col, max_row, max_col,\n          use_headers, color, created_at, enable_insert, enable_update,\n          enable_delete, delete_mode;",
       "parameters": [
         {
-          "full_name": "$view_id::text",
-          "name": "view_id",
-          "annotated_type": "text",
-          "nullable": false
-        },
-        {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -2761,7 +2737,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_view",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -2769,7 +2745,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_view",
           "origin_column": "sheet_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -2882,12 +2858,12 @@
     {
       "name": "deleteView",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_view where id = $view_id::text;",
+      "sql": "delete from datasette_sheets_view where id = $view_id::integer;",
       "parameters": [
         {
-          "full_name": "$view_id::text",
+          "full_name": "$view_id::integer",
           "name": "view_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -2897,7 +2873,7 @@
     {
       "name": "updateViewColBounds",
       "result_type": "Void",
-      "sql": "update datasette_sheets_view\nset min_col = $min_col::integer,\n    max_col = $max_col::integer\nwhere id = $view_id::text;",
+      "sql": "update datasette_sheets_view\nset min_col = $min_col::integer,\n    max_col = $max_col::integer\nwhere id = $view_id::integer;",
       "parameters": [
         {
           "full_name": "$min_col::integer",
@@ -2912,9 +2888,9 @@
           "nullable": false
         },
         {
-          "full_name": "$view_id::text",
+          "full_name": "$view_id::integer",
           "name": "view_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -2924,7 +2900,7 @@
     {
       "name": "updateViewRowBounds",
       "result_type": "Void",
-      "sql": "update datasette_sheets_view\nset min_row = $min_row::integer,\n    max_row = $max_row::integer\nwhere id = $view_id::text;",
+      "sql": "update datasette_sheets_view\nset min_row = $min_row::integer,\n    max_row = $max_row::integer\nwhere id = $view_id::integer;",
       "parameters": [
         {
           "full_name": "$min_row::integer",
@@ -2939,9 +2915,9 @@
           "nullable": false
         },
         {
-          "full_name": "$view_id::text",
+          "full_name": "$view_id::integer",
           "name": "view_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -2975,12 +2951,12 @@
     {
       "name": "listCellsInRow",
       "result_type": "Rows",
-      "sql": "select col_idx, computed_value\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::text\n  and row_idx = $row_idx::integer\n  and col_idx between $min_col::integer and $max_col::integer;",
+      "sql": "select col_idx, computed_value\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and row_idx = $row_idx::integer\n  and col_idx between $min_col::integer and $max_col::integer;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -3025,12 +3001,12 @@
     {
       "name": "getFilterBySheet",
       "result_type": "Row",
-      "sql": "select id, sheet_id, min_row, min_col, max_row, max_col,\n       sort_col_idx, sort_direction, predicates_json,\n       created_at, updated_at\nfrom datasette_sheets_filter\nwhere sheet_id = $sheet_id::text;",
+      "sql": "select id, sheet_id, min_row, min_col, max_row, max_col,\n       sort_col_idx, sort_direction, predicates_json,\n       created_at, updated_at\nfrom datasette_sheets_filter\nwhere sheet_id = $sheet_id::integer;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -3040,7 +3016,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_filter",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -3048,7 +3024,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_filter",
           "origin_column": "sheet_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -3129,18 +3105,12 @@
     {
       "name": "insertFilter",
       "result_type": "Row",
-      "sql": "insert into datasette_sheets_filter\n    (id, sheet_id, min_row, min_col, max_row, max_col,\n     sort_col_idx, sort_direction, predicates_json)\nvalues\n    ($filter_id::text, $sheet_id::text,\n     $min_row::integer, $min_col::integer,\n     $max_row::integer, $max_col::integer,\n     $sort_col_idx::, $sort_direction::,\n     $predicates_json::text)\nreturning id, sheet_id, min_row, min_col, max_row, max_col,\n          sort_col_idx, sort_direction, predicates_json,\n          created_at, updated_at;",
+      "sql": "insert into datasette_sheets_filter\n    (sheet_id, min_row, min_col, max_row, max_col,\n     sort_col_idx, sort_direction, predicates_json)\nvalues\n    ($sheet_id::integer,\n     $min_row::integer, $min_col::integer,\n     $max_row::integer, $max_col::integer,\n     $sort_col_idx::, $sort_direction::,\n     $predicates_json::text)\nreturning id, sheet_id, min_row, min_col, max_row, max_col,\n          sort_col_idx, sort_direction, predicates_json,\n          created_at, updated_at;",
       "parameters": [
         {
-          "full_name": "$filter_id::text",
-          "name": "filter_id",
-          "annotated_type": "text",
-          "nullable": false
-        },
-        {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {
@@ -3192,7 +3162,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_filter",
           "origin_column": "id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -3200,7 +3170,7 @@
           "origin_database": "main",
           "origin_table": "datasette_sheets_filter",
           "origin_column": "sheet_id",
-          "decltype": "TEXT",
+          "decltype": "INTEGER",
           "nullable": false
         },
         {
@@ -3281,7 +3251,7 @@
     {
       "name": "updateFilterColBounds",
       "result_type": "Void",
-      "sql": "update datasette_sheets_filter\nset min_col = $min_col::integer,\n    max_col = $max_col::integer,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::text;",
+      "sql": "update datasette_sheets_filter\nset min_col = $min_col::integer,\n    max_col = $max_col::integer,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::integer;",
       "parameters": [
         {
           "full_name": "$min_col::integer",
@@ -3296,9 +3266,9 @@
           "nullable": false
         },
         {
-          "full_name": "$filter_id::text",
+          "full_name": "$filter_id::integer",
           "name": "filter_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -3308,7 +3278,7 @@
     {
       "name": "updateFilterRowBounds",
       "result_type": "Void",
-      "sql": "update datasette_sheets_filter\nset min_row = $min_row::integer,\n    max_row = $max_row::integer,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::text;",
+      "sql": "update datasette_sheets_filter\nset min_row = $min_row::integer,\n    max_row = $max_row::integer,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::integer;",
       "parameters": [
         {
           "full_name": "$min_row::integer",
@@ -3323,9 +3293,9 @@
           "nullable": false
         },
         {
-          "full_name": "$filter_id::text",
+          "full_name": "$filter_id::integer",
           "name": "filter_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -3335,7 +3305,7 @@
     {
       "name": "updateFilterSort",
       "result_type": "Void",
-      "sql": "update datasette_sheets_filter\nset sort_col_idx = $sort_col_idx::,\n    sort_direction = $sort_direction::,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::text;",
+      "sql": "update datasette_sheets_filter\nset sort_col_idx = $sort_col_idx::,\n    sort_direction = $sort_direction::,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::integer;",
       "parameters": [
         {
           "full_name": "$sort_col_idx::",
@@ -3350,9 +3320,9 @@
           "nullable": true
         },
         {
-          "full_name": "$filter_id::text",
+          "full_name": "$filter_id::integer",
           "name": "filter_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -3362,7 +3332,7 @@
     {
       "name": "updateFilterPredicates",
       "result_type": "Void",
-      "sql": "update datasette_sheets_filter\nset predicates_json = $predicates_json::text,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::text;",
+      "sql": "update datasette_sheets_filter\nset predicates_json = $predicates_json::text,\n    updated_at = strftime('%Y-%m-%dT%H:%M:%f', 'now')\nwhere id = $filter_id::integer;",
       "parameters": [
         {
           "full_name": "$predicates_json::text",
@@ -3371,9 +3341,9 @@
           "nullable": false
         },
         {
-          "full_name": "$filter_id::text",
+          "full_name": "$filter_id::integer",
           "name": "filter_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -3383,12 +3353,12 @@
     {
       "name": "deleteFilterBySheet",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_filter where sheet_id = $sheet_id::text;",
+      "sql": "delete from datasette_sheets_filter where sheet_id = $sheet_id::integer;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -3398,12 +3368,12 @@
     {
       "name": "deleteWorkbookFilters",
       "result_type": "Void",
-      "sql": "delete from datasette_sheets_filter\nwhere sheet_id in (\n    select id from datasette_sheets_sheet where workbook_id = $workbook_id::text\n);",
+      "sql": "delete from datasette_sheets_filter\nwhere sheet_id in (\n    select id from datasette_sheets_sheet where workbook_id = $workbook_id::integer\n);",
       "parameters": [
         {
-          "full_name": "$workbook_id::text",
+          "full_name": "$workbook_id::integer",
           "name": "workbook_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         }
       ],
@@ -3413,12 +3383,12 @@
     {
       "name": "listCellsInColRange",
       "result_type": "Rows",
-      "sql": "select row_idx, computed_value, computed_value_kind\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::text\n  and col_idx = $col_idx::integer\n  and row_idx between $min_row::integer and $max_row::integer\norder by row_idx;",
+      "sql": "select row_idx, computed_value, computed_value_kind\nfrom datasette_sheets_cell\nwhere sheet_id = $sheet_id::integer\n  and col_idx = $col_idx::integer\n  and row_idx between $min_row::integer and $max_row::integer\norder by row_idx;",
       "parameters": [
         {
-          "full_name": "$sheet_id::text",
+          "full_name": "$sheet_id::integer",
           "name": "sheet_id",
-          "annotated_type": "text",
+          "annotated_type": "integer",
           "nullable": false
         },
         {

@@ -24,7 +24,7 @@ async def read_json_body(request) -> dict:
 
 async def emit_filter_change_if_any(
     db: SheetDB,
-    sheet_id: str,
+    sheet_id: int,
     before,
     *,
     client_id: str | None = None,

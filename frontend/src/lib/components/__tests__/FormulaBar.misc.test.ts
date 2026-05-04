@@ -17,7 +17,7 @@ import { page, userEvent } from "vitest/browser";
 import { render } from "vitest-browser-svelte";
 
 vi.mock("../../stores/persistence", () => ({
-  activeSheetId: writable("sheet-1"),
+  activeSheetId: writable(1),
 }));
 
 const { default: FormulaBar } = await import("../FormulaBar.svelte");
@@ -54,7 +54,7 @@ test("single-cell selection renders the bare cell id and raw value", async () =>
   selectionAnchor.set("A1" as CellId);
   selectedCells.set(new Set(["A1" as CellId]));
 
-  render(FormulaBar, { props: { database: "db", workbookId: "wb" } });
+  render(FormulaBar, { props: { database: "db", workbookId: 1 } });
 
   // Label trigger — A1, NOT A1:A1.
   await expect
@@ -75,7 +75,7 @@ test("multi-cell selection renders the bounding-box range label", async () => {
   selectionAnchor.set("A1" as CellId);
   selectedCells.set(new Set(["A1", "B1", "A2", "B2"] as CellId[]));
 
-  render(FormulaBar, { props: { database: "db", workbookId: "wb" } });
+  render(FormulaBar, { props: { database: "db", workbookId: 1 } });
 
   await expect
     .element(page.getByRole("button", { name: /^A1:B2\s*▾$/ }))
@@ -90,7 +90,7 @@ test("typing into the input syncs editValue; Enter commits via cells.setCellValu
   selectionAnchor.set("A1" as CellId);
   selectedCells.set(new Set(["A1" as CellId]));
 
-  render(FormulaBar, { props: { database: "db", workbookId: "wb" } });
+  render(FormulaBar, { props: { database: "db", workbookId: 1 } });
 
   const input = page.getByPlaceholder("Enter value or formula");
 
@@ -120,7 +120,7 @@ test("focusing the input flips editingCell to the active cell", async () => {
   selectionAnchor.set("A1" as CellId);
   selectedCells.set(new Set(["A1" as CellId]));
 
-  render(FormulaBar, { props: { database: "db", workbookId: "wb" } });
+  render(FormulaBar, { props: { database: "db", workbookId: 1 } });
 
   await page.getByPlaceholder("Enter value or formula").click();
 
@@ -139,7 +139,7 @@ test("range selection adds 'Create view...' to the dropdown menu", async () => {
   selectionAnchor.set("A1" as CellId);
   selectedCells.set(new Set(["A1", "B1", "A2", "B2"] as CellId[]));
 
-  render(FormulaBar, { props: { database: "db", workbookId: "wb" } });
+  render(FormulaBar, { props: { database: "db", workbookId: 1 } });
 
   await userEvent.click(page.getByRole("button", { name: /^A1:B2\s*▾$/ }));
 
@@ -159,7 +159,7 @@ test("single-cell selection does NOT show 'Create view...'", async () => {
   selectionAnchor.set("A1" as CellId);
   selectedCells.set(new Set(["A1" as CellId]));
 
-  render(FormulaBar, { props: { database: "db", workbookId: "wb" } });
+  render(FormulaBar, { props: { database: "db", workbookId: 1 } });
 
   await userEvent.click(page.getByRole("button", { name: /^A1\s*▾$/ }));
 
@@ -183,7 +183,7 @@ test("activeView shows view name and view-mode menu items", async () => {
   selectionAnchor.set("A1" as CellId);
   selectedCells.set(new Set(["A1" as CellId]));
   activeView.set({
-    id: "v1",
+    id: 1,
     view_name: "my_view",
     range_str: "A1:B2",
     min_row: 0,
@@ -198,7 +198,7 @@ test("activeView shows view name and view-mode menu items", async () => {
     delete_mode: "soft",
   } as unknown as Parameters<typeof activeView.set>[0]);
 
-  render(FormulaBar, { props: { database: "db", workbookId: "wb" } });
+  render(FormulaBar, { props: { database: "db", workbookId: 1 } });
 
   // Label is the view name, not the cell ref.
   await expect
@@ -234,7 +234,7 @@ test("Enter in the formula bar writes a formula to the active cell", async () =>
   selectionAnchor.set("C1" as CellId);
   selectedCells.set(new Set(["C1" as CellId]));
 
-  render(FormulaBar, { props: { database: "db", workbookId: "wb" } });
+  render(FormulaBar, { props: { database: "db", workbookId: 1 } });
 
   const input = page.getByPlaceholder("Enter value or formula");
   await input.click();

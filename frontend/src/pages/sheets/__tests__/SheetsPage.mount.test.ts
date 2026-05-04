@@ -11,7 +11,7 @@ import { render } from "vitest-browser-svelte";
 
 const SHEETS = [
   {
-    id: "sheet-1",
+    id: 1,
     name: "Alpha",
     color: "#111",
     created_at: "t",
@@ -66,7 +66,7 @@ test("SheetsPage mounts the layout subtree without throwing", async () => {
   const SheetsPage = (await import("../SheetsPage.svelte")).default;
   render(SheetsPage, {
     database: "db",
-    workbookId: "wb",
+    workbookId: 1,
     workbookName: "My Workbook",
   });
 

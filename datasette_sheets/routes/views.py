@@ -15,12 +15,12 @@ from .schemas import (
 
 
 @router.GET(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/views$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/views$",
     output=ListViewsResponse,
 )
 @check_permission()
 async def list_views(
-    datasette, request, database: str, workbook_id: str, sheet_id: str
+    datasette, request, database: str, workbook_id: int, sheet_id: int
 ):
     db = await ensure_db(datasette, database)
     views = await db.list_views(sheet_id)
@@ -49,7 +49,7 @@ async def list_views(
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/views/create$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/views/create$",
     output=CreateViewResponse,
 )
 @check_permission()
@@ -57,8 +57,8 @@ async def create_view(
     datasette,
     request,
     database: str,
-    workbook_id: str,
-    sheet_id: str,
+    workbook_id: int,
+    sheet_id: int,
     body: Annotated[CreateViewBody, Body()],
 ):
     db = await ensure_db(datasette, database)
@@ -106,12 +106,12 @@ async def create_view(
 
 
 @router.POST(
-    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)/views/(?P<view_id>[^/]+)/delete$",
+    r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/views/(?P<view_id>\d+)/delete$",
     output=OkResponse,
 )
 @check_permission()
 async def delete_view(
-    datasette, request, database: str, workbook_id: str, sheet_id: str, view_id: str
+    datasette, request, database: str, workbook_id: int, sheet_id: int, view_id: int
 ):
     db = await ensure_db(datasette, database)
     await db.delete_view(view_id)

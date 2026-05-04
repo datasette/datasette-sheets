@@ -12,7 +12,7 @@ import type { DropdownRule } from "../../spreadsheet/types";
 // dismissal that the bespoke version was missing.
 
 const rule: DropdownRule = {
-  id: "rule-status",
+  id: 1,
   name: "Status",
   multi: false,
   source: {
@@ -56,7 +56,7 @@ function pickerOpenIn(index: number): HTMLElement | null {
 
 test("clicking a swatch in the ColorPicker updates the option color and closes the popover", async () => {
   render(DropdownRuleEditor, {
-    props: { database: "test", workbookId: "wb1" },
+    props: { database: "test", workbookId: 1 },
   });
   // Open the picker for option 0.
   await userEvent.click(colorSwatchButton(0));
@@ -96,7 +96,7 @@ test("clicking a swatch in the ColorPicker updates the option color and closes t
 
 test("reset swatch is hidden in the dropdown chip picker (nullable=false)", async () => {
   render(DropdownRuleEditor, {
-    props: { database: "test", workbookId: "wb1" },
+    props: { database: "test", workbookId: 1 },
   });
   await userEvent.click(colorSwatchButton(0));
   const picker = pickerOpenIn(0);
@@ -106,7 +106,7 @@ test("reset swatch is hidden in the dropdown chip picker (nullable=false)", asyn
 
 test("clicking the panel header outside the open picker dismisses it", async () => {
   render(DropdownRuleEditor, {
-    props: { database: "test", workbookId: "wb1" },
+    props: { database: "test", workbookId: 1 },
   });
   await userEvent.click(colorSwatchButton(0));
   expect(pickerOpenIn(0)).toBeTruthy();
@@ -159,7 +159,7 @@ function errorBox(): HTMLElement | null {
 
 test("Add option appends a new row with a defaulted color", async () => {
   render(DropdownRuleEditor, {
-    props: { database: "test", workbookId: "wb1" },
+    props: { database: "test", workbookId: 1 },
   });
   // Editing rule has 2 options.
   expect(optionRows().length).toBe(2);
@@ -179,7 +179,7 @@ test("Add option appends a new row with a defaulted color", async () => {
 
 test("Delete option drops the row and renumbers the swatches", async () => {
   render(DropdownRuleEditor, {
-    props: { database: "test", workbookId: "wb1" },
+    props: { database: "test", workbookId: 1 },
   });
   expect(optionRows().length).toBe(2);
   // Drop the second option.
@@ -194,15 +194,15 @@ test("Single-option rule disables the only Delete button (can't go to zero)", as
   // Seed a one-option rule so the editor opens with options.length === 1.
   dropdownRules.set([
     {
-      id: "rule-single",
+      id: 99,
       name: "Solo",
       multi: false,
       source: { kind: "list", options: [{ value: "Only", color: "#cccccc" }] },
     },
   ]);
-  dropdownRulesPanel.set({ ruleId: "rule-single" });
+  dropdownRulesPanel.set({ ruleId: 99 });
   render(DropdownRuleEditor, {
-    props: { database: "test", workbookId: "wb1" },
+    props: { database: "test", workbookId: 1 },
   });
   expect(optionRows().length).toBe(1);
   // The validate() guard at save time + the disabled attr together
@@ -212,7 +212,7 @@ test("Single-option rule disables the only Delete button (can't go to zero)", as
 
 test("Toggling 'Allow multiple selections' flips the multi flag", async () => {
   render(DropdownRuleEditor, {
-    props: { database: "test", workbookId: "wb1" },
+    props: { database: "test", workbookId: 1 },
   });
   const multiCheckbox = panelEl().querySelector<HTMLInputElement>(
     ".checkbox-field input[type='checkbox']",
@@ -225,7 +225,7 @@ test("Toggling 'Allow multiple selections' flips the multi flag", async () => {
 
 test("Save with a duplicate option value surfaces an inline error and does not close", async () => {
   render(DropdownRuleEditor, {
-    props: { database: "test", workbookId: "wb1" },
+    props: { database: "test", workbookId: 1 },
   });
   // Force a duplicate.
   const inp = optionValueInput(1);
@@ -244,7 +244,7 @@ test("Save with a duplicate option value surfaces an inline error and does not c
 
 test("Save with a comma in an option value rejects (server also rejects, this saves a round-trip)", async () => {
   render(DropdownRuleEditor, {
-    props: { database: "test", workbookId: "wb1" },
+    props: { database: "test", workbookId: 1 },
   });
   const inp = optionValueInput(0);
   inp.focus();

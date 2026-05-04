@@ -5,7 +5,7 @@ from ..router import router, check_permission
 from ..db import reconstruct_typed
 from .helpers import ensure_db
 
-SH = r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>[^/]+)/sheets/(?P<sheet_id>[^/]+)"
+SH = r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)"
 MAX_ROW = 99
 MAX_COL = 14
 
@@ -29,7 +29,7 @@ def parse_range(range_str: str) -> tuple[int, int, int, int] | None:
 @router.GET(SH + r"/data" + r"$")
 @check_permission()
 async def sheet_data(
-    datasette, request, database: str, workbook_id: str, sheet_id: str
+    datasette, request, database: str, workbook_id: int, sheet_id: int
 ):
     db = await ensure_db(datasette, database)
     sheet = await db.get_sheet(sheet_id)
@@ -83,7 +83,7 @@ async def sheet_data(
 @router.GET(SH + r"/data/(?P<cell_id>[A-Za-z]+\d+)$")
 @check_permission()
 async def sheet_cell_data(
-    datasette, request, database: str, workbook_id: str, sheet_id: str, cell_id: str
+    datasette, request, database: str, workbook_id: int, sheet_id: int, cell_id: str
 ):
     cell_id = cell_id.upper()
     db = await ensure_db(datasette, database)

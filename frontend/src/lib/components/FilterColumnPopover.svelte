@@ -31,9 +31,9 @@
      *  is mounted. They're optional in tests that mount the popover
      *  in isolation — the OK button is gated on both being non-empty. */
     database?: string;
-    workbookId?: string;
+    workbookId?: number;
   }
-  let { colIdx, anchorRect, database = "", workbookId = "" }: Props = $props();
+  let { colIdx, anchorRect, database = "", workbookId = 0 }: Props = $props();
 
   let filter = $derived($sheetFilter);
   let columnLetter = $derived(COLUMNS[colIdx] ?? `Col ${colIdx}`);

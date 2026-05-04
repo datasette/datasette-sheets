@@ -8,7 +8,7 @@ import { render } from "vitest-browser-svelte";
 // FormulaBar's ``copyApiUrl`` early-returns when it's empty, so the
 // menu-item test needs a value here.
 vi.mock("../../stores/persistence", () => ({
-  activeSheetId: writable("sheet-1"),
+  activeSheetId: writable(7),
 }));
 
 // Lazy-import after the mock is registered.
@@ -49,7 +49,7 @@ test("clicking 'Copy cell API URL' writes the URL and closes the menu", async ()
     value: { writeText },
   });
 
-  render(FormulaBar, { props: { database: "db", workbookId: "wb" } });
+  render(FormulaBar, { props: { database: "db", workbookId: 1 } });
 
   await userEvent.click(page.getByRole("button", { name: /^A1\s*▾$/ }));
   expect(get(openOverlay)).toBe("formula-bar:cell-ref");
@@ -65,7 +65,7 @@ test("clicking 'Copy cell API URL' writes the URL and closes the menu", async ()
 
   expect(writeText).toHaveBeenCalledTimes(1);
   expect(writeText.mock.calls[0][0]).toContain(
-    "/db/-/sheets/api/workbooks/wb/sheets/sheet-1/data/A1",
+    "/db/-/sheets/api/workbooks/1/sheets/7/data/A1",
   );
   // ``copyApiUrl`` is async (awaits ``writeText``), so the menu close
   // is queued one microtask behind the click handler. Use the
@@ -92,7 +92,7 @@ test("mousedown outside the formula bar closes the menu", async () => {
   document.body.appendChild(outside);
 
   try {
-    render(FormulaBar, { props: { database: "db", workbookId: "wb" } });
+    render(FormulaBar, { props: { database: "db", workbookId: 1 } });
 
     await userEvent.click(page.getByRole("button", { name: /^A1\s*▾$/ }));
     expect(get(openOverlay)).toBe("formula-bar:cell-ref");
@@ -111,7 +111,7 @@ test("mousedown outside the formula bar closes the menu", async () => {
 // global Esc dismiss isn't mounted in this test, so we exercise the
 // local one.
 test("Escape closes the menu", async () => {
-  render(FormulaBar, { props: { database: "db", workbookId: "wb" } });
+  render(FormulaBar, { props: { database: "db", workbookId: 1 } });
 
   await userEvent.click(page.getByRole("button", { name: /^A1\s*▾$/ }));
   expect(get(openOverlay)).toBe("formula-bar:cell-ref");
@@ -125,7 +125,7 @@ test("Escape closes the menu", async () => {
 // ``tabindex="-1"`` so ``.focus()`` is valid; the rAF defer means we
 // wait one frame past the close before asserting.
 test("Esc returns focus to the cell-reference trigger", async () => {
-  render(FormulaBar, { props: { database: "db", workbookId: "wb" } });
+  render(FormulaBar, { props: { database: "db", workbookId: 1 } });
 
   const trigger = page
     .getByRole("button", { name: /^A1\s*▾$/ })
@@ -147,7 +147,7 @@ test("clicking 'Copy cell API URL' returns focus to the cell-reference trigger",
     value: { writeText },
   });
 
-  render(FormulaBar, { props: { database: "db", workbookId: "wb" } });
+  render(FormulaBar, { props: { database: "db", workbookId: 1 } });
 
   const trigger = page
     .getByRole("button", { name: /^A1\s*▾$/ })

@@ -42,8 +42,8 @@ export const viewTopLeftCells = derived(sheetViews, ($views) => {
 
 export async function loadViews(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
 ) {
   const views = await listViews(database, workbookId, sheetId);
   sheetViews.set(views);
@@ -52,9 +52,9 @@ export async function loadViews(
 
 export async function removeView(
   database: string,
-  workbookId: string,
-  sheetId: string,
-  viewId: string,
+  workbookId: number,
+  sheetId: number,
+  viewId: number,
 ) {
   await apiDeleteView(database, workbookId, sheetId, viewId);
   sheetViews.update((views) => views.filter((v) => v.id !== viewId));

@@ -12,7 +12,7 @@
   }: {
     range: string;
     database: string;
-    workbookId: string;
+    workbookId: number;
     onClose: () => void;
   } = $props();
 

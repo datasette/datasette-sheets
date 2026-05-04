@@ -261,8 +261,8 @@ export const filterCellMap = derived(sheetFilter, ($f) => {
 /** Fetch the sheet's filter and push it into ``sheetFilter``. */
 export async function loadFilter(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
 ): Promise<void> {
   const f = await getFilter(database, workbookId, sheetId);
   sheetFilter.set(f);
@@ -275,8 +275,8 @@ export async function loadFilter(
  */
 export async function createFilter(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   range: string,
   clientId?: string,
 ): Promise<FilterMeta> {
@@ -298,8 +298,8 @@ export async function createFilter(
  */
 export async function setFilterPredicate(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   colIdx: number,
   hidden: string[] | null,
   clientId?: string,
@@ -325,8 +325,8 @@ export async function setFilterPredicate(
  */
 export async function setFilterSort(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
   colIdx: number | null,
   direction: "asc" | "desc" | null,
   clientId?: string,
@@ -346,8 +346,8 @@ export async function setFilterSort(
 /** Remove the sheet's filter. No-op (404) if none exists. */
 export async function removeFilter(
   database: string,
-  workbookId: string,
-  sheetId: string,
+  workbookId: number,
+  sheetId: number,
 ): Promise<void> {
   await apiDeleteFilter(database, workbookId, sheetId);
   sheetFilter.set(null);

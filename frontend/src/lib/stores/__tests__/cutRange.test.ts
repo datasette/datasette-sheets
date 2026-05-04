@@ -13,7 +13,7 @@ import type { CellId } from "../../spreadsheet/types";
 
 const SHEETS_FOR_SHEET_SWITCH = [
   {
-    id: "sheet-1",
+    id: 1,
     name: "One",
     color: "#111",
     created_at: "t",
@@ -21,7 +21,7 @@ const SHEETS_FOR_SHEET_SWITCH = [
     sort_order: 0,
   },
   {
-    id: "sheet-2",
+    id: 2,
     name: "Two",
     color: "#222",
     created_at: "t",
@@ -35,7 +35,7 @@ vi.mock("../../api", async () => {
   return {
     ...actual,
     listSheets: vi.fn(async () => SHEETS_FOR_SHEET_SWITCH),
-    getSheet: vi.fn(async (_d: string, _w: string, id: string) => ({
+    getSheet: vi.fn(async (_d: string, _w: number, id: number) => ({
       sheet: SHEETS_FOR_SHEET_SWITCH.find((s) => s.id === id)!,
       columns: [],
       cells: [],
@@ -122,7 +122,7 @@ test("a fresh mark replaces the previous one, not merges it", () => {
 test("flipping the active sheet id clears any outstanding clipboard mark", async () => {
   const persistence = await import("../persistence");
   persistence.setDatabase("testdb");
-  persistence.setWorkbookId("wb1");
+  persistence.setWorkbookId(1);
 
   markCopyRange(["A1", "B2"] as CellId[]);
   expect(get(clipboardRange).size).toBe(2);

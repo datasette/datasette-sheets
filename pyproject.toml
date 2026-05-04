@@ -11,10 +11,9 @@ classifiers=[
 requires-python = ">=3.10"
 dependencies = [
     "datasette>1a",
-    "datasette-plugin-router",
+    "datasette-plugin-router>=0.0.1a3",
     "sqlite-migrate>=0.1b0",
     "sqlite-utils>=3.38",
-    "python-ulid>=3",
     # Rust formula + range engine. PyPI package `liblotus`; importable
     # module is `lotus`. Keep this pin in sync with the
     # `LIBLOTUS_VERSION` in `Justfile` so the Python wheel and the wasm

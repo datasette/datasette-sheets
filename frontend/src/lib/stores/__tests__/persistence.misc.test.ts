@@ -22,7 +22,7 @@ import type { CellId } from "../../spreadsheet/types";
 
 const SHEETS = [
   {
-    id: "sheet-1",
+    id: 1,
     name: "One",
     color: "#111",
     created_at: "t",
@@ -30,7 +30,7 @@ const SHEETS = [
     sort_order: 0,
   },
   {
-    id: "sheet-2",
+    id: 2,
     name: "Two",
     color: "#222",
     created_at: "t",
@@ -62,17 +62,17 @@ vi.mock("../../api", async () => {
   return {
     ...actual,
     listSheets: vi.fn(async () => (listSheetsReturnsEmpty ? [] : SHEETS)),
-    getSheet: vi.fn(async (_d: string, _w: string, id: string) => ({
+    getSheet: vi.fn(async (_d: string, _w: number, id: number) => ({
       sheet: SHEETS.find((s) => s.id === id) ?? SHEETS[0],
       columns: [],
       cells: getSheetCells,
     })),
     createSheet: vi.fn(
-      async (_d: string, _w: string, name: string, color?: string) => {
+      async (_d: string, _w: number, name: string, color?: string) => {
         createSheetCalls.push({ name, color });
         return {
           sheet: {
-            id: `sheet-new-${name}`,
+            id: 1000 + createSheetCalls.length,
             name,
             color: color ?? "#000",
             created_at: "t",
@@ -89,8 +89,8 @@ vi.mock("../../api", async () => {
     saveCells: vi.fn(
       async (
         _d: string,
-        _w: string,
-        _s: string,
+        _w: number,
+        _s: number,
         changes: { row_idx: number; col_idx: number }[],
       ): Promise<{ cells: [] }> => {
         cellCalls.push({ changes });
@@ -107,7 +107,7 @@ vi.mock("../../api", async () => {
 async function load() {
   const persistence = await import("../persistence");
   persistence.setDatabase("testdb");
-  persistence.setWorkbookId("wb1");
+  persistence.setWorkbookId(1);
   await persistence.initWorkbook();
   return persistence;
 }
@@ -152,9 +152,9 @@ describe("apiCellsToMap — malformed format_json", () => {
     expect(cell?.format.bold).toBeFalsy();
     expect(cell?.format.type).toBe("general");
 
-    // Sanity: the active sheet is still ``sheet-1`` and the load
+    // Sanity: the active sheet is still sheet 1 and the load
     // completed without rejection.
-    expect(get(persistence.activeSheetId)).toBe("sheet-1");
+    expect(get(persistence.activeSheetId)).toBe(1);
   });
 });
 
@@ -284,13 +284,13 @@ describe("URL-hash sync", () => {
     // the post-init assertion only sees the switch we drive ourselves.
     replaceStateSpy.mockClear();
 
-    await persistence.switchSheet("sheet-2");
+    await persistence.switchSheet(2);
 
     // ``writeSheetToHash`` calls ``replaceState(null, "", "#sheet=...")``.
     expect(replaceStateSpy).toHaveBeenCalled();
     const lastCall = replaceStateSpy.mock.calls.at(-1)!;
     const writtenHash = lastCall[2] as string;
-    expect(writtenHash).toBe("#sheet=sheet-2");
+    expect(writtenHash).toBe("#sheet=2");
   });
 });
 
@@ -306,7 +306,7 @@ describe("initWorkbook bootstrap", () => {
     expect(createSheetCalls[0].name).toBe("Sheet 1");
 
     // Active sheet is the freshly-created one — the mock returns
-    // id ``sheet-new-Sheet 1``.
-    expect(get(persistence.activeSheetId)).toBe("sheet-new-Sheet 1");
+    // id 1001 (1000 + 1) for the first createSheet call.
+    expect(get(persistence.activeSheetId)).toBe(1001);
   });
 });

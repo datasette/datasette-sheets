@@ -14,7 +14,7 @@ import { clearDropdownStep } from "../../formatCommands";
 import type { CellId, DropdownRule } from "../../spreadsheet/types";
 
 const ruleSingle: DropdownRule = {
-  id: "rule-single",
+  id: 1,
   name: "Status",
   multi: false,
   source: {
@@ -28,7 +28,7 @@ const ruleSingle: DropdownRule = {
 };
 
 const ruleMulti: DropdownRule = {
-  id: "rule-multi",
+  id: 2,
   name: "Tags",
   multi: true,
   source: {
@@ -238,7 +238,7 @@ test("Backspace keypress on a focused dropdown cell invokes clearDropdownStep", 
 // run ``measure()``.
 test("fitChips hides overflow chips and updates the +N badge", async () => {
   const ruleManyTags: DropdownRule = {
-    id: "rule-many",
+    id: 3,
     name: "Many",
     multi: true,
     source: {

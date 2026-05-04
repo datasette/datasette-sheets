@@ -117,7 +117,7 @@ test("upsertNamedRange stores uppercase in the map and refreshes dependents", as
   cells.setCellValue("B1", "=A1*taxrate");
   expect(get(cells).get("B1")!.error).toBe("#NAME?");
 
-  await upsertNamedRange("db", "wb", "sheet", "TaxRate", "0.05");
+  await upsertNamedRange("db", 1, 2, "TaxRate", "0.05");
 
   // Store holds the new entry…
   const list = get(namedRanges);
@@ -131,12 +131,12 @@ test("removeNamedRange drops the row and recomputes dependents", async () => {
   const { upsertNamedRange, removeNamedRange, namedRanges } =
     await import("../namedRanges");
 
-  await upsertNamedRange("db", "wb", "sheet", "TaxRate", "0.05");
+  await upsertNamedRange("db", 1, 2, "TaxRate", "0.05");
   cells.setCellValue("A1", "100");
   cells.setCellValue("B1", "=A1*TaxRate");
   expect(get(cells).get("B1")!.computedValue).toBe(5);
 
-  await removeNamedRange("db", "wb", "sheet", "TaxRate");
+  await removeNamedRange("db", 1, 2, "TaxRate");
 
   expect(get(namedRanges)).toHaveLength(0);
   expect(get(cells).get("B1")!.error).toBe("#NAME?");
@@ -149,12 +149,12 @@ test("loadNamedRanges pushes the server list into the engine", async () => {
   await (
     api.setNamedRange as unknown as (
       d: string,
-      w: string,
-      s: string,
+      w: number,
+      s: number,
       n: string,
       def: string,
     ) => Promise<void>
-  )("db", "wb", "sheet", "Revenue", "=A1:A3");
+  )("db", 1, 2, "Revenue", "=A1:A3");
 
   // Reset engine state so the load actually has to do work.
   setEngineNames({});
@@ -166,7 +166,7 @@ test("loadNamedRanges pushes the server list into the engine", async () => {
   expect(get(cells).get("B1")!.error).toBe("#NAME?");
 
   const { loadNamedRanges } = await import("../namedRanges");
-  await loadNamedRanges("db", "wb", "sheet");
+  await loadNamedRanges("db", 1, 2);
 
   expect(get(cells).get("B1")!.computedValue).toBe(60);
 });

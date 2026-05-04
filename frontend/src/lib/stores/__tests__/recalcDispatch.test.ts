@@ -54,8 +54,8 @@ vi.mock("../../api", () => {
     updateDropdownRule: vi.fn(
       async (
         _d: string,
-        _w: string,
-        ruleId: string,
+        _w: number,
+        ruleId: number,
         patch: {
           name?: string;
           nameSet?: boolean;
@@ -131,7 +131,7 @@ test("updateDropdownRule does not fire the cells writable", async () => {
   cells.setCellValue("A1", "1");
   dropdownRules.set([
     {
-      id: "rule-1",
+      id: 1,
       name: "Status",
       multi: false,
       source: { kind: "list", options: [{ value: "Todo", color: "#cccccc" }] },
@@ -144,7 +144,7 @@ test("updateDropdownRule does not fire the cells writable", async () => {
   });
   count = 0; // discard the on-subscribe fire
 
-  await updateDropdownRule("db", "wb", "rule-1", {
+  await updateDropdownRule("db", 1, 1, {
     options: [
       { value: "Todo", color: "#cccccc" },
       { value: "Done", color: "#b6d7a8" },
@@ -169,7 +169,7 @@ test("upsertNamedRange takes the delta path: cells fires once and B1 resolves", 
   });
   count = 0; // discard the on-subscribe fire
 
-  await upsertNamedRange("db", "wb", "sheet", "TaxRate", "0.05");
+  await upsertNamedRange("db", 1, 2, "TaxRate", "0.05");
 
   unsub();
   // The pre-fix path called ``cells.recalculate()`` which fired once;
@@ -185,7 +185,7 @@ test("upsertNamedRange takes the delta path: cells fires once and B1 resolves", 
 test("removeNamedRange takes the delta path: B1 reverts to #NAME?", async () => {
   const { upsertNamedRange, removeNamedRange } = await import("../namedRanges");
 
-  await upsertNamedRange("db", "wb", "sheet", "TaxRate", "0.05");
+  await upsertNamedRange("db", 1, 2, "TaxRate", "0.05");
   cells.setCellValue("A1", "100");
   cells.setCellValue("B1", "=A1*TaxRate");
   expect(get(cells).get("B1")!.computedValue).toBe(5);
@@ -196,7 +196,7 @@ test("removeNamedRange takes the delta path: B1 reverts to #NAME?", async () => 
   });
   count = 0;
 
-  await removeNamedRange("db", "wb", "sheet", "TaxRate");
+  await removeNamedRange("db", 1, 2, "TaxRate");
 
   unsub();
   expect(count).toBe(1);

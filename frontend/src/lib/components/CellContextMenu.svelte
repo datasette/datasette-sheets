@@ -40,7 +40,7 @@
     /** The right-clicked cell — used to compute conditional menu items. */
     cellId: CellId;
     database: string;
-    workbookId: string;
+    workbookId: number;
     /** Cut/Copy/Paste come from SheetsPage so the menu reuses the same
      *  payload-building / clipboard-applying logic that Cmd+C/X/V uses. */
     onCut: () => Promise<void>;
