@@ -39,14 +39,6 @@ engine:
 frontend *flags:
     npm run build --prefix frontend {{flags}}
 
-# Reap stale .js / .css / .wasm files under datasette_sheets/static/gen/
-# that the current manifest.json doesn't reference. Vite deliberately
-# keeps `emptyOutDir: false` so the manifest survives rebuilds, which
-# means stale bundles pile up — 88 files / 8 MB after a couple
-# months of iteration. This is the cleanup.
-clean-gen:
-    uv run scripts/clean-stale-gen.py
-
 frontend-dev *flags:
     npm run dev --prefix frontend -- --port {{DEV_PORT}} {{flags}}
 
@@ -201,11 +193,12 @@ dev *flags:
       {{flags}}
 
 dev-with-hmr *flags:
-  DATASETTE_SHEETS_VITE_PATH=http://localhost:{{DEV_PORT}}/-/static-plugins/datasette_sheets/ \
   watchexec \
     --stop-signal SIGKILL \
     -e py,html \
     --ignore '*.db' \
     --restart \
     --clear -- \
-    just dev {{flags}}
+    just dev \
+      -s plugins.datasette-vite.dev_ports.datasette_sheets {{DEV_PORT}} \
+      {{flags}}

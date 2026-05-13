@@ -12,6 +12,7 @@ requires-python = ">=3.10"
 dependencies = [
     "datasette>1a",
     "datasette-plugin-router>=0.0.1a3",
+    "datasette-vite>=0.0.1a4",
     "sqlite-migrate>=0.1b0",
     "sqlite-utils>=3.38",
     # Rust formula + range engine. PyPI package `liblotus`; importable
@@ -27,7 +28,7 @@ dev = [
     "pytest-asyncio",
     "datasette-debug-gotham",
     "datasette-sidebar",
-    "datasette-user-profiles",
+    "datasette-user-profiles==0.1.0a6",
 ]
 
 [build-system]
@@ -53,5 +54,5 @@ testpaths = ["tests"]
 include = ["datasette_sheets*"]
 
 [tool.setuptools.package-data]
-datasette_sheets = ["static/**/*", "templates/*", "sql/*.sql", "sql/*.json"]
+datasette_sheets = ["static/**/*", "manifest.json", "templates/*", "sql/*.sql", "sql/*.json"]
 

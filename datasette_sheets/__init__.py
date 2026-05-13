@@ -1,9 +1,9 @@
 from datasette import hookimpl, Forbidden, Response
 from datasette.permissions import Action
+from datasette_vite import vite_entry
 from .router import router, PERMISSION_NAME
 from .routes.sse import api_events
 from .db import SheetDB
-import os
 
 # Import route modules to trigger decorator registration
 from . import routes  # noqa: F401
@@ -11,41 +11,12 @@ from . import routes  # noqa: F401
 
 @hookimpl
 def extra_template_vars(datasette):
-    vite_dev_path = os.environ.get("DATASETTE_SHEETS_VITE_PATH")
-    if vite_dev_path:
-
-        async def entry(entrypoint: str) -> str:
-            return (
-                f'<script type="module" src="{vite_dev_path}@vite/client"></script>\n'
-                f'<script type="module" src="{vite_dev_path}{entrypoint}"></script>'
-            )
-    else:
-        import json
-
-        manifest_path = os.path.join(
-            os.path.dirname(__file__), "static", "manifest.json"
-        )
-        try:
-            with open(manifest_path) as f:
-                manifest = json.load(f)
-        except FileNotFoundError:
-            manifest = {}
-
-        async def entry(entrypoint: str) -> str:
-            chunk = manifest.get(entrypoint, {})
-            parts = []
-            for css in chunk.get("css", []):
-                parts.append(
-                    f'<link rel="stylesheet" href="{datasette.urls.static_plugins("datasette_sheets", css)}">'
-                )
-            js_file = chunk.get("file", "")
-            if js_file:
-                parts.append(
-                    f'<script type="module" src="{datasette.urls.static_plugins("datasette_sheets", js_file)}"></script>'
-                )
-            return "\n".join(parts)
-
-    return {"datasette_sheets_vite_entry": entry}
+    return {
+        "datasette_sheets_vite_entry": vite_entry(
+            datasette=datasette,
+            plugin_package="datasette_sheets",
+        ),
+    }
 
 
 async def workbook_list_page(datasette, request):
