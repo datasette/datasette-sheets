@@ -26,6 +26,11 @@ cursors, name labels, and avatars live as they move around the sheet:
 
 ![Live collaboration](docs/screenshots/collaboration.png)
 
+Per-workbook sharing — grant Viewer / Editor / Manager roles to people or
+groups, backed by [datasette-acl](https://github.com/datasette/datasette-acl):
+
+![Share dialog](docs/screenshots/share.png)
+
 Editing a formula — a live signature-help tooltip and coloured highlighting of
 the referenced range:
 

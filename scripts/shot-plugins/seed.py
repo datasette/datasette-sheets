@@ -36,14 +36,21 @@ DISPLAY_NAMES = {
 }
 
 
-@hookimpl
+# tryfirst: actors_from_ids is firstresult, and datasette-debug-gotham also
+# registers it (returning its own cast). Without tryfirst, gotham can win and
+# our demo actors fall back to raw ids in the share dialog / presence labels.
+@hookimpl(tryfirst=True)
 def actors_from_ids(actor_ids):
     out = {}
     for aid in actor_ids:
         sid = str(aid)
         actor = {"id": sid}
         if sid in DISPLAY_NAMES:
+            # ``name`` is what sheets' presence resolver reads; ``display_name``
+            # is what datasette-acl's share API reads. Set both so the name
+            # shows in the presence labels AND the share dialog.
             actor["name"] = DISPLAY_NAMES[sid]
+            actor["display_name"] = DISPLAY_NAMES[sid]
         out[sid] = actor
     return out
 

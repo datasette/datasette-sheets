@@ -412,6 +412,30 @@ function buildShots(browser, wbId) {
       await page.screenshot({ path: out("named-ranges") });
       await ctx.close();
     },
+
+    // The share dialog (manager view): people-with-access list with the owner +
+    // collaborators and their roles. Taller viewport so the dialog isn't
+    // clipped. alice owns the demo workbook, so she gets the manager UI.
+    share: async () => {
+      const ctx = await makeContext(browser, "alice", VIEWPORT_TALL);
+      const page = await ctx.newPage();
+      await gotoWorkbook(page, wbId);
+      await page.locator(".share-btn").click();
+      // SheetsPage mounts <datasette-acl-share-dialog>, which renders its own
+      // trigger button; click it to open the dialog (a native top-layer
+      // <dialog>). Its markup is light DOM (the component uses shadow:none).
+      await page.locator(".datasette-acl-share__trigger").click();
+      const dialog = page.locator("dialog.datasette-acl-share-dialog[open]");
+      await dialog.waitFor({ state: "visible", timeout: 15_000 });
+      // Wait for the people rows to load (read API → resource_exists → grants).
+      await page
+        .locator(".datasette-acl-share-dialog__row")
+        .first()
+        .waitFor({ timeout: 15_000 });
+      await sleep(400);
+      await dialog.screenshot({ path: out("share") });
+      await ctx.close();
+    },
   };
 }
 
