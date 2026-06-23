@@ -144,6 +144,12 @@ def startup(datasette):
                 actor_id="alice",
             )
 
+            # Named ranges (forecast sheet) so the Named ranges panel has content
+            # — a couple of ranges plus a scalar named value.
+            await db.set_named_range(forecast.id, "Q1Revenue", "B2:B5")
+            await db.set_named_range(forecast.id, "Q2Revenue", "C2:C5")
+            await db.set_named_range(forecast.id, "TaxRate", "0.08")
+
             # Sharing: owner + two collaborators so the share dialog's
             # people-with-access list has real rows to render.
             await _ensure_acl_tables(datasette)

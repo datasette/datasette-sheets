@@ -194,11 +194,23 @@ test-all *flags:
     just test-frontend
     just test-e2e
 
+# Sharing demo (mirrors datasette-places / datasette-kanban / datasette-acl):
+# datasette-debug-gotham provides demo actors — Clark / Lois / Jimmy
+# (daily-planet) and Bruce / Alfred / Selina (gotham-gazette). Use the gotham
+# user-switcher (top-right) to "log in" as one; the workbook creator becomes its
+# Manager and can share it from the Share dialog. The two dynamic-groups map
+# each newsroom to an acl group so group grants work, and Bruce Wayne is wired
+# as the global acl admin so he can manage any workbook's sharing.
+DEV_ADMIN := "bruce"
 dev *flags:
   uv run \
     datasette \
       -s permissions.datasette-sheets-access true \
       -s permissions.datasette-sidebar-access true \
+      -s permissions.profile_access true \
+      -s permissions.datasette-acl.id {{DEV_ADMIN}} \
+      -s plugins.datasette-acl.dynamic-groups.daily-planet.newsroom daily-planet \
+      -s plugins.datasette-acl.dynamic-groups.gotham-gazette.newsroom gotham-gazette \
       {{flags}}
 
 dev-with-hmr *flags:

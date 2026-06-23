@@ -244,6 +244,31 @@ async function gotoWorkbook(page, wbId, { waitConnected = true } = {}) {
   }
 }
 
+// Screenshot the padded bounding-box union of several selectors — used to frame
+// a feature plus its detached floating UI (e.g. the tab bar + its context menu,
+// which lives in a body-appended fixed root an element shot would clip).
+async function shotUnion(page, selectors, file, pad = 14) {
+  const boxes = [];
+  for (const sel of selectors) {
+    const box = await page.locator(sel).first().boundingBox();
+    if (box) boxes.push(box);
+  }
+  if (!boxes.length) throw new Error(`no boxes for ${selectors.join(", ")}`);
+  const x = Math.min(...boxes.map((b) => b.x));
+  const y = Math.min(...boxes.map((b) => b.y));
+  const right = Math.max(...boxes.map((b) => b.x + b.width));
+  const bottom = Math.max(...boxes.map((b) => b.y + b.height));
+  await page.screenshot({
+    path: file,
+    clip: {
+      x: Math.max(0, x - pad),
+      y: Math.max(0, y - pad),
+      width: Math.min(VIEWPORT.width, right - x + pad * 2),
+      height: Math.min(VIEWPORT.height, bottom - y + pad * 2),
+    },
+  });
+}
+
 // ---------------------------------------------------------------------------
 // Shots.
 function buildShots(browser, wbId) {
@@ -313,6 +338,73 @@ function buildShots(browser, wbId) {
         await ctxB.close();
         await ctxC.close();
       }
+    },
+
+    // Editing a formula: the live signature-help tooltip + coloured
+    // highlighting of the referenced range as you type.
+    "formula-editing": async () => {
+      const ctx = await makeContext(browser, "alice");
+      const page = await ctx.newPage();
+      await gotoWorkbook(page, wbId);
+      // Type a SUM over the Q1 column into an empty cell (type-to-edit).
+      await page.locator('[data-cell-id="B8"]').click();
+      await page.keyboard.type("=SUM(B2:B5");
+      await page.locator(".cell-input").waitFor({ state: "visible", timeout: 10_000 });
+      await page.locator(".signature-popup").waitFor({ state: "visible", timeout: 10_000 });
+      await freezeVolatile(page);
+      await page.screenshot({ path: out("formula-editing") });
+      await ctx.close();
+    },
+
+    // The merged autocomplete menu — built-in functions (TIME, TODAY) AND the
+    // sheet's named ranges (TaxRate) share one list as you type.
+    autocomplete: async () => {
+      const ctx = await makeContext(browser, "alice");
+      const page = await ctx.newPage();
+      await gotoWorkbook(page, wbId);
+      await page.locator('[data-cell-id="B8"]').click();
+      await page.keyboard.type("=T");
+      // Wait until at least two suggestions render (functions + named range).
+      await page.waitForFunction(
+        () => document.querySelectorAll(".autocomplete-item").length >= 2,
+        { timeout: 10_000 },
+      );
+      await freezeVolatile(page);
+      await page.screenshot({ path: out("autocomplete") });
+      await ctx.close();
+    },
+
+    // Multi-sheet tabs + the per-tab management menu (rename / colour / move /
+    // delete), summoned by right-clicking a tab.
+    "sheet-tabs": async () => {
+      const ctx = await makeContext(browser, "alice");
+      const page = await ctx.newPage();
+      await gotoWorkbook(page, wbId);
+      await page
+        .locator(".tab")
+        .filter({ hasText: "Forecast" })
+        .click({ button: "right" });
+      await page.locator(".context-menu").waitFor({ state: "visible", timeout: 10_000 });
+      await freezeVolatile(page);
+      await shotUnion(page, [".sheet-tabs", ".context-menu"], out("sheet-tabs"));
+      await ctx.close();
+    },
+
+    // The Named ranges panel: define reusable names for ranges + scalars and
+    // reference them from formulas.
+    "named-ranges": async () => {
+      const ctx = await makeContext(browser, "alice");
+      const page = await ctx.newPage();
+      await gotoWorkbook(page, wbId);
+      await page.locator("button", { hasText: "Named ranges" }).click();
+      await page.locator(".named-ranges-panel").waitFor({ state: "visible", timeout: 10_000 });
+      await page
+        .locator('[data-testid="named-range-row"]')
+        .first()
+        .waitFor({ timeout: 10_000 });
+      await freezeVolatile(page);
+      await page.screenshot({ path: out("named-ranges") });
+      await ctx.close();
     },
   };
 }

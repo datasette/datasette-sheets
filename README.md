@@ -26,6 +26,23 @@ cursors, name labels, and avatars live as they move around the sheet:
 
 ![Live collaboration](docs/screenshots/collaboration.png)
 
+Editing a formula — a live signature-help tooltip and coloured highlighting of
+the referenced range:
+
+![Formula editing](docs/screenshots/formula-editing.png)
+
+Autocomplete merges built-in functions with the sheet's named ranges:
+
+![Formula autocomplete](docs/screenshots/autocomplete.png)
+
+Define reusable names for ranges and scalars in the Named ranges panel:
+
+![Named ranges](docs/screenshots/named-ranges.png)
+
+Multiple sheets per workbook, with per-tab rename / colour / move / delete:
+
+![Sheet tabs](docs/screenshots/sheet-tabs.png)
+
 These images are regenerated with `just shots` (see Development below).
 
 ## Installation
