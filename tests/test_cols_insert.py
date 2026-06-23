@@ -136,9 +136,7 @@ async def test_insert_count_zero_returns_empty():
 @pytest.mark.asyncio
 async def test_insert_negative_at_returns_empty():
     ds, db_name = make_datasette()
-    wb_id, sheet_id = await create_sheet_with_cells(
-        ds, db_name, [(0, 0, "c0")]
-    )
+    wb_id, sheet_id = await create_sheet_with_cells(ds, db_name, [(0, 0, "c0")])
 
     resp = await ds.client.post(
         f"/{db_name}/-/sheets/api/workbooks/{wb_id}/sheets/{sheet_id}/columns/insert",
@@ -192,8 +190,7 @@ async def test_column_metadata_table_shifts_too():
         content=json.dumps({"at": 1, "count": 1}),
     )
     after = dict(
-        (c, w)
-        for (c, _n, w) in await get_column_metadata(ds, db_name, sheet_id)
+        (c, w) for (c, _n, w) in await get_column_metadata(ds, db_name, sheet_id)
     )
     assert after[0] == 100
     assert after.get(1, 100) == 100  # new blank col — no row in the metadata table
@@ -245,9 +242,7 @@ async def test_insert_excludes_sending_client_from_broadcast():
     try:
         await ds.client.post(
             f"/{db_name}/-/sheets/api/workbooks/{wb_id}/sheets/{sheet_id}/columns/insert",
-            content=json.dumps(
-                {"at": 0, "count": 1, "client_id": "sender"}
-            ),
+            content=json.dumps({"at": 0, "count": 1, "client_id": "sender"}),
         )
         assert sender_q.qsize() == 0
         assert other_q.qsize() == 1

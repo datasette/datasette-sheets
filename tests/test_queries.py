@@ -1078,9 +1078,7 @@ def test_upsert_named_range_is_case_insensitive(conn):
 def test_list_named_ranges_sorts_case_insensitively(conn):
     sheet = _insert_sheet(conn)
     for name in ["zebra", "Apple", "mango"]:
-        _queries.upsert_named_range(
-            conn, sheet_id=sheet.id, name=name, definition="=1"
-        )
+        _queries.upsert_named_range(conn, sheet_id=sheet.id, name=name, definition="=1")
     names = [r.name for r in _queries.list_named_ranges(conn, sheet_id=sheet.id)]
     # ORDER BY ... COLLATE NOCASE puts Apple, mango, zebra regardless
     # of the stored case.

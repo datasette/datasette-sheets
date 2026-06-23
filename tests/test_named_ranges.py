@@ -42,8 +42,7 @@ async def post_cells(ds, db_name, wb_id, sheet_id, cells):
         content=json.dumps(
             {
                 "changes": [
-                    {"row_idx": r, "col_idx": c, "raw_value": v}
-                    for (r, c, v) in cells
+                    {"row_idx": r, "col_idx": c, "raw_value": v} for (r, c, v) in cells
                 ]
             }
         ),

@@ -29,7 +29,7 @@ def make_datasette():
             [tmp.name],
             config={"permissions": {"datasette-sheets-access": True}},
         ),
-        os.path.basename(tmp.name).replace(".db", "")
+        os.path.basename(tmp.name).replace(".db", ""),
     )
 
 
@@ -48,8 +48,7 @@ async def post_cells(ds, db_name, wb_id, sheet_id, cells):
         content=json.dumps(
             {
                 "changes": [
-                    {"row_idx": r, "col_idx": c, "raw_value": v}
-                    for (r, c, v) in cells
+                    {"row_idx": r, "col_idx": c, "raw_value": v} for (r, c, v) in cells
                 ]
             }
         ),

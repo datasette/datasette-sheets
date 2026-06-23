@@ -37,7 +37,11 @@ async def make_sheet(ds, db_name):
         content=json.dumps({"name": "T"}),
     )
     data = resp.json()
-    return SheetDB(ds.get_database(db_name)), data["workbook"]["id"], data["sheet"]["id"]
+    return (
+        SheetDB(ds.get_database(db_name)),
+        data["workbook"]["id"],
+        data["sheet"]["id"],
+    )
 
 
 async def post_cells(ds, db_name, wb_id, sheet_id, cells):
@@ -46,8 +50,7 @@ async def post_cells(ds, db_name, wb_id, sheet_id, cells):
         content=json.dumps(
             {
                 "changes": [
-                    {"row_idx": r, "col_idx": c, "raw_value": v}
-                    for (r, c, v) in cells
+                    {"row_idx": r, "col_idx": c, "raw_value": v} for (r, c, v) in cells
                 ]
             }
         ),

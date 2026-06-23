@@ -45,14 +45,10 @@ def _serialize(row) -> dict:
     output=ListDropdownRulesResponse,
 )
 @check_permission()
-async def list_dropdown_rules(
-    datasette, request, database: str, workbook_id: int
-):
+async def list_dropdown_rules(datasette, request, database: str, workbook_id: int):
     db = await ensure_db(datasette, database)
     rules = await db.list_dropdown_rules(workbook_id)
-    return Response.json(
-        {"dropdown_rules": [_serialize(r) for r in rules]}
-    )
+    return Response.json({"dropdown_rules": [_serialize(r) for r in rules]})
 
 
 @router.POST(

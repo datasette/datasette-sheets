@@ -120,9 +120,7 @@ async def test_comma_in_option_value_rejected():
 async def test_empty_options_rejected():
     ds, db_name = make_datasette()
     wb_id, _ = await make_workbook_and_sheet(ds, db_name)
-    resp = await create_rule(
-        ds, db_name, wb_id, {"multi": False, "options": []}
-    )
+    resp = await create_rule(ds, db_name, wb_id, {"multi": False, "options": []})
     assert resp.status_code == 400
 
 
@@ -286,9 +284,7 @@ async def test_workbook_delete_cleans_up_dropdown_rules():
     )
 
     # Delete the workbook
-    delr = await ds.client.post(
-        f"/{db_name}/-/sheets/api/workbooks/{wb_id}/delete"
-    )
+    delr = await ds.client.post(f"/{db_name}/-/sheets/api/workbooks/{wb_id}/delete")
     assert delr.status_code == 200
 
     # Rule rows should be gone — query the table directly.

@@ -1325,11 +1325,7 @@ def _validate_dropdown_changes(conn, changes: list[CellChange]) -> None:
         rule_id = fmt.get("dropdownRuleId")
         # ``isinstance(True, int)`` is true (bool is an int subclass), so
         # the explicit ``not isinstance(rule_id, bool)`` excludes it.
-        if (
-            not isinstance(rule_id, int)
-            or isinstance(rule_id, bool)
-            or rule_id < 1
-        ):
+        if not isinstance(rule_id, int) or isinstance(rule_id, bool) or rule_id < 1:
             raise ValueError("controlType='dropdown' requires a dropdownRuleId")
         if rule_id not in rule_ids:
             row = _lookup_rule_anywhere(conn, rule_id)

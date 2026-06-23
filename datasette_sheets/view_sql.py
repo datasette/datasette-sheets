@@ -75,11 +75,7 @@ def validate_view_name(name: str) -> None:
 def validate_sheet_id(sheet_id: int) -> None:
     # ``isinstance(True, int)`` is true (bool is an int subclass) — exclude
     # it explicitly so a stray boolean can't masquerade as a sheet id.
-    if (
-        not isinstance(sheet_id, int)
-        or isinstance(sheet_id, bool)
-        or sheet_id < 1
-    ):
+    if not isinstance(sheet_id, int) or isinstance(sheet_id, bool) or sheet_id < 1:
         raise ValueError("Invalid sheet_id: must be a positive integer")
 
 

@@ -216,8 +216,7 @@ async def test_column_metadata_table_shifts_too():
     )
 
     before = dict(
-        (c, w)
-        for (c, _n, w) in await get_column_metadata(ds, db_name, sheet_id)
+        (c, w) for (c, _n, w) in await get_column_metadata(ds, db_name, sheet_id)
     )
     assert before[1] == 111 and before[2] == 222 and before[3] == 333
 
@@ -227,8 +226,7 @@ async def test_column_metadata_table_shifts_too():
         content=json.dumps({"col_indices": [2]}),
     )
     after = dict(
-        (c, w)
-        for (c, _n, w) in await get_column_metadata(ds, db_name, sheet_id)
+        (c, w) for (c, _n, w) in await get_column_metadata(ds, db_name, sheet_id)
     )
     # Original 0, 1 → unchanged. Original 3, 4 → shifted to 2, 3. Cols
     # 5..14 carry the defaults from sheet creation (width=100) and shift
@@ -327,9 +325,15 @@ async def test_view_reflects_column_delete():
         ds,
         db_name,
         [
-            (0, 0, "Name"), (0, 1, "Drop"), (0, 2, "Age"),
-            (1, 0, "Alex"), (1, 1, "x"), (1, 2, "10"),
-            (2, 0, "Brian"), (2, 1, "y"), (2, 2, "20"),
+            (0, 0, "Name"),
+            (0, 1, "Drop"),
+            (0, 2, "Age"),
+            (1, 0, "Alex"),
+            (1, 1, "x"),
+            (1, 2, "10"),
+            (2, 0, "Brian"),
+            (2, 1, "y"),
+            (2, 2, "20"),
         ],
     )
 
@@ -369,7 +373,10 @@ async def test_formulas_recalculate_after_column_delete():
         ds,
         db_name,
         [
-            (0, 0, "10"), (0, 1, "99"), (0, 2, "20"), (0, 3, "=A1+B1"),
+            (0, 0, "10"),
+            (0, 1, "99"),
+            (0, 2, "20"),
+            (0, 3, "=A1+B1"),
         ],
     )
 
@@ -617,6 +624,7 @@ async def test_sheet_updated_at_advances_on_delete():
     ).first()["updated_at"]
     assert after > before
 
+
 # ---------------------------------------------------------------------------
 # Column move endpoint (POST /columns/move)
 # ---------------------------------------------------------------------------
@@ -801,7 +809,6 @@ async def test_move_column_noop_does_not_broadcast():
     assert resp.json() == {"moved": None}
 
     assert queue.qsize() == 0
-
 
 
 # ---------------------------------------------------------------------------
