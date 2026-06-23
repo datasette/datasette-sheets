@@ -4,6 +4,7 @@ from datasette import Response
 from datasette_plugin_router import Body
 
 from ..router import router, check_permission
+from ..permissions import seed_owner_manager_grant
 from .helpers import ensure_db, actor_id, read_json_body
 from .schemas import UpdateWorkbookBody, WorkbookResponse
 
@@ -12,7 +13,7 @@ WB = DB + r"/(?P<workbook_id>\d+)"
 
 
 @router.GET(DB + r"$")
-@check_permission()
+@check_permission("use")
 async def list_workbooks(datasette, request, database: str):
     db = await ensure_db(datasette, database)
     workbooks = await db.list_workbooks()
@@ -33,14 +34,18 @@ async def list_workbooks(datasette, request, database: str):
 
 
 @router.POST(DB + r"/create" + r"$")
-@check_permission()
+@check_permission("use")
 async def create_workbook(datasette, request, database: str):
     db = await ensure_db(datasette, database)
     body = await read_json_body(request)
+    creator = actor_id(request)
     workbook = await db.create_workbook(
-        body.get("name", "Untitled Workbook"), actor_id=actor_id(request)
+        body.get("name", "Untitled Workbook"), actor_id=creator
     )
     sheet = await db.create_sheet(workbook.id, "Sheet 1")
+    # Ownership = an acl Manager grant on the new workbook. No-op for anonymous
+    # creates (creator falsy).
+    await seed_owner_manager_grant(datasette, database, workbook.id, creator)
     return Response.json(
         {
             "workbook": {
@@ -56,7 +61,7 @@ async def create_workbook(datasette, request, database: str):
 
 
 @router.GET(WB + r"$")
-@check_permission()
+@check_permission("view")
 async def get_workbook(datasette, request, database: str, workbook_id: int):
     db = await ensure_db(datasette, database)
     workbook = await db.get_workbook(workbook_id)
@@ -89,7 +94,7 @@ async def get_workbook(datasette, request, database: str, workbook_id: int):
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/update$",
     output=WorkbookResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def update_workbook(
     datasette,
     request,
@@ -116,7 +121,7 @@ async def update_workbook(
 
 
 @router.POST(WB + r"/delete" + r"$")
-@check_permission()
+@check_permission("edit")
 async def delete_workbook(datasette, request, database: str, workbook_id: int):
     db = await ensure_db(datasette, database)
     workbook = await db.get_workbook(workbook_id)

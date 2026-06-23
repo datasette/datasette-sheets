@@ -45,7 +45,7 @@ PRESENCE_COLORS = [
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/cells$",
     output=UpdateCellsResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def update_cells(
     datasette,
     request,
@@ -118,7 +118,7 @@ async def update_cells(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/columns$",
     output=UpdateColumnsResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def update_columns(
     datasette,
     request,
@@ -153,7 +153,7 @@ async def update_columns(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/rows/delete$",
     output=DeleteRowsResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def delete_rows(
     datasette,
     request,
@@ -188,7 +188,7 @@ async def delete_rows(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/columns/delete$",
     output=DeleteColumnsResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def delete_columns(
     datasette,
     request,
@@ -222,7 +222,7 @@ async def delete_columns(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/columns/insert$",
     output=InsertColumnsResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def insert_columns(
     datasette,
     request,
@@ -257,7 +257,7 @@ async def insert_columns(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/columns/move$",
     output=MoveColumnsResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def move_columns(
     datasette,
     request,
@@ -300,7 +300,7 @@ async def move_columns(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/rows/move$",
     output=MoveRowsResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def move_rows(
     datasette,
     request,
@@ -338,21 +338,55 @@ async def move_rows(
     return Response.json({"moved": moved})
 
 
+def _is_agent_actor(actor_id: str, resolved: dict) -> bool:
+    """Heuristic for "is this collaborator an agent" → 🤖 badge.
+
+    Prefers an explicit ``kind == "agent"`` field if the resolver supplied one
+    (datasette-agent's ``datasette_resolve_actors`` does), else falls back to an
+    ``agent/`` id prefix convention.
+    """
+    kind = (resolved or {}).get("kind")
+    if kind == "agent":
+        return True
+    return str(actor_id).startswith("agent/")
+
+
 async def _resolve_actor_info(datasette, request) -> dict:
+    """Resolve the presence row for the requesting actor via the profiles
+    directory (``datasette.actors_from_ids``).
+
+    Names + avatars come from the one directory rather than whatever the auth
+    plugin stuffed into ``request.actor``: profiles contributes display name /
+    photo, datasette-agent contributes agent identities. Falls back to the raw
+    actor when the directory has nothing (the default hook just echoes
+    ``{"id": ...}``). Agent collaborators get a 🤖 prefix on their display name.
+    """
     actor = request.actor or {}
     aid = actor.get("id", "anonymous")
-    display_name = actor.get("name") or aid
-    pfp = actor.get("profile_picture_url")
-    try:
-        from datasette_user_profiles.routes.pages import get_profile
 
-        profile = await get_profile(datasette, aid)
-        if profile.display_name:
-            display_name = profile.display_name
-        if not pfp and profile.has_photo:
-            pfp = datasette.urls.path(f"/-/profile/pic/{aid}")
-    except (ImportError, Exception):
-        pass
+    # Single-directory resolution. ``actors_from_ids`` returns {id: {actor}}.
+    resolved = {}
+    try:
+        resolved_map = await datasette.actors_from_ids([aid])
+        resolved = resolved_map.get(aid) or {}
+    except Exception:
+        resolved = {}
+
+    # Display name: prefer the directory's name/display, then the auth actor's
+    # name, then the id.
+    display_name = (
+        resolved.get("name")
+        or resolved.get("display")
+        or resolved.get("display_name")
+        or actor.get("name")
+        or aid
+    )
+    # Avatar: prefer the directory's, then the auth actor's.
+    pfp = resolved.get("profile_picture_url") or actor.get("profile_picture_url")
+
+    if _is_agent_actor(aid, resolved):
+        display_name = f"🤖 {display_name}"
+
     return {
         "actor_id": aid,
         "display_name": display_name,
@@ -365,7 +399,7 @@ async def _resolve_actor_info(datasette, request) -> dict:
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/presence$",
     output=OkResponse,
 )
-@check_permission()
+@check_permission("view")
 async def presence(
     datasette,
     request,

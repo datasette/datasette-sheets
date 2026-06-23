@@ -1,7 +1,191 @@
+import logging
+
 from sqlite_utils import Database
 from sqlite_migrate import Migrations
 
+logger = logging.getLogger("datasette_sheets.migrations")
+
 migrations = Migrations("datasette-sheets")
+
+
+# --- ACL backfill -----------------------------------------------------------
+#
+# Before sharing-v2, anyone with the coarse datasette-sheets-access permission
+# could see and edit every workbook. After, access is per-workbook acl grants.
+# This one-time backfill seeds the *creator* (``_datasette_sheets_workbook
+# .created_by``) a Manager grant on each existing workbook so owners aren't
+# locked out on upgrade.
+#
+# DECISIONS.md: default access on upgrade is CLOSED (owner-only). We deliberately
+# do NOT grant _signed_in / '*' — existing collaborators must be re-granted
+# through the share dialog. This is a behaviour change (global -> per-workbook);
+# the log line below states what the backfill did.
+#
+# Idempotent on two levels: a per-database marker row in the internal DB
+# short-circuits repeat runs, and acl's ``grant`` only inserts actions a
+# principal doesn't already hold (so even a forced re-run produces no duplicate
+# grants or audit rows).
+
+_ACL_BACKFILL_TABLE = "_datasette_sheets_acl_backfill"
+
+
+def _acl_helpers():
+    """Resolve the resource type + acl grant API + roles registry builder.
+
+    Imported inside the function (not at module top) so this module stays
+    loadable by the bare-``exec`` path that ``sqlite-utils migrate`` uses for
+    codegen — a top-level relative ``.permissions`` import would raise there.
+    datasette-acl is a hard dependency, so its imports never fail.
+    """
+    from .permissions import SHEETS_WORKBOOK_RESOURCE_TYPE
+    from datasette_acl.grants import grant as acl_grant, Principal
+    from datasette_acl.roles import build_roles_registry
+
+    return SHEETS_WORKBOOK_RESOURCE_TYPE, acl_grant, Principal, build_roles_registry
+
+
+async def _ensure_acl_tables(datasette) -> None:
+    """Make sure acl's internal-DB tables exist before we grant.
+
+    The backfill runs from sheets' ``startup`` hook; acl creates its tables in
+    *its* startup hook, and the relative ordering of two plugins' startup hooks
+    isn't guaranteed. If sheets ran first the ``acl`` tables wouldn't exist yet
+    and ``grant`` would raise ``no such table: acl_resources``. acl 0.6 builds
+    its schema from a sqlite-migrate set (``internal_migrations``) rather than
+    the old ``CREATE_TABLES_SQL`` script, so we apply that same migration set
+    here — idempotent, and it removes the ordering dependency.
+    """
+    from datasette_acl.internal_migrations import internal_migrations
+    from sqlite_utils import Database
+
+    def _apply(connection):
+        internal_migrations.apply(Database(connection))
+
+    await datasette.get_internal_database().execute_write_fn(_apply)
+
+
+def _ensure_roles_registry(datasette, resource_type, build_roles_registry) -> bool:
+    """Confirm acl knows the ``sheets-workbook`` roles before we grant by role.
+
+    acl's ``grant(role=...)`` resolves role names against the
+    ``datasette_acl_roles`` hook. As of acl 0.6 ``build_roles_registry`` is a
+    plain synchronous call that gathers the hook on demand (no cached
+    ``datasette._acl_roles_registry`` to pre-warm, so the old startup-ordering
+    dance is gone). We simply confirm our resource type is present — it always
+    will be, since sheets' own ``datasette_acl_roles`` hook contributes the
+    roles.
+    """
+    return resource_type in build_roles_registry(datasette)
+
+
+async def _ensure_backfill_marker_table(internal_db) -> None:
+    await internal_db.execute_write(
+        f"CREATE TABLE IF NOT EXISTS {_ACL_BACKFILL_TABLE} ("
+        "database_name TEXT PRIMARY KEY, migrated_at TEXT NOT NULL)"
+    )
+
+
+async def _backfill_done_for(internal_db, database_name) -> bool:
+    rows = (
+        await internal_db.execute(
+            f"SELECT 1 FROM {_ACL_BACKFILL_TABLE} WHERE database_name = ?",
+            [database_name],
+        )
+    ).rows
+    return bool(rows)
+
+
+async def _mark_backfill_done(internal_db, database_name) -> None:
+    await internal_db.execute_write(
+        f"INSERT OR IGNORE INTO {_ACL_BACKFILL_TABLE} (database_name, migrated_at) "
+        "VALUES (?, strftime('%Y-%m-%dT%H:%M:%fZ','now'))",
+        [database_name],
+    )
+
+
+async def _database_has_workbook_table(db) -> bool:
+    rows = (
+        await db.execute(
+            "SELECT 1 FROM sqlite_master "
+            "WHERE type = 'table' AND name = '_datasette_sheets_workbook'"
+        )
+    ).rows
+    return bool(rows)
+
+
+async def backfill_workbook_acls(datasette, *, force: bool = False) -> dict:
+    """One-time per-database backfill of creator -> Manager grants.
+
+    For every attached database that holds a ``_datasette_sheets_workbook``
+    table, grant each workbook's ``created_by`` the Manager role on
+    ``SheetsWorkbookResource(database, workbook_id)``. Owner-only (CLOSED) per
+    DECISIONS.md — no general-access (``_signed_in`` / ``*``) grants.
+
+    Skips anonymous-created workbooks (NULL/empty ``created_by``). Guarded by a
+    per-database marker in the internal DB; ``force=True`` bypasses the marker
+    for tests / a deliberate re-run (still idempotent via acl's grant helper).
+    Returns a stats dict for logging / assertions.
+    """
+    stats = {"databases": 0, "owners": 0, "skipped": False}
+
+    resource_type, acl_grant, Principal, build_roles_registry = _acl_helpers()
+    if not _ensure_roles_registry(datasette, resource_type, build_roles_registry):
+        stats["skipped"] = True
+        return stats
+
+    # Decouple from acl-vs-sheets startup hook ordering.
+    await _ensure_acl_tables(datasette)
+
+    internal_db = datasette.get_internal_database()
+    await _ensure_backfill_marker_table(internal_db)
+
+    for database_name, db in datasette.databases.items():
+        # The internal DB never holds sheets workbooks; skip it.
+        if database_name == "_internal":
+            continue
+        if not force and await _backfill_done_for(internal_db, database_name):
+            continue
+        if not await _database_has_workbook_table(db):
+            # No sheets data here (yet). Don't set the marker — if workbooks are
+            # created later they'll get the create-path grant, and we needn't
+            # re-scan an empty DB anyway since per-workbook grants are seeded on
+            # create going forward.
+            continue
+
+        workbooks = (
+            await db.execute("SELECT id, created_by FROM _datasette_sheets_workbook")
+        ).rows
+        granted_here = 0
+        for row in workbooks:
+            created_by = row["created_by"]
+            if not created_by:
+                # Anonymous-created workbook — nobody owns it; CLOSED means it
+                # stays inaccessible until explicitly granted. (Intentional.)
+                continue
+            await acl_grant(
+                datasette,
+                resource_type,
+                database_name,
+                str(row["id"]),
+                principal=Principal.actor(str(created_by)),
+                role="Manager",
+                by_actor=str(created_by),
+            )
+            granted_here += 1
+
+        await _mark_backfill_done(internal_db, database_name)
+        stats["databases"] += 1
+        stats["owners"] += granted_here
+
+    if stats["databases"]:
+        logger.info(
+            "datasette-sheets: backfilled workbook ACLs CLOSED (owner-only) "
+            "for %(databases)s database(s), %(owners)s creator grant(s); "
+            "no general-access grants were created (existing collaborators must "
+            "be re-granted via the share dialog)",
+            stats,
+        )
+    return stats
 
 
 @migrations()

@@ -27,7 +27,7 @@ def parse_range(range_str: str) -> tuple[int, int, int, int] | None:
 
 
 @router.GET(SH + r"/data" + r"$")
-@check_permission()
+@check_permission("view")
 async def sheet_data(
     datasette, request, database: str, workbook_id: int, sheet_id: int
 ):
@@ -81,7 +81,7 @@ async def sheet_data(
 
 
 @router.GET(SH + r"/data/(?P<cell_id>[A-Za-z]+\d+)$")
-@check_permission()
+@check_permission("view")
 async def sheet_cell_data(
     datasette, request, database: str, workbook_id: int, sheet_id: int, cell_id: str
 ):

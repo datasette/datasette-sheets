@@ -30,7 +30,7 @@ from .schemas import (
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/filter$",
     output=GetFilterResponse,
 )
-@check_permission()
+@check_permission("view")
 async def get_filter(
     datasette, request, database: str, workbook_id: int, sheet_id: int
 ):
@@ -43,7 +43,7 @@ async def get_filter(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/filter/create$",
     output=FilterResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def create_filter(
     datasette,
     request,
@@ -88,7 +88,7 @@ async def create_filter(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/filter/update$",
     output=FilterResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def update_filter(
     datasette,
     request,
@@ -160,7 +160,7 @@ async def update_filter(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/filter/delete$",
     output=OkResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def delete_filter(
     datasette,
     request,

@@ -3,13 +3,19 @@
 import asyncio, uuid
 from datasette import Forbidden
 from ..broadcast import get_channel_manager, format_sse, SSE_HEARTBEAT
-from ..router import PERMISSION_NAME
+from ..permissions import can_use_sheets, can_view_workbook
 
 HEARTBEAT_INTERVAL = 30
 
 
 async def api_events(datasette, request, send, receive):
-    if not await datasette.allowed(action=PERMISSION_NAME, actor=request.actor):
+    # Raw-ASGI handler — no router decorator, so gate inline. Coarse instance
+    # gate first, then per-workbook view (this is a read stream).
+    database = request.url_vars["database"]
+    workbook_id = int(request.url_vars["workbook_id"])
+    if not await can_use_sheets(datasette, request.actor):
+        raise Forbidden("Permission denied")
+    if not await can_view_workbook(datasette, request.actor, database, workbook_id):
         raise Forbidden("Permission denied")
     sheet_id = int(request.url_vars["sheet_id"])
     client_id = request.args.get("client_id", str(uuid.uuid4()))

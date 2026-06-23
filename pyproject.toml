@@ -11,6 +11,12 @@ classifiers=[
 requires-python = ">=3.10"
 dependencies = [
     "datasette>1a",
+    # Per-workbook sharing is built on datasette-acl (grants/roles) and the
+    # reusable <datasette-acl-share-dialog> from datasette-acl-share — both hard
+    # deps: the permission model resolves every per-workbook check through acl
+    # and the workbook page always hosts the share dialog.
+    "datasette-acl>=0.6a1",
+    "datasette-acl-share>=0.0.1a7",
     "datasette-plugin-router>=0.0.1a3",
     "datasette-vite>=0.0.1a4",
     "sqlite-migrate>=0.1b0",
@@ -28,7 +34,7 @@ dev = [
     "pytest-asyncio",
     "datasette-debug-gotham",
     "datasette-sidebar",
-    "datasette-user-profiles==0.1.0a6",
+    "datasette-user-profiles>=0.1.0a6",
 ]
 
 [build-system]

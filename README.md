@@ -17,6 +17,34 @@ datasette install datasette-sheets
 
 Usage instructions go here.
 
+## Permissions
+
+datasette-sheets uses a two-layer permission model:
+
+- **`datasette-sheets-access`** — a coarse, instance-wide gate: "can this actor
+  use sheets at all". Grant it the usual way (the `permissions:` config block,
+  datasette-acl, etc.). Every sheets route checks it first.
+- **Per-workbook access** — resolved by
+  [datasette-acl](https://github.com/datasette/datasette-acl) against the
+  `sheets-workbook` resource (parent = database name, child = workbook id), via
+  the `sheets-view` / `sheets-edit` / `sheets-manage` actions and the
+  Viewer / Editor / Manager roles. The workbook **creator** is granted Manager
+  automatically on create. Sharing is managed from the workbook's Share button.
+
+### Upgrade behaviour (CLOSED by default)
+
+Before this version, anyone with `datasette-sheets-access` could see and edit
+**every** workbook. After upgrading, access is per-workbook. On first startup a
+one-time backfill grants each existing workbook's creator (`created_by`) the
+**Manager** role so owners are never locked out.
+
+The upgrade default is **CLOSED (owner-only)**: the backfill does **not** grant
+`_signed_in` or `*`, so workbooks that used to be visible to everyone become
+visible only to their creator. **Existing collaborators must be explicitly
+re-granted** through the Share dialog (or the datasette-acl API). Workbooks
+created anonymously (no `created_by`) get no owner grant and stay inaccessible
+until granted. The backfill logs a one-line summary of what it did.
+
 ## Development
 
 To set up this plugin locally, first checkout the code. You can confirm it is available like this:

@@ -44,7 +44,7 @@ def _serialize(row) -> dict:
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/dropdown-rules$",
     output=ListDropdownRulesResponse,
 )
-@check_permission()
+@check_permission("view")
 async def list_dropdown_rules(datasette, request, database: str, workbook_id: int):
     db = await ensure_db(datasette, database)
     rules = await db.list_dropdown_rules(workbook_id)
@@ -55,7 +55,7 @@ async def list_dropdown_rules(datasette, request, database: str, workbook_id: in
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/dropdown-rules/create$",
     output=DropdownRuleResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def create_dropdown_rule(
     datasette,
     request,
@@ -83,7 +83,7 @@ async def create_dropdown_rule(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/dropdown-rules/(?P<rule_id>\d+)/update$",
     output=DropdownRuleResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def update_dropdown_rule(
     datasette,
     request,
@@ -117,7 +117,7 @@ async def update_dropdown_rule(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/dropdown-rules/(?P<rule_id>\d+)/delete$",
     output=OkResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def delete_dropdown_rule(
     datasette, request, database: str, workbook_id: int, rule_id: int
 ):

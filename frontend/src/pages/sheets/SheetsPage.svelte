@@ -52,13 +52,39 @@
     database: string;
     workbookId: number;
     workbookName?: string;
+    // Sharing (phase-08/04). The <datasette-acl-share-dialog> bundle is included on
+    // the workbook page by the plugin's extra_js_urls hook, registering the
+    // custom element before this component mounts.
+    canManage?: boolean;
+    selfActor?: string;
+    csrftoken?: string;
   }
 
   // ``workbookName`` is rebound locally after a successful rename, so
   // it's pulled in as ``$bindable``. The parent (``index.ts``) doesn't
   // bind, so the write stays internal — same shape used by other
   // self-renaming subtrees.
-  let { database, workbookId, workbookName = $bindable("") }: Props = $props();
+  let {
+    database,
+    workbookId,
+    workbookName = $bindable(""),
+    canManage = false,
+    selfActor = "",
+    csrftoken = "",
+  }: Props = $props();
+
+  // Share dialog state. The dialog itself reads acl and renders the
+  // people-with-access list + general access; we host it in a modal and only
+  // expose the button to managers (server-computed ``canManage``).
+  let shareOpen = $state(false);
+  // actor-json the dialog reads to mark the current user's row "(you)".
+  let actorJson = $derived(selfActor ? JSON.stringify({ id: selfActor }) : "");
+  function openShare() {
+    shareOpen = true;
+  }
+  function closeShare() {
+    shareOpen = false;
+  }
 
   let loading = $state(true);
   let error: string | null = $state(null);
@@ -251,6 +277,18 @@
       >
         Named ranges
       </button>
+      <!-- Share button — managers only (server-computed canManage). Opens a
+           modal hosting <datasette-acl-share-dialog> for this workbook. -->
+      {#if canManage}
+        <button
+          type="button"
+          class="name-btn share-btn"
+          onclick={openShare}
+          title="Share this workbook"
+        >
+          Share
+        </button>
+      {/if}
       <!-- [sheet.save.indicator] -->
       <!-- ``data-save-status`` is always present so e2e tests can poll it
            via a stable locator (see ``e2e/helpers.ts::waitForAutoSave``). -->
@@ -374,6 +412,49 @@
         {workbookId}
         onClose={closeCreateViewDialog}
       />
+    {/if}
+    {#if shareOpen}
+      <!-- The <datasette-acl-share-dialog> custom element renders the
+           people-with-access list + general access + add-box and talks to the
+           acl JSON API directly. We wrap it in a modal so the toolbar "Share"
+           button → dialog UX matches paper/places. resource-type/parent/child
+           match SheetsWorkbookResource (parent = database, child = workbook id). -->
+      <div
+        class="share-modal-backdrop"
+        role="presentation"
+        onclick={closeShare}
+        onkeydown={(e) => {
+          if (e.key === "Escape") closeShare();
+        }}
+      >
+        <div
+          class="share-modal"
+          role="dialog"
+          aria-label="Share workbook"
+          tabindex="-1"
+          onclick={(e) => e.stopPropagation()}
+          onkeydown={(e) => e.stopPropagation()}
+        >
+          <datasette-acl-share-dialog
+            resource-type="sheets-workbook"
+            parent={database}
+            child={String(workbookId)}
+            resource-label={workbookName}
+            actor-json={actorJson}
+            {csrftoken}
+            features="people,groups,agents,public"
+          ></datasette-acl-share-dialog>
+          <div class="share-modal-footer">
+            <button
+              type="button"
+              class="share-modal-close"
+              onclick={closeShare}
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
     {/if}
   </div>
 {/if}
@@ -694,5 +775,43 @@
     text-align: center;
     color: var(--sheet-error);
     font-family: var(--sheet-font);
+  }
+
+  /* Modal wrapper around the <datasette-acl-share-dialog> custom element. */
+  .share-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    z-index: 1000;
+    padding: 48px 16px;
+    overflow-y: auto;
+  }
+  .share-modal {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.28);
+    width: min(560px, 100%);
+    max-height: calc(100vh - 96px);
+    overflow-y: auto;
+  }
+  .share-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 12px 16px 16px;
+  }
+  .share-modal-close {
+    border: 1px solid #c8ccd0;
+    background: #276890;
+    color: #fff;
+    border-radius: 6px;
+    padding: 6px 18px;
+    font-size: 14px;
+    cursor: pointer;
+  }
+  .share-modal-close:hover {
+    background: #1f5577;
   }
 </style>

@@ -184,9 +184,6 @@ test-all *flags:
 
 dev *flags:
   uv run \
-    --with ../datasette-sidebar \
-    --with ../datasette-user-profiles \
-    --with ../datasette-debug-gotham \
     datasette \
       -s permissions.datasette-sheets-access true \
       -s permissions.datasette-sidebar-access true \
