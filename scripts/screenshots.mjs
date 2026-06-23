@@ -44,7 +44,12 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const PLUGINS_DIR = resolve(HERE, "shot-plugins");
 const OUT = resolve(HERE, "../docs/screenshots");
 
-const VIEWPORT = { width: 1280, height: 820 };
+// Narrow-ish: the demo data only fills columns A–D, so a wide viewport leaves
+// a lot of empty grid. This frames roughly A–F with a little breathing room.
+const VIEWPORT = { width: 900, height: 560 };
+// Taller variant for shots whose floating UI drops below the active cell (the
+// formula autocomplete dropdown), so it isn't clipped at the viewport bottom.
+const VIEWPORT_TALL = { width: 900, height: 760 };
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // ---------------------------------------------------------------------------
@@ -196,10 +201,11 @@ async function freezeVolatile(page) {
 }
 
 // Make a per-actor context: stability CSS injected on every navigation + that
-// actor's signed cookie.
-async function makeContext(browser, actorId) {
+// actor's signed cookie. A taller viewport can be requested for shots whose
+// floating UI (e.g. the autocomplete dropdown) needs vertical room.
+async function makeContext(browser, actorId, viewport = VIEWPORT) {
   const ctx = await browser.newContext({
-    viewport: VIEWPORT,
+    viewport,
     deviceScaleFactor: 2,
   });
   await ctx.addInitScript((css) => {
@@ -359,7 +365,7 @@ function buildShots(browser, wbId) {
     // The merged autocomplete menu — built-in functions (TIME, TODAY) AND the
     // sheet's named ranges (TaxRate) share one list as you type.
     autocomplete: async () => {
-      const ctx = await makeContext(browser, "alice");
+      const ctx = await makeContext(browser, "alice", VIEWPORT_TALL);
       const page = await ctx.newPage();
       await gotoWorkbook(page, wbId);
       await page.locator('[data-cell-id="B8"]').click();
