@@ -13,5 +13,8 @@
 <div id="sheets-app" class="sheets-app-container"
      data-database="{{ database }}"
      data-workbook-id="{{ workbook_id }}"
-     data-workbook-name="{{ workbook_name }}"></div>
+     data-workbook-name="{{ workbook_name }}"
+     data-can-manage="{{ '1' if can_manage else '0' }}"
+     data-self-actor="{{ self_actor }}"
+     data-csrftoken="{{ csrftoken() }}"></div>
 {% endblock %}

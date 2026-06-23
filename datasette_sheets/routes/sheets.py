@@ -23,7 +23,7 @@ from .schemas import (
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets$",
     output=ListSheetsResponse,
 )
-@check_permission()
+@check_permission("view")
 async def list_sheets(datasette, request, database: str, workbook_id: int):
     db = await ensure_db(datasette, database)
     sheets = await db.list_sheets(workbook_id)
@@ -48,7 +48,7 @@ async def list_sheets(datasette, request, database: str, workbook_id: int):
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/create$",
     output=SheetWithColumnsResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def create_sheet(
     datasette,
     request,
@@ -82,7 +82,7 @@ async def create_sheet(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/reorder$",
     output=ReorderSheetsResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def reorder_sheets(
     datasette,
     request,
@@ -119,7 +119,7 @@ async def reorder_sheets(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)$",
     output=GetSheetResponse,
 )
-@check_permission()
+@check_permission("view")
 async def get_sheet(datasette, request, database: str, workbook_id: int, sheet_id: int):
     db = await ensure_db(datasette, database)
     sheet = await db.get_sheet(sheet_id)
@@ -165,7 +165,7 @@ async def get_sheet(datasette, request, database: str, workbook_id: int, sheet_i
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/update$",
     output=SheetResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def update_sheet(
     datasette,
     request,
@@ -202,7 +202,7 @@ async def update_sheet(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/delete$",
     output=OkResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def delete_sheet(
     datasette, request, database: str, workbook_id: int, sheet_id: int
 ):

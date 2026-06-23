@@ -17,7 +17,7 @@ from .schemas import (
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/names$",
     output=ListNamedRangesResponse,
 )
-@check_permission()
+@check_permission("view")
 async def list_named_ranges(
     datasette, request, database: str, workbook_id: int, sheet_id: int
 ):
@@ -41,7 +41,7 @@ async def list_named_ranges(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/names/set$",
     output=SetNamedRangeResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def set_named_range(
     datasette,
     request,
@@ -73,7 +73,7 @@ async def set_named_range(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/names/(?P<name>[^/]+)/delete$",
     output=OkResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def delete_named_range(
     datasette,
     request,

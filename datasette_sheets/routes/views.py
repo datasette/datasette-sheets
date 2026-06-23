@@ -18,7 +18,7 @@ from .schemas import (
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/views$",
     output=ListViewsResponse,
 )
-@check_permission()
+@check_permission("view")
 async def list_views(
     datasette, request, database: str, workbook_id: int, sheet_id: int
 ):
@@ -52,7 +52,7 @@ async def list_views(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/views/create$",
     output=CreateViewResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def create_view(
     datasette,
     request,
@@ -109,7 +109,7 @@ async def create_view(
     r"/(?P<database>[^/]+)/-/sheets/api/workbooks/(?P<workbook_id>\d+)/sheets/(?P<sheet_id>\d+)/views/(?P<view_id>\d+)/delete$",
     output=OkResponse,
 )
-@check_permission()
+@check_permission("edit")
 async def delete_view(
     datasette, request, database: str, workbook_id: int, sheet_id: int, view_id: int
 ):

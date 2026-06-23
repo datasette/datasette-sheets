@@ -11,6 +11,12 @@ classifiers=[
 requires-python = ">=3.10"
 dependencies = [
     "datasette>1a",
+    # Per-workbook sharing is built on datasette-acl (grants/roles) and the
+    # reusable <datasette-acl-share-dialog> from datasette-acl-share — both hard
+    # deps: the permission model resolves every per-workbook check through acl
+    # and the workbook page always hosts the share dialog.
+    "datasette-acl>=0.6a1",
+    "datasette-acl-share>=0.0.1a7",
     "datasette-plugin-router>=0.0.1a3",
     "datasette-vite>=0.0.1a4",
     "sqlite-migrate>=0.1b0",
@@ -30,6 +36,14 @@ dev = [
     "datasette-sidebar",
     "datasette-user-profiles==0.1.0a6",
 ]
+
+# Local-only override: the sharing-v2 acl engine + reusable share dialog are
+# sibling checkouts ahead of their published releases. They're declared as real
+# dependencies above; these source overrides just point local dev/tests at the
+# working copies instead of PyPI.
+[tool.uv.sources]
+datasette-acl = { path = "../datasette-acl", editable = true }
+datasette-acl-share = { path = "../datasette-acl-share", editable = true }
 
 [build-system]
 requires = ["setuptools"]

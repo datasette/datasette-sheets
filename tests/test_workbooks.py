@@ -13,7 +13,13 @@ def make_datasette():
     tmp.close()
     return Datasette(
         [tmp.name],
-        config={"permissions": {"datasette-sheets-access": True}},
+        config={
+            "permissions": {
+                "datasette-sheets-access": True,
+                "sheets-view": True,
+                "sheets-edit": True,
+            }
+        },
     ), os.path.basename(tmp.name).replace(".db", "")
 
 
