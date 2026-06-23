@@ -7,6 +7,27 @@
 
 Custom spreadsheets in Datasette. Work in progress, heavy usage of LLM development. 
 
+## Screenshots
+
+A live spreadsheet over a Datasette database — formulas, formatting, multiple
+sheets, and real-time multi-user collaboration.
+
+The workbook list for a database:
+
+![Workbook list](docs/screenshots/workbook-list.png)
+
+A workbook open in the editor — `=SUM()` formulas, currency + bold formatting,
+and a multi-sheet tab bar:
+
+![Spreadsheet editor](docs/screenshots/editor.png)
+
+Real-time collaboration: edits sync over SSE, and you can see collaborators'
+cursors, name labels, and avatars live as they move around the sheet:
+
+![Live collaboration](docs/screenshots/collaboration.png)
+
+These images are regenerated with `just shots` (see Development below).
+
 ## Installation
 
 Install this plugin in the same environment as Datasette.
@@ -57,3 +78,20 @@ To run the tests:
 ```bash
 uv run pytest
 ```
+
+### Regenerating the documentation screenshots
+
+The screenshots above live in `docs/screenshots/` and are produced by a
+self-contained Playwright script (`scripts/screenshots.mjs`). It boots a
+throwaway Datasette with a fresh database, seeds a demo "Q3 Revenue Plan"
+workbook (and the alice/bob/grace sharing grants), drives a headless browser —
+including a three-user live-collaboration capture — then tears everything down:
+
+```bash
+just shots                       # regenerate all screenshots
+just shots editor collaboration  # regenerate a subset
+```
+
+Commit the regenerated PNGs when the UI changes. The run is deterministic
+(`PYTHONHASHSEED` is pinned and volatile text is frozen), so re-running with no
+UI change produces no diff.

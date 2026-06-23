@@ -161,6 +161,18 @@ test-frontend *flags:
 test-frontend-watch *flags:
     npm run test:watch --prefix frontend -- {{flags}}
 
+# Regenerate the committed doc screenshots in docs/screenshots/.
+# Self-contained: boots a throwaway datasette (fresh internal + data DB), lets
+# the shot-plugin seed a demo "Q3 Revenue Plan" workbook + acl grants, drives
+# Playwright (incl. a 3-user live-collaboration shot), then tears it down.
+# Builds the frontend first so shots reflect the current UI.
+# Pass shot names to regenerate a subset, e.g. `just shots editor collaboration`.
+shots *names:
+    just frontend
+    npm install
+    npx playwright install chromium
+    node scripts/screenshots.mjs {{names}}
+
 test-e2e *flags:
     npx playwright test {{flags}}
 
