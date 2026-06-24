@@ -111,17 +111,26 @@ class SheetsWorkbookResource(Resource):
     async def resources_sql(cls, datasette, actor=None) -> str:
         """Two-column ``(parent, child)`` enumeration of all workbooks.
 
-        NOTE: core runs this against the **internal** database, but sheets'
-        workbooks live in user databases (``_datasette_sheets_workbook`` is
-        created per user DB by the plugin's migrations). There is no
-        cross-database SQL we can return here that the internal DB could
-        execute, so this selects nothing. It returns the correct two-column
-        shape so acl's resource-management plumbing doesn't error. The
-        authorization path (``datasette.allowed(..., resource=...)``) does not
-        use this — it resolves against acl grant rows directly — so per-workbook
-        permission checks are unaffected.
+        Core (and datasette-acl) run this against the **internal** database, but
+        sheets' workbooks live in *user* databases (``_datasette_sheets_workbook``
+        is created per user DB by the plugin's migrations) — there is no
+        single-database SQL the internal DB could run to enumerate them.
+
+        Instead we enumerate from acl's own ``acl_resources`` table (which *is*
+        in the internal DB): every workbook created through the normal flow seeds
+        a creator Manager grant, which upserts an ``acl_resources`` row. So this
+        reports exactly the set of workbooks that have any grant — which is what
+        ``datasette_acl.utils.resource_exists`` needs so the share dialog's read
+        API can confirm a workbook is real (without it, the dialog 403s for
+        everyone). Anonymous zero-grant workbooks are excluded, which is correct
+        — they have no manager. ``acl`` is a hard dependency, so the table always
+        exists. The authorization path (``datasette.allowed(..., resource=...)``)
+        resolves against grant rows directly and does not depend on this.
         """
-        return "SELECT NULL AS parent, CAST(NULL AS TEXT) AS child WHERE 0"
+        return (
+            "SELECT parent, child FROM acl_resources "
+            "WHERE resource_type = 'sheets-workbook'"
+        )
 
 
 def workbook_resource(database: str, workbook_id) -> SheetsWorkbookResource:

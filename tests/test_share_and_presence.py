@@ -148,6 +148,74 @@ async def test_grant_roundtrip_persists():
 
 
 # ---------------------------------------------------------------------------
+# Share dialog read API (the data the <datasette-acl-share-dialog> fetches)
+#
+# Regression: workbooks live in *user* DBs, so SheetsWorkbookResource.resources_sql
+# enumerates from acl's internal ``acl_resources`` table. If it returns nothing
+# (the old stub), ``resource_exists`` is always False and acl's read endpoint
+# 403s for everyone — the dialog can never load its people list. These exercise
+# the endpoint end-to-end, which the rest of this module's grant-level tests
+# didn't.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_workbook_resource_exists_after_grant():
+    from datasette_acl.utils import resource_exists
+
+    ds, db_name = await make_datasette()
+    wb_id = await make_workbook(ds, db_name, owner="owner")
+    # The owner Manager grant seeded an acl_resources row → the workbook "exists".
+    assert await resource_exists(
+        ds, SHEETS_WORKBOOK_RESOURCE_TYPE, db_name, str(wb_id)
+    )
+    # A made-up id does not.
+    assert not await resource_exists(
+        ds, SHEETS_WORKBOOK_RESOURCE_TYPE, db_name, "999999"
+    )
+
+
+async def make_workbook_with_collaborators():
+    ds, db_name = await make_datasette()
+    wb_id = await make_workbook(ds, db_name, owner="owner")
+    await grant(
+        ds,
+        SHEETS_WORKBOOK_RESOURCE_TYPE,
+        db_name,
+        str(wb_id),
+        principal=Principal.actor("bob"),
+        role="Editor",
+        by_actor="owner",
+    )
+    return ds, db_name, wb_id
+
+
+@pytest.mark.asyncio
+async def test_share_dialog_read_api_manager_sees_grants():
+    ds, db_name, wb_id = await make_workbook_with_collaborators()
+    r = await ds.client.get(
+        f"/-/acl/api/resource/sheets-workbook/{db_name}/{wb_id}",
+        cookies=cookie(ds, "owner"),
+    )
+    assert r.status_code == 200, r.text
+    data = r.json()
+    assert data["can_manage"] is True
+    actor_ids = {g.get("id") for g in data["grants"] if g["principal"] == "actor"}
+    assert {"owner", "bob"} <= actor_ids
+
+
+@pytest.mark.asyncio
+async def test_share_dialog_read_api_forbidden_for_non_manager():
+    ds, db_name, wb_id = await make_workbook_with_collaborators()
+    # bob is an Editor, not a Manager — the read API gates on manage.
+    r = await ds.client.get(
+        f"/-/acl/api/resource/sheets-workbook/{db_name}/{wb_id}",
+        cookies=cookie(ds, "bob"),
+    )
+    assert r.status_code == 403
+
+
+# ---------------------------------------------------------------------------
 # Presence resolves via actors_from_ids
 # ---------------------------------------------------------------------------
 

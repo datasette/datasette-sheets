@@ -33,7 +33,10 @@ dev = [
     "pytest",
     "pytest-asyncio",
     "datasette-debug-gotham",
-    "datasette-sidebar",
+    # >=0.0.1a3: a1/a2 call vite_css_urls(..., vite_dev_path=...), a kwarg
+    # datasette-vite>=0.0.1a4 (a hard dep) no longer accepts — 500s every page
+    # that renders the sidebar. a3 drops it.
+    "datasette-sidebar>=0.0.1a3",
     "datasette-user-profiles>=0.1.0a6",
 ]
 
