@@ -1,0 +1,65 @@
+/* Read-only sheets workbook preview rendered inside a paper block embed.
+ * Scoped under .ds-sheets-embed so it can't leak into the host document. */
+.ds-sheets-embed {
+  font:
+    13px/1.4 system-ui,
+    -apple-system,
+    sans-serif;
+  color: #1f2937;
+}
+
+.ds-sheets-embed-tabs {
+  display: flex;
+  gap: 2px;
+  margin-bottom: 6px;
+  overflow-x: auto;
+}
+
+.ds-sheets-embed-tab {
+  padding: 2px 10px;
+  font-size: 12px;
+  white-space: nowrap;
+  color: #4b5563;
+  border-bottom: 2px solid transparent;
+}
+
+.ds-sheets-embed-tab.is-active {
+  color: #111827;
+  font-weight: 600;
+  border-bottom-color: #276890;
+}
+
+.ds-sheets-embed-grid {
+  overflow-x: auto;
+  border: 1px solid #e5e7eb;
+  border-radius: 4px;
+}
+
+.ds-sheets-embed-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-variant-numeric: tabular-nums;
+}
+
+.ds-sheets-embed-table th,
+.ds-sheets-embed-table td {
+  border: 1px solid #e5e7eb;
+  padding: 2px 6px;
+  text-align: left;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ds-sheets-embed-table thead th,
+.ds-sheets-embed-rownum {
+  background: #f3f4f6;
+  color: #6b7280;
+  font-weight: 600;
+  text-align: center;
+}
+
+.ds-sheets-embed-rownum {
+  width: 28px;
+}

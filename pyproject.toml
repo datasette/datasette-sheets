@@ -51,6 +51,18 @@ Changelog = "https://github.com/datasette/datasette-sheets/releases"
 Issues = "https://github.com/datasette/datasette-sheets/issues"
 CI = "https://github.com/datasette/datasette-sheets/actions"
 
+[project.optional-dependencies]
+# `datasette-sheets[paper]` adds datasette-paper so a sheets workbook can be
+# pasted/embedded as a rich block inside a paper document (see paper.py + the
+# frontend paper-embed target). datasette-paper isn't on PyPI yet, so it's
+# resolved from the sibling checkout's built wheel via [tool.uv.sources] below.
+paper = [
+    "datasette-paper>=0.0.2a3",
+]
+
+[tool.uv.sources]
+datasette-paper = { path = "../datasette-paper/dist/datasette_paper-0.0.2a3-py3-none-any.whl" }
+
 [project.entry-points.datasette]
 sheets = "datasette_sheets"
 

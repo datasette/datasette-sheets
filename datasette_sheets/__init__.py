@@ -31,6 +31,11 @@ def _is_workbook_page(request) -> bool:
 # Import route modules to trigger decorator registration
 from . import routes  # noqa: F401
 
+# datasette-paper integration. Importing the hookimpl into this module's
+# namespace is what registers it on Datasette's plugin manager — a no-op unless
+# datasette-paper is installed and owns the `paper_embed_provider` spec.
+from .paper import paper_embed_provider  # noqa: F401
+
 
 @hookimpl
 def extra_template_vars(datasette):
