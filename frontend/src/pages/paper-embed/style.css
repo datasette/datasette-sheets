@@ -1,37 +1,26 @@
 /* Read-only sheets workbook preview rendered inside a paper block embed.
+ * Mirrors the live grid's palette (the `--sheet-*` vars in
+ * pages/sheets/SheetsPage.svelte) so an embedded workbook reads like the real
+ * spreadsheet: monospace cells, A/B/C column-letter headers, a row-number
+ * gutter, right-aligned accent numerals, and bottom folder-style sheet tabs.
  * Scoped under .ds-sheets-embed so it can't leak into the host document. */
 .ds-sheets-embed {
+  --se-surface: #fff;
+  --se-header-bg: #f0f3f5;
+  --se-active-bg: #e8edf2;
+  --se-border: #d9dde1;
+  --se-text: #111a35;
+  --se-muted: #6b7280;
+  --se-accent: #276890;
+  --se-font: "Courier New", Courier, monospace;
+  color: var(--se-text);
   font:
-    13px/1.4 system-ui,
-    -apple-system,
-    sans-serif;
-  color: #1f2937;
-}
-
-.ds-sheets-embed-tabs {
-  display: flex;
-  gap: 2px;
-  margin-bottom: 6px;
-  overflow-x: auto;
-}
-
-.ds-sheets-embed-tab {
-  padding: 2px 10px;
-  font-size: 12px;
-  white-space: nowrap;
-  color: #4b5563;
-  border-bottom: 2px solid transparent;
-}
-
-.ds-sheets-embed-tab.is-active {
-  color: #111827;
-  font-weight: 600;
-  border-bottom-color: #276890;
+    13px/1.4 var(--se-font);
 }
 
 .ds-sheets-embed-grid {
   overflow-x: auto;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--se-border);
   border-radius: 4px;
 }
 
@@ -43,23 +32,76 @@
 
 .ds-sheets-embed-table th,
 .ds-sheets-embed-table td {
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--se-border);
   padding: 2px 6px;
+  height: 22px;
   text-align: left;
-  max-width: 160px;
+  max-width: 180px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+/* Column-letter header row + row-number gutter — the grey chrome of a sheet. */
 .ds-sheets-embed-table thead th,
 .ds-sheets-embed-rownum {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--se-header-bg);
+  color: var(--se-muted);
   font-weight: 600;
   text-align: center;
 }
 
-.ds-sheets-embed-rownum {
-  width: 28px;
+/* Row-number gutter + the corner cell above it: fixed narrow width. */
+.ds-sheets-embed-rownum,
+.ds-sheets-embed-table thead th:first-child {
+  width: 38px;
+  min-width: 38px;
+}
+
+/* Numbers read as a type: right-aligned in the accent colour — matches the
+   live grid's `.cell-value.numeric`. */
+.ds-sheets-embed-table td.numeric {
+  text-align: right;
+  color: var(--se-accent);
+}
+
+/* Per-cell bold (header labels, total row) carried in `format_json`. */
+.ds-sheets-embed-table td.is-bold {
+  font-weight: 700;
+}
+
+/* Bottom sheet tabs — folder-tab look lifted from the live SheetTabs. */
+.ds-sheets-embed-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  margin-top: 6px;
+  padding-left: 4px;
+  overflow-x: auto;
+}
+
+.ds-sheets-embed-tab {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 12px;
+  font-size: 12px;
+  white-space: nowrap;
+  color: var(--se-text);
+  background: var(--se-active-bg);
+  border: 1px solid var(--se-border);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+}
+
+.ds-sheets-embed-tab.is-active {
+  background: var(--se-surface);
+  font-weight: 600;
+}
+
+.ds-sheets-embed-tab-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }

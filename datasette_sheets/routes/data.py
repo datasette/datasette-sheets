@@ -1,3 +1,5 @@
+import json
+
 import lotus
 
 from datasette import Response
@@ -61,7 +63,22 @@ async def sheet_data(
         for c in cells
     }
     range_cols = [lotus.index_to_col(i) for i in range(min_col, rmc + 1)]
+    # ``?include_format=1`` adds a ``formats`` grid parallel to ``rows`` (arrays
+    # mode only) carrying each cell's stored ``format_json`` (parsed dict, or
+    # ``None``). Opt-in so the default response stays lean; consumers that want
+    # to render values the way the live grid does (currency masks, bold) need
+    # the format alongside the value. The paper embed preview is the first user.
+    include_format = request.args.get("include_format") in ("1", "true", "yes")
+    fmt_map: dict[tuple[int, int], dict] = {}
+    if include_format and fmt != "objects":
+        for c in cells:
+            if c.format_json:
+                try:
+                    fmt_map[(c.row_idx, c.col_idx)] = json.loads(c.format_json)
+                except (ValueError, TypeError):
+                    pass
     rows = []
+    formats = []
     for r in range(min_row, rmr + 1):
         if fmt == "objects":
             rows.append(
@@ -74,7 +91,13 @@ async def sheet_data(
             rows.append(
                 [cell_map.get((r, min_col + ci), "") for ci in range(len(range_cols))]
             )
+            if include_format:
+                formats.append(
+                    [fmt_map.get((r, min_col + ci)) for ci in range(len(range_cols))]
+                )
     result: dict = {"columns": range_cols, "rows": rows}
+    if include_format and fmt != "objects":
+        result["formats"] = formats
     if range_str:
         result["range"] = range_str.upper()
     return Response.json(result)

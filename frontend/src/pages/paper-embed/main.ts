@@ -21,6 +21,11 @@
  * navigable workbook URL.
  */
 import "./style.css";
+import {
+  formatValue,
+  createDefaultFormat,
+} from "../../lib/spreadsheet/formatter";
+import type { CellFormat, CellValue } from "../../lib/spreadsheet/types";
 
 // Normalized stored ref:        /-/sheets/workbook/{db}/{id}
 const REF_RE = /^\/-\/sheets\/workbook\/([^/]+)\/(\d+)\/?$/;
@@ -74,31 +79,36 @@ async function fetchWorkbook(r: WorkbookRef): Promise<WorkbookMeta> {
 interface SheetGrid {
   columns: string[];
   rows: unknown[][];
+  // Per-cell stored format (partial CellFormat) parallel to `rows`, or null
+  // where a cell carries no format. Drives currency masks / bold so the
+  // preview renders values exactly like the live grid.
+  formats: (Partial<CellFormat> | null)[][];
 }
 
-/** Fetch one sheet's data grid (arrays format), capped to the preview window. */
+/** Fetch one sheet's data grid (arrays format + per-cell format), capped to the
+ *  preview window. `include_format=1` adds the parallel `formats` grid. */
 async function fetchSheetData(
   r: WorkbookRef,
   sheetId: number,
 ): Promise<SheetGrid> {
   const res = await fetch(
-    `/${r.db}/-/sheets/api/workbooks/${r.id}/sheets/${sheetId}/data`,
+    `/${r.db}/-/sheets/api/workbooks/${r.id}/sheets/${sheetId}/data?include_format=1`,
     { headers: { Accept: "application/json" } },
   );
   if (!res.ok) throw new Error(`sheet ${res.status}`);
-  const j = (await res.json()) as { columns?: string[]; rows?: unknown[][] };
+  const j = (await res.json()) as {
+    columns?: string[];
+    rows?: unknown[][];
+    formats?: (Partial<CellFormat> | null)[][];
+  };
   const columns = (j.columns ?? []).slice(0, PREVIEW_COLS);
   const rows = (j.rows ?? [])
     .slice(0, PREVIEW_ROWS)
     .map((row) => (Array.isArray(row) ? row.slice(0, PREVIEW_COLS) : []));
-  return { columns, rows };
-}
-
-/** Stringify a cell value for display (textContent — never innerHTML). */
-function cellText(v: unknown): string {
-  if (v == null) return "";
-  if (typeof v === "object") return JSON.stringify(v);
-  return String(v);
+  const formats = (j.formats ?? [])
+    .slice(0, PREVIEW_ROWS)
+    .map((row) => (Array.isArray(row) ? row.slice(0, PREVIEW_COLS) : []));
+  return { columns, rows, formats };
 }
 
 /**
@@ -134,7 +144,13 @@ class DatasetteSheetsPreview extends HTMLElement {
     const root = document.createElement("div");
     root.className = "ds-sheets-embed";
 
-    // Sheet tabs (names only — read-only).
+    const gridHost = document.createElement("div");
+    gridHost.className = "ds-sheets-embed-grid";
+    gridHost.textContent = "Loading…";
+    root.appendChild(gridHost);
+
+    // Sheet tabs (names only — read-only), rendered *below* the grid like the
+    // live SheetTabs bar: a coloured dot + the name, active tab highlighted.
     if (meta.sheets.length) {
       const tabs = document.createElement("div");
       tabs.className = "ds-sheets-embed-tabs";
@@ -142,17 +158,18 @@ class DatasetteSheetsPreview extends HTMLElement {
         const tab = document.createElement("span");
         tab.className = "ds-sheets-embed-tab";
         if (i === 0) tab.classList.add("is-active");
-        if (s.color) tab.style.borderBottomColor = s.color;
-        tab.textContent = s.name;
+        if (s.color) {
+          const dot = document.createElement("span");
+          dot.className = "ds-sheets-embed-tab-dot";
+          dot.style.background = s.color;
+          tab.appendChild(dot);
+        }
+        // Text node, not textContent — keep the dot we just appended.
+        tab.appendChild(document.createTextNode(s.name));
         tabs.appendChild(tab);
       }
       root.appendChild(tabs);
     }
-
-    const gridHost = document.createElement("div");
-    gridHost.className = "ds-sheets-embed-grid";
-    gridHost.textContent = "Loading…";
-    root.appendChild(gridHost);
 
     this.replaceChildren(root);
 
@@ -202,7 +219,20 @@ class DatasetteSheetsPreview extends HTMLElement {
       tr.appendChild(rowHead);
       for (let c = 0; c < grid.columns.length; c++) {
         const td = document.createElement("td");
-        td.textContent = cellText(row[c]);
+        const v = row[c] as CellValue;
+        // Merge the stored partial over the defaults, exactly like the live
+        // grid (persistence.ts), then render through the shared formatter so
+        // currency masks / dates / booleans match cell-for-cell.
+        const format: CellFormat = {
+          ...createDefaultFormat(),
+          ...(grid.formats[i]?.[c] ?? {}),
+        };
+        // Numbers get the accent-coloured, right-aligned treatment the live
+        // grid gives `.cell-value.numeric`.
+        if (typeof v === "number") td.classList.add("numeric");
+        if (format.bold) td.classList.add("is-bold");
+        // textContent — never innerHTML — so cell values can't inject markup.
+        td.textContent = formatValue(v, format);
         tr.appendChild(td);
       }
       tbody.appendChild(tr);

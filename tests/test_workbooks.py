@@ -313,6 +313,63 @@ async def test_data_api_with_workbook():
 
 
 @pytest.mark.asyncio
+async def test_data_api_include_format_opt_in():
+    """``?include_format=1`` adds a ``formats`` grid parallel to ``rows``
+    carrying each cell's parsed ``format_json`` (None where unformatted); the
+    default response omits it entirely. The paper embed preview relies on this
+    to render currency masks + bold like the live grid."""
+    ds, db_name = make_datasette()
+    resp = await ds.client.post(
+        f"/{db_name}/-/sheets/api/workbooks/create",
+        content=json.dumps({"name": "FmtTest"}),
+    )
+    wb_id = resp.json()["workbook"]["id"]
+    sheet_id = resp.json()["sheet"]["id"]
+
+    currency = {"type": "currency", "decimals": 0, "currencySymbol": "$"}
+    await ds.client.post(
+        f"/{db_name}/-/sheets/api/workbooks/{wb_id}/sheets/{sheet_id}/cells",
+        content=json.dumps(
+            {
+                "changes": [
+                    # Bold text label, currency number, and a plain (no-format)
+                    # number alongside it.
+                    {
+                        "row_idx": 0,
+                        "col_idx": 0,
+                        "raw_value": "Region",
+                        "format_json": json.dumps({"bold": True}),
+                    },
+                    {
+                        "row_idx": 0,
+                        "col_idx": 1,
+                        "raw_value": "4200",
+                        "format_json": json.dumps(currency),
+                    },
+                    {"row_idx": 0, "col_idx": 2, "raw_value": "99"},
+                ]
+            }
+        ),
+    )
+
+    # Default: no formats key.
+    resp = await ds.client.get(
+        f"/{db_name}/-/sheets/api/workbooks/{wb_id}/sheets/{sheet_id}/data"
+    )
+    assert resp.status_code == 200
+    assert "formats" not in resp.json()
+
+    # Opt-in: formats grid parallel to rows, None for the unformatted cell.
+    resp = await ds.client.get(
+        f"/{db_name}/-/sheets/api/workbooks/{wb_id}/sheets/{sheet_id}/data",
+        params={"include_format": "1"},
+    )
+    body = resp.json()
+    assert body["rows"][0] == ["Region", 4200, 99]
+    assert body["formats"][0] == [{"bold": True}, currency, None]
+
+
+@pytest.mark.asyncio
 async def test_data_api_returns_typed_values():
     """Mixed int / float / string / formula-error / empty round-trip with the
     correct JSON types via the engine's typed accessors."""
