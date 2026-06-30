@@ -34,8 +34,18 @@ export default defineConfig({
     emptyOutDir: false,
     manifest: "manifest.json",
     rollupOptions: {
+      // Keep each entry's exported signature. The `sheets` page entry is a
+      // side-effect-only app mount, but `paper-embed` *must* keep its
+      // `export default provider` — paper does `import(url)` and reads the
+      // default export to register the embed provider. Without this Rollup
+      // tree-shakes the unreferenced export away (the module still runs its
+      // customElements.define side effect, but `default` is gone), so paper
+      // sees no provider and every sheets ref renders as "not found".
+      preserveEntrySignatures: "strict",
       input: {
         sheets: path.resolve(__dirname, "src/pages/sheets/index.ts"),
+        // Web component + renderer for embedding a workbook in datasette-paper.
+        "paper-embed": path.resolve(__dirname, "src/pages/paper-embed/main.ts"),
       },
     },
   },
