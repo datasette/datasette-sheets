@@ -182,6 +182,7 @@ async function main() {
         document.head.appendChild(link);
         // Approximate a paper block card: white surface, padding, soft border.
         const card = document.createElement("div");
+        card.id = "embed-card";
         card.style.cssText =
           "max-width:680px;margin:32px auto;background:#fff;border:1px solid #e2e8f0;border-radius:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);padding:16px;";
         const el = document.createElement("datasette-sheets-preview");
@@ -198,7 +199,8 @@ async function main() {
     await page.locator(".ds-sheets-embed-table").waitFor({ timeout: 15_000 });
     await page.getByText("West").first().waitFor({ timeout: 15_000 });
     await sleep(300);
-    await page.screenshot({ path: OUT });
+    // Tight crop to the block card, not the whole padded page.
+    await page.locator("#embed-card").screenshot({ path: OUT });
     console.log(`✓ embed preview → ${OUT}`);
   } finally {
     await browser.close();
